@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.emergya</groupId>
+	    <artifactId>persistence-geo</artifactId>
+	    <version>1.0-SNAPSHOT</version>
+    </parent>
+
+	<artifactId>persistence-geo-rest</artifactId>
+	<packaging>war</packaging>
+	<!-- Project Information -->
+	<licenses>
+		<license>
+			<name>Apache License V2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
+
+	<name>Vista con Spring3 MVC</name>
+	<url>http://www.emergya.es</url>
+	<description>Vista basada en spring3-mvc para el proyecto persistence-geo</description>
+
+	<organization>
+		<name>Emergya</name>
+		<url>http://www.emergya.es</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>adiaz</id>
+			<name>Alejandro Diaz Torres</name>
+			<email>adiaz@emergya.com</email>
+			<organization>Emergya Consultoria</organization>
+			<organizationUrl>http://www.emergya.es</organizationUrl>
+			<roles>
+				<role>Analista</role>
+			</roles>
+		</developer>
+	</developers>
+
+
+	<issueManagement>
+		<system>redmine</system>
+		<url>https://redmine.emergya.es/projects/maagya</url>
+	</issueManagement>
+	<ciManagement>
+		<system>jenkins</system>
+		<url>http://jenkins.emergya.es/jenkins/view/maagya/</url>
+	</ciManagement>
+	<inceptionYear>2012</inceptionYear>
+	<!-- Project Information -->
+
+
+	<!-- Environment Information -->
+	<scm>
+		<connection>scm:svn:http://svn.emergya.es/svn/sirdelgore</connection>
+		<developerConnection>scm:svn:http://svn.emergya.es/svn/sirdelgore</developerConnection>
+		<url>http://svn.emergya.es/svn/sirdelgore</url>
+	</scm>
+
+
+	<distributionManagement>
+		<!-- use the following if you're not using a snapshot version. -->
+		<repository>
+			<id>nexus.releases</id>
+			<name>Nexus Releases</name>
+			<url>http://nexus.emergya.es/nexus/content/repositories/maagya-repo/</url>
+		</repository>
+		<!-- use the following if you ARE using a snapshot version. -->
+		<snapshotRepository>
+			<id>nexus.snapshots</id>
+			<name>Nexus Snapshot</name>
+			<url>http://nexus.emergya.es/nexus/content/repositories/maagya-snapshots/</url>
+	</snapshotRepository>
+	</distributionManagement>
+
+    <dependencies>
+    	<!-- Internal dependencies -->
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>persistence-geo-core</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <!-- SPRING DEPENDENCIES -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+		<!-- ========== SPRING SECURITY ============ -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${spring.security.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-ldap</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-openid</artifactId>
+			<version>${spring.security.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+
+        <!--Misc dependencies-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>${javax.servlet-servlet-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>${javax.servlet-jstl.version}</version>
+        </dependency>
+
+         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.8.4</version>
+            <scope>test</scope>
+        </dependency>
+
+	<!-- LOGGING DEPENDENCIES - LOG4J -->
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-log4j12</artifactId>
+		<version>${slf4j-log4j.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>log4j</groupId>
+		<artifactId>log4j</artifactId>
+		<version>${log4j.version}</version>
+	</dependency>
+
+    </dependencies>
+    <build>
+        <finalName>${project.artifactId}</finalName>
+
+		<filters>
+			<filter>src/main/filters/${filter.profile}</filter>
+		</filters>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+                <targetPath>test-classes</targetPath>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>${maven-compiler-plugin.version}</version>
+			<configuration>
+				<source>1.6</source>
+				<target>1.6</target>
+				<optimize>true</optimize>
+				<debug>true</debug>
+			</configuration>
+	    </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+				<version>${maven-resource-plugin.version}</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
+                <version>${maven-jetty-plugin.version}</version>
+
+                <configuration>
+                    <scanIntervalSeconds>9999</scanIntervalSeconds>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>org.mortbay.util.URI.charset</name>
+                            <value>${project.build.sourceEncoding}</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>org.mortbay.jetty.Request.queryEncoding</name>
+                            <value>${project.build.sourceEncoding}</value>
+                        </systemProperty>
+                    </systemProperties>
+                    <contextPath>${project.artifactId}</contextPath>
+                </configuration>
+            </plugin>
+
+
+        </plugins>
+    </build>
+    
+    <profiles>
+    	<!-- ================= Profiles to deploy ================= -->
+    	<profile>
+		<id>local</id>
+		<properties>
+			<!-- Database validate -->
+			<database.hibernate.hbm2ddl.auto>validate</database.hibernate.hbm2ddl.auto>
+			<filter.profile>local.properties</filter.profile>
+		</properties>
+	</profile>
+	<profile>
+		<id>test</id>
+		<properties>
+			<filter.profile>test.properties</filter.profile>
+		</properties>
+		<activation><activeByDefault>true</activeByDefault></activation>
+	</profile>
+	<profile>
+		<id>devel</id>
+		<properties>
+			<!-- Database validate -->
+			<database.hibernate.hbm2ddl.auto>validate</database.hibernate.hbm2ddl.auto>
+			<filter.profile>devel.properties</filter.profile>
+		</properties>
+	</profile>
+    </profiles>
+    
+    <properties>
+    	<project.artifactId>${project.artifactId}</project.artifactId>
+    </properties>
+
+</project>

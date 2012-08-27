@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="com.emergya"/>
+    
+    <bean class="java.lang.String" id="chareacterEncoding">
+    	<constructor-arg type="String" value="${source.encoding}" />
+    </bean>
+
+    <bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:application.properties</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- ============================== -->
+    <!-- ==========  DAO layer ======== -->
+    <!-- ============================== -->
+	
+    <!-- Hibernate -->
+    <tx:annotation-driven/>
+    <bean id="dataSourceHibernate" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${database.jdbc.driverClass}" />
+		<property name="url" value="${database.jdbc.url}" />
+		<property name="username" value="${database.jdbc.user}" />
+		<property name="password" value="${database.jdbc.password}" />
+        <property name="initialSize" value="10" />
+        <property name="maxActive" value="5" />
+        <property name="maxWait" value="5000" />
+	</bean>
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource" ref="dataSourceHibernate"/>
+        <property name="packagesToScan">
+        	<list>
+                <value>com.emergya</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+            	<prop key="hibernate.dialect">${database.hibernate.dialect}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${database.hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.default_schema">${database.schema}</prop>
+				<prop key="hibernate.show_sql">${database.showsql}</prop>
+				<prop key="hibernate.connection.characterEncoding">${database.characterEncoding}</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>
