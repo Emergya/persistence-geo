@@ -29,6 +29,11 @@
  */
 package com.emergya.persistenceGeo.dao;
 
+import java.util.List;
+
+import com.emergya.persistenceGeo.model.AuthorityEntity;
+import com.emergya.persistenceGeo.model.LayerEntity;
+import com.emergya.persistenceGeo.model.PrivateLayerEntity;
 import com.emergya.persistenceGeo.model.UserEntity;
 
 /**
@@ -67,5 +72,41 @@ public interface UserEntityDao extends GenericDAO<UserEntity, Long>{
 	 * @return entidad asociada al nombre de usuario o null si no se encuentra
 	 */
 	public UserEntity getUser(String userName);
+	
+	/**
+	 * Get a users list by a names users list
+	 * 
+	 * @param names
+	 * 
+	 * @return Entities list associated with the names users list or null if not found 
+	 */
+	public List<UserEntity> findByName(List<String> names);
+
+	/**
+	 * Get an authority by a user identifier
+	 * 
+	 * @param user_id
+	 * 
+	 * @return Entity associated with the user identifier or null if not found
+	 */
+	public AuthorityEntity findByUserID(Long user_id);
+	
+	/**
+	 * Get a layer by a user identifier
+	 * 
+	 * @param user_id
+	 * 
+	 * @return Entity associated with the user identifier or null if not found
+	 */
+	public List<LayerEntity> findLayerByUserID(Long user_id);
+	
+	/**
+	 * Get a private layer by a user identifier
+	 * 
+	 * @param user_id
+	 * 
+	 * @return Entity associated with the user identifier or null if not found
+	 */
+	public List<PrivateLayerEntity> findPrivateLayerByUserID(Long user_id);
 
 }

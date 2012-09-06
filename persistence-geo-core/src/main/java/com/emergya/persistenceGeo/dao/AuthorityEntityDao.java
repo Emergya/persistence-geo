@@ -52,5 +52,7 @@ public interface AuthorityEntityDao extends GenericDAO<AuthorityEntity, Long>{
 	List<AuthorityEntity> findByName(String name);
 
 	List<AuthorityEntity> findByName(List<String> names);
+	
+	List<AuthorityEntity> findByLayer(Long layer_id);
 
 }

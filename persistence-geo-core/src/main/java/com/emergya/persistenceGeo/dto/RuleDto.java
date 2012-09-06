@@ -1,5 +1,5 @@
 /*
- * AuthorityDto.java
+ * RuleDto.java
  * 
  * Copyright (C) 2012
  * 
@@ -25,91 +25,82 @@
  * however invalidate any other reasons why the executable file might be covered
  * by the GNU General Public License.
  * 
- * Authors:: Alejandro Díaz Torres (mailto:adiaz@emergya.com)
+ * Authors:: Moisés Arcos Santiago (mailto:marcos@emergya.com)
  */
 package com.emergya.persistenceGeo.dto;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
- * Dto de grupo de usuarios
+ * Rule data transfer object
  * 
- * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
+ * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public class AuthorityDto implements Serializable {
-	
+public class RuleDto implements Serializable {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6021644235856556432L;
+	private static final long serialVersionUID = -7549984301491958577L;
 	
-	private Long id;
-    private String nombre;
-    
-    private Date createDate;
-    private Date updateDate;
-    
-    private List<String> usuarios;
-    private String authType;
-    private List<String> layerList;
-    private List<String> privateLayerList;
-    private String zone;
-    
-	public Long getId() {
-		return id;
+	private Long rule_id;
+	
+	private String symbolizer;
+	private String filter;
+	private Date createDate;
+	private Date updateDate;
+	
+	private String style;
+
+	public Long getRule_id() {
+		return rule_id;
 	}
-	public void setId(Long id) {
-		this.id = id;
+
+	public void setRule_id(Long rule_id) {
+		this.rule_id = rule_id;
 	}
-	public String getNombre() {
-		return nombre;
+
+	public String getSymbolizer() {
+		return symbolizer;
 	}
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+
+	public void setSymbolizer(String symbolizer) {
+		this.symbolizer = symbolizer;
 	}
-	public List<String> getUsuarios() {
-		return usuarios;
+
+	public String getFilter() {
+		return filter;
 	}
-	public void setUsuarios(List<String> usuarios) {
-		this.usuarios = usuarios;
+
+	public void setFilter(String filter) {
+		this.filter = filter;
 	}
+
 	public Date getCreateDate() {
 		return createDate;
 	}
+
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}
+
 	public Date getUpdateDate() {
 		return updateDate;
 	}
+
 	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
 	}
-	public String getAuthType() {
-		return authType;
+
+	public String getStyle() {
+		return style;
 	}
-	public void setAuthType(String authType) {
-		this.authType = authType;
+
+	public void setStyle(String style) {
+		this.style = style;
 	}
-	public List<String> getLayerList() {
-		return layerList;
-	}
-	public void setLayerList(List<String> layerList) {
-		this.layerList = layerList;
-	}
-	public List<String> getPrivateLayerList() {
-		return privateLayerList;
-	}
-	public void setPrivateLayerList(List<String> privateLayerList) {
-		this.privateLayerList = privateLayerList;
-	}
-	public String getZone() {
-		return zone;
-	}
-	public void setZone(String zone) {
-		this.zone = zone;
-	}
+	
+
 }

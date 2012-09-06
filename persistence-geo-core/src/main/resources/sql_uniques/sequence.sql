@@ -1,1 +1,1 @@
-select setval('persistence_geo_db.hibernate_sequence', 100); 
+select setval('persistence_geo.hibernate_sequence', 100); 

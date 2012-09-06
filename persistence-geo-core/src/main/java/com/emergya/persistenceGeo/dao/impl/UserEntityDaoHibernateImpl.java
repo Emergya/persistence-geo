@@ -29,12 +29,16 @@
  */
 package com.emergya.persistenceGeo.dao.impl;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.UserEntityDao;
+import com.emergya.persistenceGeo.model.AuthorityEntity;
+import com.emergya.persistenceGeo.model.LayerEntity;
+import com.emergya.persistenceGeo.model.PrivateLayerEntity;
 import com.emergya.persistenceGeo.model.UserEntity;
 
 /**
@@ -57,7 +61,7 @@ public class UserEntityDaoHibernateImpl extends GenericHibernateDAOImpl<UserEnti
 	public UserEntity createUser(String userName, String password){
 		UserEntity entity = new UserEntity(userName);
 		entity.setPassword(password);
-		getHibernateTemplate().save(entity);
+		this.makePersistent(entity);
 		return entity;
 	}
 	
@@ -97,4 +101,71 @@ public class UserEntityDaoHibernateImpl extends GenericHibernateDAOImpl<UserEnti
 		}
 	}
 
+	/**
+	 * Get a users list by a names users list
+	 * 
+	 * @param names
+	 * 
+	 * @return Entities list associated with the names users list or null if not found 
+	 */
+	public List<UserEntity> findByName(List<String> names) {
+		List<UserEntity> res = new LinkedList<UserEntity>();
+		if(names != null){
+			for(String name: names){
+				List<UserEntity> entityList = findByCriteria(Restrictions.eq("username", name));
+				if(entityList != null && entityList.size()>0){
+					res.addAll(entityList);
+				}
+			}
+		}
+		return res;
+	}
+
+	/**
+	 * Get an authority by a user identifier
+	 * 
+	 * @param user_id
+	 * 
+	 * @return Entity associated with the user identifier or null if not found
+	 */
+	public AuthorityEntity findByUserID(Long user_id) {
+		List<UserEntity> res = findByCriteria(Restrictions.eq("user_id", user_id));
+		AuthorityEntity auth = null;
+		if(res != null && res.size()>0){
+			auth = res.get(0).getAuthority();
+		}
+		return auth;
+	}
+
+	/**
+	 * Get a layer by a user identifier
+	 * 
+	 * @param user_id
+	 * 
+	 * @return Entity associated with the user identifier or null if not found
+	 */
+	public List<LayerEntity> findLayerByUserID(Long user_id) {
+		List<UserEntity> res = findByCriteria(Restrictions.eq("user_id", user_id));
+		List<LayerEntity> layer = null;
+		if(res != null && res.size()>0){
+			layer = res.get(0).getLayerList();
+		}
+		return layer;
+	}
+	
+	/**
+	 * Get a private layer by a user identifier
+	 * 
+	 * @param user_id
+	 * 
+	 * @return Entity associated with the user identifier or null if not found
+	 */
+	public List<PrivateLayerEntity> findPrivateLayerByUserID(Long user_id) {
+		List<UserEntity> res = findByCriteria(Restrictions.eq("user_id", user_id));
+		List<PrivateLayerEntity> layer = null;
+		if(res != null && res.size()>0){
+			layer = res.get(0).getPrivateLayerList();
+		}
+		return layer;
+	}
 }

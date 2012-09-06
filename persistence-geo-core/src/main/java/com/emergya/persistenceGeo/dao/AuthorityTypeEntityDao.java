@@ -1,5 +1,5 @@
 /*
- * AbstractEntity.java
+ * AuthorityTypeEntityDao.java
  * 
  * Copyright (C) 2012
  * 
@@ -24,27 +24,36 @@
  * to be covered by the GNU General Public License. This exception does not
  * however invalidate any other reasons why the executable file might be covered
  * by the GNU General Public License.
+ * 
+ * Authors:: Moisés Arcos Santiago (mailto:marcos@emergya.com)
  */
-package com.emergya.persistenceGeo.model;
+package com.emergya.persistenceGeo.dao;
 
-import java.io.Serializable;
+import com.emergya.persistenceGeo.model.AuthorityTypeEntity;
 
 /**
- * Entity from which extend the rest of the entities
+ * DAO that represents the type users groups
  * 
- * @author <a href="mailto:adiaz@emergya.es">adiaz</a>
+ * @author <a href="mailto:marcos@emergya.com">marcos</a>
+ *
  */
-@SuppressWarnings("serial")
-public abstract class AbstractEntity implements Serializable {
+public interface AuthorityTypeEntityDao extends GenericDAO<AuthorityTypeEntity, Long> {
 
 	/**
-	 * @return the id
+	 * Save an authority type in the system
+	 * 
+	 * @param <code>authTypeEntity</code>
+	 * 
+	 * @return Identifier from the save entity 
 	 */
-	public abstract Serializable getId();
-
+	public Long save(AuthorityTypeEntity authTypeEntity);
+	
 	/**
-	 * @param id the id to set
+	 * Delete an authority type in the system
+	 * 
+	 * @param <code>auth_id</code>
+	 * 
 	 */
-	public abstract void setId(Serializable id);
+	public void delete(Long auth_id);
 	
 }

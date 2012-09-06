@@ -1,3 +1,3 @@
-INSERT INTO persistence_geo.institucion(
+INSERT INTO persistence_geo.authorities(
             id, authority)
-    VALUES (13, '${default_admin_group}'); 
+    VALUES (1, '${default_admin_group}'); 

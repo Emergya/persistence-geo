@@ -1,5 +1,5 @@
 /*
- * AbstractEntity.java
+ * FolderEntityDao.java
  * 
  * Copyright (C) 2012
  * 
@@ -24,27 +24,57 @@
  * to be covered by the GNU General Public License. This exception does not
  * however invalidate any other reasons why the executable file might be covered
  * by the GNU General Public License.
+ * 
+ * Authors:: Moisés Arcos Santiago (mailto:marcos@emergya.com)
  */
-package com.emergya.persistenceGeo.model;
+package com.emergya.persistenceGeo.dao;
 
-import java.io.Serializable;
+import java.util.List;
+
+import com.emergya.persistenceGeo.model.FolderEntity;
 
 /**
- * Entity from which extend the rest of the entities
+ * DAO that represents the folder
  * 
- * @author <a href="mailto:adiaz@emergya.es">adiaz</a>
+ * @author <a href="mailto:marcos@emergya.com">marcos</a>
+ *
  */
-@SuppressWarnings("serial")
-public abstract class AbstractEntity implements Serializable {
+public interface FolderEntityDao extends GenericDAO<FolderEntity, Long> {
 
 	/**
-	 * @return the id
+	 * Create a new folder in the system
+	 * 
+	 * @param <code>nameFolder</code>
+	 * 
+	 * @return Entity from the created folder
 	 */
-	public abstract Serializable getId();
-
+	public FolderEntity createFolder(String nameFolder);
+	
 	/**
-	 * @param id the id to set
+	 * Get a folders list by the folder name 
+	 * 
+	 * @param <code>folderName</code>
+	 * 
+	 * @return Entities list associated with the folder name or null if not found 
 	 */
-	public abstract void setId(Serializable id);
+	public List<FolderEntity> getFolders(String folderName);
+	
+	/**
+	 * Delete a folder by the folder identifier 
+	 * 
+	 * @param <code>folderID</code>
+	 * 
+	 */
+	public void deleteFolder(Long folderID);
+	
+	/**
+	 * Get a folders list by the names folders list
+	 * 
+	 * @param <code>names</code>
+	 * 
+	 * @return Entities list associated with the names folders list or null if not found 
+	 */
+	public List<FolderEntity> findByName(List<String> names);
+	
 	
 }

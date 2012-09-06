@@ -32,26 +32,27 @@ package com.emergya.persistenceGeo.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * Entidad de grupo de usuarios
+ * Entity that represents the users group
  * 
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
+ * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
 @Entity
-@Table(name = "institucion")
+@Table(name = "authorities")
 public class AuthorityEntity extends AbstractEntity{
 
     /**
@@ -61,9 +62,16 @@ public class AuthorityEntity extends AbstractEntity{
 	
 	private Long id;
     private String authority;
-    private List<UserEntity> people;
-    private Date fechaCreacion;
-    private Date fechaActualizacion;
+    
+    private Date createDate;
+    private Date updateDate;
+    private AuthorityTypeEntity authType;
+    private ZoneEntity zone;
+    
+    private Set<UserEntity> people;
+    private List<LayerEntity> layerList;
+    private List<PrivateLayerEntity> privateLayerList;
+    
 
     public AuthorityEntity() {
     }
@@ -92,37 +100,69 @@ public class AuthorityEntity extends AbstractEntity{
         this.id = (Long) id;
     }
 
-    @ManyToMany(targetEntity = UserEntity.class,
-    cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "usuarios_por_institucion",
-    joinColumns =
-    @JoinColumn(name = "intitucion_id"),
-    inverseJoinColumns =
-    @JoinColumn(name = "usuario_id"))
-    public List<UserEntity> getPeople() {
+    @OneToMany(mappedBy = "authority")
+    public Set<UserEntity> getPeople() {
         return people;
     }
 
-    public void setPeople(List<UserEntity> people) {
+    public void setPeople(Set<UserEntity> people) {
         this.people = people;
     }
 
-    @Column(name = "fechaCreacion")
-	public Date getFechaCreacion() {
-		return fechaCreacion;
+    @Column(name = "createDate")
+	public Date getCreateDate() {
+		return createDate;
 	}
 
-	public void setFechaCreacion(Date fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
+	public void setcreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 
-    @Column(name = "fechaActualizacion")
-	public Date getFechaActualizacion() {
-		return fechaActualizacion;
+    @Column(name = "updateDate")
+	public Date getUpdateDate() {
+		return updateDate;
 	}
 
-	public void setFechaActualizacion(Date fechaActualizacion) {
-		this.fechaActualizacion = fechaActualizacion;
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
+	}
+
+	@ManyToOne
+    @JoinColumn(name = "auth_type_id")
+	public AuthorityTypeEntity getAuthType() {
+		return authType;
+	}
+
+	public void setAuthType(AuthorityTypeEntity authType) {
+		this.authType = authType;
+	}
+
+	@OneToMany(mappedBy = "auth")
+	public List<LayerEntity> getLayerList() {
+		return layerList;
+	}
+
+	public void setLayerList(List<LayerEntity> layerList) {
+		this.layerList = layerList;
+	}
+
+	@OneToMany(mappedBy = "auth")
+	public List<PrivateLayerEntity> getPrivateLayerList() {
+		return privateLayerList;
+	}
+
+	public void setPrivateLayerList(List<PrivateLayerEntity> privateLayerList) {
+		this.privateLayerList = privateLayerList;
+	}
+
+	@ManyToOne
+    @JoinColumn(name = "zone_id", insertable = false, updatable = false)
+	public ZoneEntity getZone() {
+		return zone;
+	}
+
+	public void setZone(ZoneEntity zone) {
+		this.zone = zone;
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * AbstractEntity.java
+ * ZoneEntityDao.java
  * 
  * Copyright (C) 2012
  * 
@@ -24,27 +24,46 @@
  * to be covered by the GNU General Public License. This exception does not
  * however invalidate any other reasons why the executable file might be covered
  * by the GNU General Public License.
+ * 
+ * Authors:: Moisés Arcos Santiago (mailto:marcos@emergya.com)
  */
-package com.emergya.persistenceGeo.model;
+package com.emergya.persistenceGeo.dao;
 
-import java.io.Serializable;
+import java.util.List;
+
+import com.emergya.persistenceGeo.model.ZoneEntity;
 
 /**
- * Entity from which extend the rest of the entities
+ * DAO that represents the zone
  * 
- * @author <a href="mailto:adiaz@emergya.es">adiaz</a>
+ * @author <a href="mailto:marcos@emergya.com">marcos</a>
+ *
  */
-@SuppressWarnings("serial")
-public abstract class AbstractEntity implements Serializable {
+public interface ZoneEntityDao extends GenericDAO<ZoneEntity, Long> {
 
 	/**
-	 * @return the id
+	 * Create a new zone in the system
+	 * 
+	 * @param <code>zone</code>
+	 * 
+	 * @return Entity from the created zone
 	 */
-	public abstract Serializable getId();
-
-	/**
-	 * @param id the id to set
-	 */
-	public abstract void setId(Serializable id);
+	public ZoneEntity createZone(String zone);
 	
+	/**
+	 * Get a zones list by the zone name 
+	 * 
+	 * @param <code>zoneName</code>
+	 * 
+	 * @return Entities list associated with the zone name or null if not found 
+	 */
+	public List<ZoneEntity> getZones(String zoneName);
+	
+	/**
+	 * Delete a zone by the zone identifier 
+	 * 
+	 * @param <code>zoneID</code>
+	 * 
+	 */
+	public void deleteZone(Long zoneID);
 }

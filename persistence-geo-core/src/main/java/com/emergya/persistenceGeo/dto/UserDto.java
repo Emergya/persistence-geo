@@ -48,6 +48,7 @@ public class UserDto implements Serializable {
 	
 	private Long id;
 	private String username;
+	
 	private String nombreCompleto;
     private String password;
 	private String apellidos;
@@ -57,8 +58,11 @@ public class UserDto implements Serializable {
     private Boolean valid;
     private Date fechaCreacion;
     private Date fechaActualizacion;
-    private List<String> grupos;
-
+    
+    //private List<String> grupos;
+    private String authority;
+    private List<String> layer;
+    private List<String> privateLayerList;
 	
 	public Long getId() {
 		return id;
@@ -72,12 +76,12 @@ public class UserDto implements Serializable {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public List<String> getGrupos() {
-		return grupos;
-	}
-	public void setGrupos(List<String> grupos) {
-		this.grupos = grupos;
-	}
+//	public List<String> getGrupos() {
+//		return grupos;
+//	}
+//	public void setGrupos(List<String> grupos) {
+//		this.grupos = grupos;
+//	}
 	public String getNombreCompleto() {
 		return nombreCompleto;
 	}
@@ -132,6 +136,24 @@ public class UserDto implements Serializable {
 	}
 	public void setFechaActualizacion(Date fechaActualizacion) {
 		this.fechaActualizacion = fechaActualizacion;
+	}
+	public String getAuthority() {
+		return authority;
+	}
+	public void setAuthority(String authority) {
+		this.authority = authority;
+	}
+	public List<String> getLayerList() {
+		return layer;
+	}
+	public void setLayerList(List<String> layer) {
+		this.layer = layer;
+	}
+	public List<String> getPrivateLayerList() {
+		return privateLayerList;
+	}
+	public void setPrivateLayerList(List<String> privateLayerList) {
+		this.privateLayerList = privateLayerList;
 	}
 
 }

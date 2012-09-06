@@ -48,8 +48,11 @@ import com.emergya.persistenceGeo.model.UserEntity;
 public class AuthorityEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AuthorityEntity, Long> implements AuthorityEntityDao{
 	
 	protected final String PEOPLE = "people";
+	protected final String LAYER = "layer";
 	protected final String USER_ID = "user_id";
+	protected final String LAYER_ID = "id";
 	protected final String PEOPLE_USER_ID = PEOPLE + "." + USER_ID;
+	protected final String LAYER_LAYER_ID = LAYER + "." + LAYER_ID;
 	protected final String AUTHORITY = "authority";
 
 	public Long save(AuthorityEntity authorityEntity) {
@@ -92,5 +95,12 @@ public class AuthorityEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Aut
 	public List<AuthorityEntity> findByName(List<String> names) {
 		return findByCriteria(Restrictions.in(AUTHORITY, names));
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<AuthorityEntity> findByLayer(Long layer_id) {
+		return getSession().createCriteria(AuthorityEntity.class)
+				.createAlias(LAYER, LAYER)
+				.add(Restrictions.eq(LAYER_LAYER_ID, layer_id)).list();
+	}
 }

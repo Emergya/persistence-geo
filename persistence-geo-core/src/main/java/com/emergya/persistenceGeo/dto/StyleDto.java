@@ -1,5 +1,5 @@
 /*
- * LayerDto.java
+ * StyleDto.java
  * 
  * Copyright (C) 2012
  * 
@@ -25,7 +25,7 @@
  * however invalidate any other reasons why the executable file might be covered
  * by the GNU General Public License.
  * 
- * Authors:: Alejandro Díaz Torres (mailto:adiaz@emergya.com)
+ * Authors:: Moisés Arcos Santiago (mailto:marcos@emergya.com)
  */
 package com.emergya.persistenceGeo.dto;
 
@@ -34,35 +34,27 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Layer Data Transfer Object 
+ * Style data transfer object
  * 
- * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public class LayerDto implements Serializable {
+public class StyleDto implements Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -488299965208355171L;
+	private static final long serialVersionUID = -3685102608026529663L;
 	
 	private Long id;
 	
 	private String name;
-	private String order;
-	private String type;
-	private String server_resource;
-	private Boolean published;
-	private Boolean enabled;
-	private Boolean pertenece_a_canal;
 	private Date createDate;
 	private Date updateDate;
 	
-	private String user;
-	private String auth;
-	private List<String> styleList;
-	private List<String> folderList;
+	private List<String> layerList;
+	private List<Long> ruleList;
+	private List<String> privateLayerList;
 	
 	public Long getId() {
 		return id;
@@ -76,42 +68,6 @@ public class LayerDto implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getOrder() {
-		return order;
-	}
-	public void setOrder(String order) {
-		this.order = order;
-	}
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
-	public String getServer_resource() {
-		return server_resource;
-	}
-	public void setServer_resource(String server_resource) {
-		this.server_resource = server_resource;
-	}
-	public Boolean getPublicized() {
-		return published;
-	}
-	public void setPublicized(Boolean publicized) {
-		this.published = publicized;
-	}
-	public Boolean getEnabled() {
-		return enabled;
-	}
-	public void setEnabled(Boolean enabled) {
-		this.enabled = enabled;
-	}
-	public Boolean getPertenece_a_canal() {
-		return pertenece_a_canal;
-	}
-	public void setPertenece_a_canal(Boolean pertenece_a_canal) {
-		this.pertenece_a_canal = pertenece_a_canal;
-	}
 	public Date getCreateDate() {
 		return createDate;
 	}
@@ -124,30 +80,23 @@ public class LayerDto implements Serializable {
 	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
 	}
-	
-	public String getUser() {
-		return user;
+	public List<String> getLayerList() {
+		return layerList;
 	}
-	public void setUser(String user) {
-		this.user = user;
+	public void setLayerList(List<String> layerList) {
+		this.layerList = layerList;
 	}
-	public String getAuth() {
-		return auth;
+	public List<Long> getRuleList() {
+		return ruleList;
 	}
-	public void setAuth(String auth) {
-		this.auth = auth;
+	public void setRuleList(List<Long> ruleList) {
+		this.ruleList = ruleList;
 	}
-	public List<String> getStyleList() {
-		return styleList;
+	public List<String> getPrivateLayerList() {
+		return privateLayerList;
 	}
-	public void setStyleList(List<String> styleList) {
-		this.styleList = styleList;
-	}
-	public List<String> getFolderList() {
-		return folderList;
-	}
-	public void setFolderList(List<String> folderList) {
-		this.folderList = folderList;
+	public void setPrivateLayerList(List<String> privateLayerList) {
+		this.privateLayerList = privateLayerList;
 	}
 
 }

@@ -1,7 +1,7 @@
 /*
- * LayerDto.java
+ * LayerEntity.java
  * 
- * Copyright (C) 2012
+ * Copyright (C) 2011
  * 
  * This file is part of Proyecto persistenceGeo
  * 
@@ -25,129 +25,192 @@
  * however invalidate any other reasons why the executable file might be covered
  * by the GNU General Public License.
  * 
- * Authors:: Alejandro Díaz Torres (mailto:adiaz@emergya.com)
+ * Authors:: Moisés Arcos Santiago (mailto:marcos@emergya.com)
  */
-package com.emergya.persistenceGeo.dto;
+package com.emergya.persistenceGeo.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
- * Layer Data Transfer Object 
+ * Entidad de capa
  * 
- * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public class LayerDto implements Serializable {
+@Entity
+@Table(name = "layers")
+public class LayerEntity extends AbstractEntity {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -488299965208355171L;
-	
+	private static final long serialVersionUID = -2844502275010469666L;
+
 	private Long id;
 	
 	private String name;
 	private String order;
 	private String type;
 	private String server_resource;
-	private Boolean published;
+	private Boolean publicized;
 	private Boolean enabled;
 	private Boolean pertenece_a_canal;
-	private Date createDate;
-	private Date updateDate;
+	private Date fechaCreacion;
+	private Date fechaActualizacion;
 	
-	private String user;
-	private String auth;
-	private List<String> styleList;
-	private List<String> folderList;
+	private UserEntity user;
+	private AuthorityEntity auth;
+	private StyleEntity style;
+	private FolderEntity folder;
 	
-	public Long getId() {
-		return id;
+	public LayerEntity(){
+		
 	}
-	public void setId(Long id) {
-		this.id = id;
+	
+	public LayerEntity(String layerName){
+		name = layerName;
 	}
+
+	@Column(name = "name_layer")
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	@Column(name = "order_layer")
 	public String getOrder() {
 		return order;
 	}
+
 	public void setOrder(String order) {
 		this.order = order;
 	}
+
+	@Column(name = "type_layer")
 	public String getType() {
 		return type;
 	}
+
 	public void setType(String type) {
 		this.type = type;
 	}
+
+	@Column(name = "server_resource")
 	public String getServer_resource() {
 		return server_resource;
 	}
+
 	public void setServer_resource(String server_resource) {
 		this.server_resource = server_resource;
 	}
+
+	@Column(name = "published")
 	public Boolean getPublicized() {
-		return published;
+		return publicized;
 	}
+
 	public void setPublicized(Boolean publicized) {
-		this.published = publicized;
+		this.publicized = publicized;
 	}
+
+	@Column(name = "enabled")
 	public Boolean getEnabled() {
 		return enabled;
 	}
+
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
 	}
+
+	@Column(name = "pertenece_a_canal")
 	public Boolean getPertenece_a_canal() {
 		return pertenece_a_canal;
 	}
+
 	public void setPertenece_a_canal(Boolean pertenece_a_canal) {
 		this.pertenece_a_canal = pertenece_a_canal;
 	}
-	public Date getCreateDate() {
-		return createDate;
+
+	@Column(name = "fechaCreacion")
+	public Date getFechaCreacion() {
+		return fechaCreacion;
 	}
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
+
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
 	}
-	public Date getUpdateDate() {
-		return updateDate;
+
+	@Column(name = "fechaActualizacion")
+	public Date getFechaActualizacion() {
+		return fechaActualizacion;
 	}
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
+
+	public void setFechaActualizacion(Date fechaActualizacion) {
+		this.fechaActualizacion = fechaActualizacion;
+	}
+
+	@Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Serializable id) {
+		this.id = (Long) id;
 	}
 	
-	public String getUser() {
+	@ManyToOne
+    @JoinColumn(name = "user_id")
+	public UserEntity getUser() {
 		return user;
 	}
-	public void setUser(String user) {
+
+	public void setUser(UserEntity user) {
 		this.user = user;
 	}
-	public String getAuth() {
+
+	@ManyToOne
+    @JoinColumn(name = "auth_id", insertable = false, updatable = false)
+	public AuthorityEntity getAuth() {
 		return auth;
 	}
-	public void setAuth(String auth) {
+
+	public void setAuth(AuthorityEntity auth) {
 		this.auth = auth;
 	}
-	public List<String> getStyleList() {
-		return styleList;
+
+	@ManyToOne
+    @JoinColumn(name = "style_id")
+	public StyleEntity getStyle() {
+		return style;
 	}
-	public void setStyleList(List<String> styleList) {
-		this.styleList = styleList;
+
+	public void setStyle(StyleEntity style) {
+		this.style = style;
 	}
-	public List<String> getFolderList() {
-		return folderList;
+
+	@ManyToOne
+    @JoinColumn(name = "folder_id")
+	public FolderEntity getFolder() {
+		return folder;
 	}
-	public void setFolderList(List<String> folderList) {
-		this.folderList = folderList;
+
+	public void setFolder(FolderEntity folder) {
+		this.folder = folder;
 	}
 
 }

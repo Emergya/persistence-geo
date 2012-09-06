@@ -1,5 +1,5 @@
 /*
- * AbstractEntity.java
+ * RuleEntityDao.java
  * 
  * Copyright (C) 2012
  * 
@@ -24,27 +24,34 @@
  * to be covered by the GNU General Public License. This exception does not
  * however invalidate any other reasons why the executable file might be covered
  * by the GNU General Public License.
+ * 
+ * Authors:: Moisés Arcos Santiago (mailto:marcos@emergya.com)
  */
-package com.emergya.persistenceGeo.model;
+package com.emergya.persistenceGeo.dao;
 
-import java.io.Serializable;
+import com.emergya.persistenceGeo.model.RuleEntity;
 
 /**
- * Entity from which extend the rest of the entities
+ * DAO that represents the rule
  * 
- * @author <a href="mailto:adiaz@emergya.es">adiaz</a>
+ * @author <a href="mailto:marcos@emergya.com">marcos</a>
+ *
  */
-@SuppressWarnings("serial")
-public abstract class AbstractEntity implements Serializable {
+public interface RuleEntityDao extends GenericDAO<RuleEntity, Long> {
 
 	/**
-	 * @return the id
+	 * Create a new rule in the system
+	 * 
+	 * 
+	 * @return Entity from the created rule
 	 */
-	public abstract Serializable getId();
-
-	/**
-	 * @param id the id to set
-	 */
-	public abstract void setId(Serializable id);
+	public RuleEntity createRule();
 	
+	/**
+	 * Delete a rule by the rule identifier 
+	 * 
+	 * @param <code>ruleID</code>
+	 * 
+	 */
+	public void deleteRule(Long ruleID);
 }

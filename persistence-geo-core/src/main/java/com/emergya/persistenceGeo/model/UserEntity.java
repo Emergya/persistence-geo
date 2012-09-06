@@ -31,12 +31,16 @@ package com.emergya.persistenceGeo.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -46,7 +50,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "usuario")
+@Table(name = "users")
 public class UserEntity implements Serializable {
 
     /**
@@ -66,7 +70,10 @@ public class UserEntity implements Serializable {
     private Boolean valid;
     private Date fechaCreacion;
     private Date fechaActualizacion;
-//    private Set<AuthorityEntity> authorities;
+    
+    private AuthorityEntity authority;
+    private List<LayerEntity> layerList;
+    private List<PrivateLayerEntity> privateLayerList;
 
     public UserEntity() {
 
@@ -141,7 +148,7 @@ public class UserEntity implements Serializable {
 		this.telefono = telefono;
 	}
 
-    @Column(name = "admin")
+    @Column(name = "admin_user")
 	public Boolean getAdmin() {
 		return admin;
 	}
@@ -150,7 +157,7 @@ public class UserEntity implements Serializable {
 		this.admin = admin;
 	}
 
-    @Column(name = "valid")
+    @Column(name = "valid_user")
 	public Boolean getValid() {
 		return valid;
 	}
@@ -177,12 +184,31 @@ public class UserEntity implements Serializable {
 		this.fechaActualizacion = fechaActualizacion;
 	}
 	
-//    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authorities")
-//	public Set<AuthorityEntity> getAuthorities() {
-//		return authorities;
-//	}
-//
-//	public void setAuthorities(Set<AuthorityEntity> authorities) {
-//		this.authorities = authorities;
-//	}
+    @ManyToOne
+    @JoinColumn(name = "auth_id", insertable = false, updatable = false)
+	public AuthorityEntity getAuthority() {
+		return authority;
+	}
+
+	public void setAuthority(AuthorityEntity authority) {
+		this.authority = authority;
+	}
+
+	@OneToMany(mappedBy = "user")
+	public List<LayerEntity> getLayerList() {
+		return layerList;
+	}
+
+	public void setLayerList(List<LayerEntity> layerList) {
+		this.layerList = layerList;
+	}
+
+	@OneToMany(mappedBy = "user")
+	public List<PrivateLayerEntity> getPrivateLayerList() {
+		return privateLayerList;
+	}
+
+	public void setPrivateLayerList(List<PrivateLayerEntity> privateLayerList) {
+		this.privateLayerList = privateLayerList;
+	}
 }

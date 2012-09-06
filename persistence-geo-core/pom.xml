@@ -38,6 +38,16 @@
 				<role>Analista</role>
 			</roles>
 		</developer>
+		<developer>
+			<id>marcos</id>
+			<name>Moisés Arcos Santiago</name>
+			<email>marcos@emergya.com</email>
+			<organization>Emergya Consultoria</organization>
+			<organizationUrl>http://www.emergya.es</organizationUrl>
+			<roles>
+				<role>Junior Programmer</role>
+			</roles>
+		</developer>
 	</developers>
 
 
@@ -222,7 +232,7 @@
 	    	<id>devel</id>
 	      	<properties>
 				<!-- Database validate -->
-				<database.hibernate.hbm2ddl.auto>validate</database.hibernate.hbm2ddl.auto>
+				<database.hibernate.hbm2ddl.auto>create</database.hibernate.hbm2ddl.auto>
 	    		<filter.profile>devel.properties</filter.profile>
 	    	</properties>
 	    </profile>

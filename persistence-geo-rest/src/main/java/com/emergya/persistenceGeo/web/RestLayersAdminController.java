@@ -30,8 +30,12 @@
 package com.emergya.persistenceGeo.web;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,7 +44,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.emergya.persistenceGeo.dto.AuthorityDto;
 import com.emergya.persistenceGeo.dto.LayerDto;
+import com.emergya.persistenceGeo.dto.UserDto;
+import com.emergya.persistenceGeo.service.LayerAdminService;
+import com.emergya.persistenceGeo.service.UserAdminService;
 
 /**
  * Rest controller to admin and load layer and layers context
@@ -54,6 +62,11 @@ public class RestLayersAdminController implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	@Resource
+	private UserAdminService userAdminService;
+	@Resource
+	private LayerAdminService layerAdminService;
 
 	/**
 	 * This method loads layers.json related with a user
@@ -62,8 +75,9 @@ public class RestLayersAdminController implements Serializable{
 	 * 
 	 * @return JSON file with layers
 	 */
-	@RequestMapping(value = "/rest/loadLayers/{username}", method = RequestMethod.GET)
-	public @ResponseBody 
+	@RequestMapping(value = "/rest/loadLayers/{username}", method = RequestMethod.GET, 
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	public @ResponseBody
 	List<LayerDto> loadLayers(@PathVariable String username){
 		List<LayerDto> layers = null;
 		try{
@@ -72,9 +86,18 @@ public class RestLayersAdminController implements Serializable{
 			String username = ((UserDetails) SecurityContextHolder.getContext()
 					.getAuthentication().getPrincipal()).getUsername(); 
 			 */
-			//TODO: Implementar servicios, daos...
+			if(username != null){
+				layers = new LinkedList<LayerDto>();
+				UserDto userDto = userAdminService.obtenerUsuario(username);
+				List<String> layersName = userDto.getLayerList();
+				if(layersName != null){
+					for(String layerName: layersName){
+						layers.addAll(layerAdminService.getLayersByName(layerName));
+					}
+				}
+			}
 		}catch (Exception e){
-			return null;
+			System.out.println(e);
 		}
 		return layers;
 	}
@@ -96,9 +119,24 @@ public class RestLayersAdminController implements Serializable{
 			String username = ((UserDetails) SecurityContextHolder.getContext()
 					.getAuthentication().getPrincipal()).getUsername(); 
 			 */
-			//TODO: Implementar servicios, daos...
+			if(group != null){
+				layers = new LinkedList<LayerDto>();
+				List<AuthorityDto> authosDto = userAdminService.obtenerGruposUsuarios();
+				List<String> namesList = null;
+				if(authosDto != null){
+					for(AuthorityDto authoDto: authosDto){
+						if(authoDto.getNombre().equals(group)){
+							namesList = authoDto.getLayerList();
+							break;
+						}
+					}
+					if(namesList != null){
+						layers = layerAdminService.getLayersByName(namesList);
+					}
+				}
+			}
 		}catch (Exception e){
-			return null;
+			System.out.println(e);
 		}
 		return layers;
 	}
@@ -112,7 +150,8 @@ public class RestLayersAdminController implements Serializable{
 	@RequestMapping(value = "/rest/saveLayerByUser/{username}", method = RequestMethod.POST)
 	public @ResponseBody 
 	void saveLayerByUser(@PathVariable String username,
-			//TODO: Parametros obligatorios y opcionales de la capa
+			@RequestParam("name") String name,
+			@RequestParam("type") String type,
 			@RequestParam("uploadfile") MultipartFile uploadfile){
 		try{
 			/*
@@ -120,9 +159,28 @@ public class RestLayersAdminController implements Serializable{
 			String username = ((UserDetails) SecurityContextHolder.getContext()
 					.getAuthentication().getPrincipal()).getUsername(); 
 			 */
-			//TODO: Implementar servicios, daos...
+			// Get the user and his layers
+			UserDto user = userAdminService.obtenerUsuario(username);
+			List<String> layersFromUser = user.getLayerList();
+			// Add the new layer
+			if(layersFromUser != null){
+				layersFromUser.add("Nombre de la capa");
+				user.setLayerList(layersFromUser);
+			}
+			// Save the user
+			userAdminService.update(user);
+			// Create the layerDto
+			LayerDto layer = new LayerDto();
+			// Assign the user
+			layer.setUser(username);
+			// Add request parameter
+			layer.setName(name);
+			layer.setType(type);
+			// Load the layer depend on the layer type
+			// Save the layer
+			layerAdminService.create(layer);
 		}catch (Exception e){
-			//TODO
+			System.out.println(e);
 		}
 	}
 
@@ -134,8 +192,9 @@ public class RestLayersAdminController implements Serializable{
 	 */
 	@RequestMapping(value = "/rest/saveLayerByGroup/{group}", method = RequestMethod.POST)
 	public @ResponseBody 
-	void saveLayerByGroup(@PathVariable String group,
-			//TODO: Parametros obligatorios y opcionales de la capa
+	void saveLayerByGroup(@PathVariable Long group,
+			@RequestParam("name") String name,
+			@RequestParam("type") String type,
 			@RequestParam("uploadfile") MultipartFile uploadfile){
 		try{
 			/*
@@ -143,9 +202,28 @@ public class RestLayersAdminController implements Serializable{
 			String username = ((UserDetails) SecurityContextHolder.getContext()
 					.getAuthentication().getPrincipal()).getUsername(); 
 			 */
-			//TODO: Implementar servicios, daos...
+			// Get the group and his layers
+			AuthorityDto auth = userAdminService.obtenerGrupoUsuarios(group);
+			List<String> layersFromGroup = auth.getLayerList();
+			// Add the new layer
+			if(layersFromGroup != null){
+				layersFromGroup.add(name);
+				auth.setLayerList(layersFromGroup);
+			}
+			// Save the grouop
+			userAdminService.modificarGrupoUsuarios(auth);
+			// Create the layerDto
+			LayerDto layer = new LayerDto();
+			// Assign the authority
+			layer.setAuth(auth.getNombre());
+			// Add the request parameters
+			layer.setName(name);
+			layer.setType(type);
+			// Load the layer depend on the layer type 
+			// Save the layer
+			layerAdminService.create(layer);
 		}catch (Exception e){
-			//TODO
+			System.out.println(e);
 		}
 	}
 

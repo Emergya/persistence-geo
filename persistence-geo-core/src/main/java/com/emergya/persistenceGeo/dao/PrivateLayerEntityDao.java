@@ -1,5 +1,5 @@
 /*
- * AbstractEntity.java
+ * PrivateLayerEntityDao.java
  * 
  * Copyright (C) 2012
  * 
@@ -24,27 +24,46 @@
  * to be covered by the GNU General Public License. This exception does not
  * however invalidate any other reasons why the executable file might be covered
  * by the GNU General Public License.
+ * 
+ * Authors:: Moisés Arcos Santiago (mailto:marcos@emergya.com)
  */
-package com.emergya.persistenceGeo.model;
+package com.emergya.persistenceGeo.dao;
 
-import java.io.Serializable;
+import java.util.List;
+
+import com.emergya.persistenceGeo.model.PrivateLayerEntity;
 
 /**
- * Entity from which extend the rest of the entities
+ * DAO that represents the private layer
  * 
- * @author <a href="mailto:adiaz@emergya.es">adiaz</a>
+ * @author <a href="mailto:marcos@emergya.com">marcos</a>
+ *
  */
-@SuppressWarnings("serial")
-public abstract class AbstractEntity implements Serializable {
+public interface PrivateLayerEntityDao extends GenericDAO<PrivateLayerEntity, Long> {
 
 	/**
-	 * @return the id
+	 * Save the private layer in the system
+	 * 
+	 * @param <code>privateLayerEntity</code>
+	 * 
+	 * @return Entity identifier from the save private layer
 	 */
-	public abstract Serializable getId();
-
-	/**
-	 * @param id the id to set
-	 */
-	public abstract void setId(Serializable id);
+	public Long save(PrivateLayerEntity privateLayerEntity);
 	
+	/**
+	 * Get a private layers list by the private layer name 
+	 * 
+	 * @param <code>privateLayerName</code>
+	 * 
+	 * @return Entities list associated with the private layer name or null if not found 
+	 */
+	public List<PrivateLayerEntity> getPrivateLayers(String privateLayerName);
+	
+	/**
+	 * Delete a private layer by the private layer identifier 
+	 * 
+	 * @param <code>privateLayerID</code>
+	 * 
+	 */
+	public void delete(Long privateLayerID);
 }

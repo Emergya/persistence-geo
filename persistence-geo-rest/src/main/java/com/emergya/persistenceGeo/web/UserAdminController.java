@@ -30,6 +30,8 @@
 package com.emergya.persistenceGeo.web;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -146,18 +148,23 @@ public class UserAdminController extends AbstractController
 		    @RequestParam(required=false) String id,
 			Model model){
 		UserDto usuario = new UserDto();
+		// Set id
 		usuario.setId(id != null ? Long.decode(id): null);
-		usuario.setAdmin(CHK_SI.equals(admin) ? Boolean.TRUE : Boolean.FALSE);
-		usuario.setApellidos(apellidos);
-		usuario.setEmail(email);
+		usuario.setUsername(username);
+		// Set own attributes
 		usuario.setNombreCompleto(nombreCompleto);
 		usuario.setPassword(password);
+		usuario.setApellidos(apellidos);
+		usuario.setEmail(email);
 		usuario.setTelefono(telefono);
-		usuario.setUsername(username);
+		usuario.setAdmin(CHK_SI.equals(admin) ? Boolean.TRUE : Boolean.FALSE);
 		usuario.setValid(BOOL_SI.equals(valid) ? Boolean.TRUE : Boolean.FALSE);
-		
-		//TODO
-		usuario.setGrupos(null);
+		usuario.setFechaCreacion(new Date());
+		usuario.setFechaActualizacion(new Date());
+		// Set relations attributes
+		usuario.setAuthority("");
+		usuario.setLayerList(new LinkedList<String>());
+		usuario.setPrivateLayerList(new LinkedList<String>());
 		
 		if(usuario.getId() != null){
 			usuario = (UserDto) userAdminService.update(usuario);

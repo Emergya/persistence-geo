@@ -30,8 +30,10 @@
 package com.emergya.persistenceGeo.service.impl;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -44,6 +46,8 @@ import com.emergya.persistenceGeo.dao.UserEntityDao;
 import com.emergya.persistenceGeo.dto.AuthorityDto;
 import com.emergya.persistenceGeo.dto.UserDto;
 import com.emergya.persistenceGeo.model.AuthorityEntity;
+import com.emergya.persistenceGeo.model.LayerEntity;
+import com.emergya.persistenceGeo.model.PrivateLayerEntity;
 import com.emergya.persistenceGeo.model.UserEntity;
 import com.emergya.persistenceGeo.service.UserAdminService;
 
@@ -144,7 +148,8 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, UserEntit
 	 * @return id
 	 */
 	public Long crearGrupoUsuarios(AuthorityDto dto) {
-		return authorityDao.save(dtoToEntity(dto));
+		AuthorityEntity entity = authorityDao.makePersistent(dtoToEntity(dto));
+		return entity.getId();
 	}
 
 	/**
@@ -155,9 +160,9 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, UserEntit
 	 */
 	public void addUsuarioAGrupo(Long idGrupo, String usuario) {
 		AuthorityEntity authorityEntity = authorityDao.findById(idGrupo, false);
-		List<UserEntity> usuarios = authorityEntity.getPeople();
+		Set<UserEntity> usuarios = authorityEntity.getPeople();
 		if (usuarios == null) {
-			usuarios = new LinkedList<UserEntity>();
+			usuarios = new HashSet<UserEntity>();
 		}
 		boolean enc = false;
 		for (UserEntity usuarioEntity : usuarios) {
@@ -181,9 +186,9 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, UserEntit
 	 */
 	public void eliminaUsuarioDeGrupo(Long idGrupo, String usuario) {
 		AuthorityEntity authorityEntity = authorityDao.findById(idGrupo, false);
-		List<UserEntity> usuarios = authorityEntity.getPeople();
+		Set<UserEntity> usuarios = authorityEntity.getPeople();
 		if (usuarios == null) {
-			usuarios = new LinkedList<UserEntity>();
+			usuarios = new HashSet<UserEntity>();
 		}
 		boolean enc = false;
 		for (UserEntity usuarioEntity : usuarios) {
@@ -214,13 +219,15 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, UserEntit
 	 * @param dto
 	 */
 	public void modificarGrupoUsuarios(AuthorityDto dto) {
-		authorityDao.save(dtoToEntity(dto));
+		//authorityDao.save(dtoToEntity(dto));
+		authorityDao.makePersistent(dtoToEntity(dto));
 	}
 
 	protected UserDto entityToDto(UserEntity user) {
 		UserDto dto = null;
 		if (user != null) {
 			dto = new UserDto();
+			// Add own attributes
 			dto.setId(user.getUser_id());
 			dto.setUsername(user.getUsername());
 			dto.setAdmin(user.getAdmin());
@@ -232,16 +239,30 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, UserEntit
 			dto.setPassword(user.getPassword());
 			dto.setTelefono(user.getTelefono());
 			dto.setValid(user.getValid());
-			//Grupos
-			List<String> grupos = new LinkedList<String>();
-			List<AuthorityEntity> authorities = authorityDao.findByUser(user
-					.getUser_id());
-			if (authorities != null) {
-				for (AuthorityEntity authority : authorities) {
-					grupos.add(authority.getAuthority());
-				}
+			// Add relational parameters
+			// Add authority
+			AuthorityEntity authority = userDao.findByUserID(user.getUser_id());
+			if (authority != null) {
+				dto.setAuthority(authority.getAuthority());
 			}
-			dto.setGrupos(grupos);
+			// Add layer
+			List<LayerEntity> layers = userDao.findLayerByUserID(user.getUser_id());
+			List<String> layersDto = new LinkedList<String>();
+			if (layersDto != null && layers != null) {
+				for(LayerEntity layer: layers){
+					layersDto.add(layer.getName());
+				}
+				dto.setLayerList(layersDto);
+			}
+			// Add private layer
+			List<PrivateLayerEntity> privateLayers = userDao.findPrivateLayerByUserID(user.getUser_id());
+			List<String> privateLayersDto = new LinkedList<String>();
+			if (privateLayers != null) {
+				for(PrivateLayerEntity privateLayer: privateLayers){
+					privateLayersDto.add(privateLayer.getName());
+				}
+				dto.setPrivateLayerList(privateLayersDto);
+			}
 		}
 		return dto;
 	}
@@ -274,7 +295,7 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, UserEntit
 			entity.setAuthority(dto.getNombre());
 
 			// People
-			List<UserEntity> people = new LinkedList<UserEntity>();
+			Set<UserEntity> people = new HashSet<UserEntity>();
 			if (dto.getUsuarios() != null) {
 				for (String userName : dto.getUsuarios()) {
 					people.add(userDao.getUser(userName));
@@ -311,9 +332,9 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, UserEntit
 			entity.setValid(dto.getValid());
 			
 			//Grupos
-			List<String> grupos = dto.getGrupos();
-			if (grupos != null) {
-				List<AuthorityEntity> authorities = authorityDao.findByName(grupos);
+			String grupo = dto.getAuthority();
+			if (grupo != null) {
+				List<AuthorityEntity> authorities = authorityDao.findByName(grupo);
 				for (AuthorityEntity authority: authorities){
 					this.addUsuarioAGrupo(authority.getId(), dto.getUsername());
 				}
@@ -322,5 +343,4 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, UserEntit
 		
 		return entity;
 	}
-
 }

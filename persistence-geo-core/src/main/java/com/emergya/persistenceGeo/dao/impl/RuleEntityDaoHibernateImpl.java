@@ -1,5 +1,5 @@
 /*
- * AbstractEntity.java
+ * RuleEntityDaoHibernateImpl.java
  * 
  * Copyright (C) 2012
  * 
@@ -24,27 +24,49 @@
  * to be covered by the GNU General Public License. This exception does not
  * however invalidate any other reasons why the executable file might be covered
  * by the GNU General Public License.
+ * 
+ * Authors:: Moisés Arcos Santiago (mailto:marcos@emergya.com)
  */
-package com.emergya.persistenceGeo.model;
+package com.emergya.persistenceGeo.dao.impl;
 
-import java.io.Serializable;
+import org.springframework.stereotype.Repository;
+
+import com.emergya.persistenceGeo.dao.RuleEntityDao;
+import com.emergya.persistenceGeo.model.RuleEntity;
 
 /**
- * Entity from which extend the rest of the entities
+ * Rule DAO Hibernate Implementation
  * 
- * @author <a href="mailto:adiaz@emergya.es">adiaz</a>
+ * @author <a href="mailto:marcos@emergya.com">marcos</a>
+ *
  */
-@SuppressWarnings("serial")
-public abstract class AbstractEntity implements Serializable {
+@Repository("ruleEntityDao")
+public class RuleEntityDaoHibernateImpl extends GenericHibernateDAOImpl<RuleEntity, Long> implements RuleEntityDao {
 
 	/**
-	 * @return the id
+	 * Create a new rule in the system
+	 * 
+	 * 
+	 * @return Entity from the created rule
 	 */
-	public abstract Serializable getId();
+	public RuleEntity createRule() {
+		RuleEntity ruleEntity = new RuleEntity();
+		getHibernateTemplate().save(ruleEntity);
+		return ruleEntity;
+	}
 
 	/**
-	 * @param id the id to set
+	 * Delete a rule by the rule identifier 
+	 * 
+	 * @param <code>ruleID</code>
+	 * 
 	 */
-	public abstract void setId(Serializable id);
-	
+	public void deleteRule(Long ruleID) {
+		RuleEntity ruleEntity = findById(ruleID, false);
+		if(ruleEntity != null){
+			getHibernateTemplate().delete(ruleEntity);
+		}
+
+	}
+
 }

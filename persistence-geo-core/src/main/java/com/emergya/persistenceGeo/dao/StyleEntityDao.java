@@ -1,5 +1,5 @@
 /*
- * AbstractEntity.java
+ * StyleEntityDao.java
  * 
  * Copyright (C) 2012
  * 
@@ -24,27 +24,55 @@
  * to be covered by the GNU General Public License. This exception does not
  * however invalidate any other reasons why the executable file might be covered
  * by the GNU General Public License.
+ * 
+ * Authors:: Moisés Arcos Santiago (mailto:marcos@emergya.com)
  */
-package com.emergya.persistenceGeo.model;
+package com.emergya.persistenceGeo.dao;
 
-import java.io.Serializable;
+import java.util.List;
+
+import com.emergya.persistenceGeo.model.StyleEntity;
 
 /**
- * Entity from which extend the rest of the entities
+ * DAO that represents the style
  * 
- * @author <a href="mailto:adiaz@emergya.es">adiaz</a>
+ * @author <a href="mailto:marcos@emergya.com">marcos</a>
+ *
  */
-@SuppressWarnings("serial")
-public abstract class AbstractEntity implements Serializable {
+public interface StyleEntityDao extends GenericDAO<StyleEntity, Long> {
 
 	/**
-	 * @return the id
+	 * Create a new style in the system
+	 * 
+	 * @param <code>style</code>
+	 * 
+	 * @return Entity from the created style
 	 */
-	public abstract Serializable getId();
-
-	/**
-	 * @param id the id to set
-	 */
-	public abstract void setId(Serializable id);
+	public StyleEntity createStyle(String style);
 	
+	/**
+	 * Get a style list by the style name
+	 * 
+	 * @param <code>styleName</code>
+	 * 
+	 * @return Entities list associated with the style name or null if not found 
+	 */
+	public List<StyleEntity> getStyles(String styleName);
+	
+	/**
+	 * Delete a style by the style identifier 
+	 * 
+	 * @param <code>styleID</code>
+	 * 
+	 */
+	public void deleteStyle(Long styleID);
+	
+	/**
+	 * Get a style list by the names users list
+	 * 
+	 * @param <code>names</code>
+	 * 
+	 * @return Entities list associated with the names users list or null if not found 
+	 */
+	public List<StyleEntity> findByName(List<String> names);
 }
