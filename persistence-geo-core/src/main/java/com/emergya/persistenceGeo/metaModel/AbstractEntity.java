@@ -1,5 +1,5 @@
 /*
- * PermissionEntityDao.java
+ * AbstractEntity.java
  * 
  * Copyright (C) 2012
  * 
@@ -24,46 +24,27 @@
  * to be covered by the GNU General Public License. This exception does not
  * however invalidate any other reasons why the executable file might be covered
  * by the GNU General Public License.
- * 
- * Authors:: Moisés Arcos Santiago (mailto:marcos@emergya.com)
  */
-package com.emergya.persistenceGeo.dao;
+package com.emergya.persistenceGeo.metaModel;
 
-import java.util.List;
-
-import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
+import java.io.Serializable;
 
 /**
- * DAO that represents the permission
+ * Entity from which extend the rest of the entities
  * 
- * @author <a href="mailto:marcos@emergya.com">marcos</a>
- *
+ * @author <a href="mailto:adiaz@emergya.es">adiaz</a>
  */
-public interface PermissionEntityDao extends GenericDAO<AbstractPermissionEntity, Long> {
+@SuppressWarnings("serial")
+public abstract class AbstractEntity implements Serializable {
 
 	/**
-	 * Create a new permission in the system
-	 * 
-	 * @param <code>permission</code>
-	 * 
-	 * @return Entity from the created permission
+	 * @return the id
 	 */
-	public AbstractPermissionEntity createPermission(String permission);
-	
+	public abstract Serializable getId();
+
 	/**
-	 * Get a permissions list by the permission name 
-	 * 
-	 * @param <code>permissionName</code>
-	 * 
-	 * @return Entities list associated with the permission name or null if not found 
+	 * @param id the id to set
 	 */
-	public List<AbstractPermissionEntity> getPermissions(String permissionName);
+	public abstract void setId(Serializable id);
 	
-	/**
-	 * Delete a permission by the permission identifier 
-	 * 
-	 * @param <code>permissionID</code>
-	 * 
-	 */
-	public void deletePermission(Long permissionID);
 }

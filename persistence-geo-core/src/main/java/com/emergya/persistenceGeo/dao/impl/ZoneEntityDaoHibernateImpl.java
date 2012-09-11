@@ -35,7 +35,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.ZoneEntityDao;
-import com.emergya.persistenceGeo.model.ZoneEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
 
 /**
  * Zone DAO Hibernate Implementation
@@ -44,7 +44,7 @@ import com.emergya.persistenceGeo.model.ZoneEntity;
  *
  */
 @Repository("zoneEntityDao")
-public class ZoneEntityDaoHibernateImpl extends GenericHibernateDAOImpl<ZoneEntity, Long> implements ZoneEntityDao {
+public class ZoneEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractZoneEntity, Long> implements ZoneEntityDao {
 
 	/**
 	 * Create a new zone in the system
@@ -53,8 +53,8 @@ public class ZoneEntityDaoHibernateImpl extends GenericHibernateDAOImpl<ZoneEnti
 	 * 
 	 * @return Entity from the created zone
 	 */
-	public ZoneEntity createZone(String zone) {
-		ZoneEntity zoneEntity = new ZoneEntity(zone);
+	public AbstractZoneEntity createZone(String zone) {
+		AbstractZoneEntity zoneEntity = new AbstractZoneEntity(zone);
 		getHibernateTemplate().save(zoneEntity);
 		return zoneEntity;
 	}
@@ -66,7 +66,7 @@ public class ZoneEntityDaoHibernateImpl extends GenericHibernateDAOImpl<ZoneEnti
 	 * 
 	 * @return Entities list associated with the zone name or null if not found 
 	 */
-	public List<ZoneEntity> getZones(String zoneName) {
+	public List<AbstractZoneEntity> getZones(String zoneName) {
 		return findByCriteria(Restrictions.eq("name", zoneName));
 	}
 
@@ -77,7 +77,7 @@ public class ZoneEntityDaoHibernateImpl extends GenericHibernateDAOImpl<ZoneEnti
 	 * 
 	 */
 	public void deleteZone(Long zoneID) {
-		ZoneEntity zoneEntity = findById(zoneID, false);
+		AbstractZoneEntity zoneEntity = findById(zoneID, false);
 		if(zoneEntity != null){
 			getHibernateTemplate().delete(zoneEntity);
 		}

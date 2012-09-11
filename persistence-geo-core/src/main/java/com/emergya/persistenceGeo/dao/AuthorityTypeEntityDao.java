@@ -29,7 +29,7 @@
  */
 package com.emergya.persistenceGeo.dao;
 
-import com.emergya.persistenceGeo.model.AuthorityTypeEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractAuthorityTypeEntity;
 
 /**
  * DAO that represents the type users groups
@@ -37,7 +37,7 @@ import com.emergya.persistenceGeo.model.AuthorityTypeEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public interface AuthorityTypeEntityDao extends GenericDAO<AuthorityTypeEntity, Long> {
+public interface AuthorityTypeEntityDao extends GenericDAO<AbstractAuthorityTypeEntity, Long> {
 
 	/**
 	 * Save an authority type in the system
@@ -46,7 +46,7 @@ public interface AuthorityTypeEntityDao extends GenericDAO<AuthorityTypeEntity, 
 	 * 
 	 * @return Identifier from the save entity 
 	 */
-	public Long save(AuthorityTypeEntity authTypeEntity);
+	public Long save(AbstractAuthorityTypeEntity authTypeEntity);
 	
 	/**
 	 * Delete an authority type in the system

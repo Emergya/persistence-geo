@@ -1,5 +1,5 @@
 /*
- * PermissionEntityDao.java
+ * Instancer.java
  * 
  * Copyright (C) 2012
  * 
@@ -25,45 +25,23 @@
  * however invalidate any other reasons why the executable file might be covered
  * by the GNU General Public License.
  * 
- * Authors:: Moisés Arcos Santiago (mailto:marcos@emergya.com)
+ * Authors:: Alejandro Díaz Torres (mailto:adiaz@emergya.com)
  */
-package com.emergya.persistenceGeo.dao;
-
-import java.util.List;
-
-import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
+package com.emergya.persistenceGeo.metaModel;
 
 /**
- * DAO that represents the permission
+ * Interface for create instances of final entities
  * 
- * @author <a href="mailto:marcos@emergya.com">marcos</a>
+ * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
-public interface PermissionEntityDao extends GenericDAO<AbstractPermissionEntity, Long> {
-
-	/**
-	 * Create a new permission in the system
-	 * 
-	 * @param <code>permission</code>
-	 * 
-	 * @return Entity from the created permission
-	 */
-	public AbstractPermissionEntity createPermission(String permission);
-	
-	/**
-	 * Get a permissions list by the permission name 
-	 * 
-	 * @param <code>permissionName</code>
-	 * 
-	 * @return Entities list associated with the permission name or null if not found 
-	 */
-	public List<AbstractPermissionEntity> getPermissions(String permissionName);
-	
-	/**
-	 * Delete a permission by the permission identifier 
-	 * 
-	 * @param <code>permissionID</code>
-	 * 
-	 */
-	public void deletePermission(Long permissionID);
+public interface Instancer {
+	public AbstractAuthorityEntity createAuthority();
+	public AbstractAuthorityTypeEntity createAuthorityTypeEntity();
+	public AbstractFolderEntity createFolder();
+	public AbstractLayerEntity createLayer();
+	public AbstractPermissionEntity createPermission();
+	public AbstractRuleEntity createRule();
+	public AbstractStyleEntity createStyle();
+	public AbstractUserEntity createUser();
 }

@@ -31,7 +31,7 @@ package com.emergya.persistenceGeo.dao;
 
 import java.util.List;
 
-import com.emergya.persistenceGeo.model.FolderEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
 
 /**
  * DAO that represents the folder
@@ -39,7 +39,7 @@ import com.emergya.persistenceGeo.model.FolderEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public interface FolderEntityDao extends GenericDAO<FolderEntity, Long> {
+public interface FolderEntityDao extends GenericDAO<AbstractFolderEntity, Long> {
 
 	/**
 	 * Create a new folder in the system
@@ -48,7 +48,7 @@ public interface FolderEntityDao extends GenericDAO<FolderEntity, Long> {
 	 * 
 	 * @return Entity from the created folder
 	 */
-	public FolderEntity createFolder(String nameFolder);
+	public AbstractFolderEntity createFolder(String nameFolder);
 	
 	/**
 	 * Get a folders list by the folder name 
@@ -57,7 +57,7 @@ public interface FolderEntityDao extends GenericDAO<FolderEntity, Long> {
 	 * 
 	 * @return Entities list associated with the folder name or null if not found 
 	 */
-	public List<FolderEntity> getFolders(String folderName);
+	public List<AbstractFolderEntity> getFolders(String folderName);
 	
 	/**
 	 * Delete a folder by the folder identifier 
@@ -74,7 +74,7 @@ public interface FolderEntityDao extends GenericDAO<FolderEntity, Long> {
 	 * 
 	 * @return Entities list associated with the names folders list or null if not found 
 	 */
-	public List<FolderEntity> findByName(List<String> names);
+	public List<AbstractFolderEntity> findByName(List<String> names);
 	
 	
 }

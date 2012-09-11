@@ -46,7 +46,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.emergya.persistenceGeo.dao.UserEntityDao;
-import com.emergya.persistenceGeo.model.UserEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 
 
 /**
@@ -78,7 +78,7 @@ public class UserEntityDaoHibernateImplTest{
 	public void testCreateUser() {
 		try {
 			userDao.createUser(testProperties.getProperty(PR_1_PARAM_1), testProperties.getProperty(PR_1_PARAM_1));
-			UserEntity useEntity = userDao.getUser(testProperties.getProperty(PR_1_PARAM_1), testProperties.getProperty(PR_1_PARAM_1));
+			AbstractUserEntity useEntity = userDao.getUser(testProperties.getProperty(PR_1_PARAM_1), testProperties.getProperty(PR_1_PARAM_1));
 			Assert.assertEquals(testProperties.getProperty(PR_1_PARAM_1), useEntity.getUsername());
 		} catch (Exception e) {
 			LOG.error("Error  \n", e);

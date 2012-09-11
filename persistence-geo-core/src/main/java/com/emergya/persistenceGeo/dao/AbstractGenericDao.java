@@ -33,7 +33,7 @@ import java.util.Map;
 
 import org.hibernate.HibernateException;
 
-import com.emergya.persistenceGeo.model.AbstractEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractEntity;
 
 /**
  * Generic Dao to extend

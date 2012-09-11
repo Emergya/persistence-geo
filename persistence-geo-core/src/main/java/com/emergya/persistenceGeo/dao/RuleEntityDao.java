@@ -29,7 +29,7 @@
  */
 package com.emergya.persistenceGeo.dao;
 
-import com.emergya.persistenceGeo.model.RuleEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractRuleEntity;
 
 /**
  * DAO that represents the rule
@@ -37,7 +37,7 @@ import com.emergya.persistenceGeo.model.RuleEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public interface RuleEntityDao extends GenericDAO<RuleEntity, Long> {
+public interface RuleEntityDao extends GenericDAO<AbstractRuleEntity, Long> {
 
 	/**
 	 * Create a new rule in the system
@@ -45,7 +45,7 @@ public interface RuleEntityDao extends GenericDAO<RuleEntity, Long> {
 	 * 
 	 * @return Entity from the created rule
 	 */
-	public RuleEntity createRule();
+	public AbstractRuleEntity createRule();
 	
 	/**
 	 * Delete a rule by the rule identifier 

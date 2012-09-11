@@ -31,7 +31,7 @@ package com.emergya.persistenceGeo.dao;
 
 import java.util.List;
 
-import com.emergya.persistenceGeo.model.AuthorityEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
 
 /**
  * Dao para usuarios
@@ -39,20 +39,20 @@ import com.emergya.persistenceGeo.model.AuthorityEntity;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
-public interface AuthorityEntityDao extends GenericDAO<AuthorityEntity, Long>{
+public interface AuthorityEntityDao extends GenericDAO<AbstractAuthorityEntity, Long>{
 
-	Long save(AuthorityEntity authorityEntity);
+	Long save(AbstractAuthorityEntity AbstractAuthorityEntity);
 
 	void delete(Long idgrupo);
 
 	void clearUser(Long user_id);
 
-	List<AuthorityEntity> findByUser(Long user_id);
+	List<AbstractAuthorityEntity> findByUser(Long user_id);
 
-	List<AuthorityEntity> findByName(String name);
+	List<AbstractAuthorityEntity> findByName(String name);
 
-	List<AuthorityEntity> findByName(List<String> names);
+	List<AbstractAuthorityEntity> findByName(List<String> names);
 	
-	List<AuthorityEntity> findByLayer(Long layer_id);
+	List<AbstractAuthorityEntity> findByLayer(Long layer_id);
 
 }

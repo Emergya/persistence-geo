@@ -31,7 +31,7 @@ package com.emergya.persistenceGeo.dao;
 
 import java.util.List;
 
-import com.emergya.persistenceGeo.model.StyleEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
 
 /**
  * DAO that represents the style
@@ -39,7 +39,7 @@ import com.emergya.persistenceGeo.model.StyleEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public interface StyleEntityDao extends GenericDAO<StyleEntity, Long> {
+public interface StyleEntityDao extends GenericDAO<AbstractStyleEntity, Long> {
 
 	/**
 	 * Create a new style in the system
@@ -48,7 +48,7 @@ public interface StyleEntityDao extends GenericDAO<StyleEntity, Long> {
 	 * 
 	 * @return Entity from the created style
 	 */
-	public StyleEntity createStyle(String style);
+	public AbstractStyleEntity createStyle(String style);
 	
 	/**
 	 * Get a style list by the style name
@@ -57,7 +57,7 @@ public interface StyleEntityDao extends GenericDAO<StyleEntity, Long> {
 	 * 
 	 * @return Entities list associated with the style name or null if not found 
 	 */
-	public List<StyleEntity> getStyles(String styleName);
+	public List<AbstractStyleEntity> getStyles(String styleName);
 	
 	/**
 	 * Delete a style by the style identifier 
@@ -74,5 +74,5 @@ public interface StyleEntityDao extends GenericDAO<StyleEntity, Long> {
 	 * 
 	 * @return Entities list associated with the names users list or null if not found 
 	 */
-	public List<StyleEntity> findByName(List<String> names);
+	public List<AbstractStyleEntity> findByName(List<String> names);
 }

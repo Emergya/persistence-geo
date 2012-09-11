@@ -31,10 +31,10 @@ package com.emergya.persistenceGeo.dao;
 
 import java.util.List;
 
-import com.emergya.persistenceGeo.model.AuthorityEntity;
-import com.emergya.persistenceGeo.model.LayerEntity;
-import com.emergya.persistenceGeo.model.PrivateLayerEntity;
-import com.emergya.persistenceGeo.model.UserEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
+import com.emergya.persistenceGeo.metaModel.PrivateLayerEntity;
 
 /**
  * Dao para usuarios
@@ -42,7 +42,7 @@ import com.emergya.persistenceGeo.model.UserEntity;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
-public interface UserEntityDao extends GenericDAO<UserEntity, Long>{
+public interface UserEntityDao extends GenericDAO<AbstractUserEntity, Long>{
 	
 	/**
 	 * Crea un nuevo usuario en el sistema
@@ -52,7 +52,7 @@ public interface UserEntityDao extends GenericDAO<UserEntity, Long>{
 	 * 
 	 * @return entidad del usuario creado 
 	 */
-	public UserEntity createUser(String userName, String password);
+	public AbstractUserEntity createUser(String userName, String password);
 	
 	/**
 	 * Obtiene un usuario por nombre de usuario
@@ -62,7 +62,7 @@ public interface UserEntityDao extends GenericDAO<UserEntity, Long>{
 	 * 
 	 * @return entidad asociada al nombre de usuario o null si no se encuentra
 	 */
-	public UserEntity getUser(String userName, String password);
+	public AbstractUserEntity getUser(String userName, String password);
 	
 	/**
 	 * Obtiene un usuario por nombre de usuario
@@ -71,7 +71,7 @@ public interface UserEntityDao extends GenericDAO<UserEntity, Long>{
 	 * 
 	 * @return entidad asociada al nombre de usuario o null si no se encuentra
 	 */
-	public UserEntity getUser(String userName);
+	public AbstractUserEntity getUser(String userName);
 	
 	/**
 	 * Get a users list by a names users list
@@ -80,7 +80,7 @@ public interface UserEntityDao extends GenericDAO<UserEntity, Long>{
 	 * 
 	 * @return Entities list associated with the names users list or null if not found 
 	 */
-	public List<UserEntity> findByName(List<String> names);
+	public List<AbstractUserEntity> findByName(List<String> names);
 
 	/**
 	 * Get an authority by a user identifier
@@ -89,7 +89,7 @@ public interface UserEntityDao extends GenericDAO<UserEntity, Long>{
 	 * 
 	 * @return Entity associated with the user identifier or null if not found
 	 */
-	public AuthorityEntity findByUserID(Long user_id);
+	public AbstractAuthorityEntity findByUserID(Long user_id);
 	
 	/**
 	 * Get a layer by a user identifier
@@ -98,7 +98,7 @@ public interface UserEntityDao extends GenericDAO<UserEntity, Long>{
 	 * 
 	 * @return Entity associated with the user identifier or null if not found
 	 */
-	public List<LayerEntity> findLayerByUserID(Long user_id);
+	public List<AbstractLayerEntity> findLayerByUserID(Long user_id);
 	
 	/**
 	 * Get a private layer by a user identifier

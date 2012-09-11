@@ -35,7 +35,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.PrivateLayerEntityDao;
-import com.emergya.persistenceGeo.model.PrivateLayerEntity;
+import com.emergya.persistenceGeo.metaModel.PrivateLayerEntity;
 
 /**
  * Private Layer DAO Hibernate Implementation

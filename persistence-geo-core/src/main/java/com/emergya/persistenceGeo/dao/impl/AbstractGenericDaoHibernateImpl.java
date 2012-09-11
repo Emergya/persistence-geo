@@ -47,7 +47,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.emergya.persistenceGeo.dao.AbstractGenericDao;
-import com.emergya.persistenceGeo.model.AbstractEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractEntity;
 
 /**
  * Generic Dao to extend

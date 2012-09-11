@@ -32,7 +32,7 @@ package com.emergya.persistenceGeo.dao.impl;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.AuthorityTypeEntityDao;
-import com.emergya.persistenceGeo.model.AuthorityTypeEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractAuthorityTypeEntity;
 
 /**
  * Folder DAO Hibernate Implementation
@@ -42,7 +42,7 @@ import com.emergya.persistenceGeo.model.AuthorityTypeEntity;
  */
 @Repository("authorityTypeEntityDao")
 public class AuthorityTypeEntityDaoHibernateImpl extends
-		GenericHibernateDAOImpl<AuthorityTypeEntity, Long> implements AuthorityTypeEntityDao {
+		GenericHibernateDAOImpl<AbstractAuthorityTypeEntity, Long> implements AuthorityTypeEntityDao {
 
 	/**
 	 * Save an authority type in the system
@@ -51,7 +51,7 @@ public class AuthorityTypeEntityDaoHibernateImpl extends
 	 * 
 	 * @return Identifier from the save entity 
 	 */
-	public Long save(AuthorityTypeEntity authTypeEntity) {
+	public Long save(AbstractAuthorityTypeEntity authTypeEntity) {
 		return (Long) getHibernateTemplate().save(authTypeEntity);
 	}
 
@@ -62,7 +62,7 @@ public class AuthorityTypeEntityDaoHibernateImpl extends
 	 * 
 	 */
 	public void delete(Long auth_id) {
-		AuthorityTypeEntity entity = findById(auth_id, false);
+		AbstractAuthorityTypeEntity entity = findById(auth_id, false);
 		if(entity != null){
 			getHibernateTemplate().delete(entity);
 		}

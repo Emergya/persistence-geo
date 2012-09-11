@@ -31,7 +31,7 @@ package com.emergya.persistenceGeo.dao;
 
 import java.util.List;
 
-import com.emergya.persistenceGeo.model.ZoneEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
 
 /**
  * DAO that represents the zone
@@ -39,7 +39,7 @@ import com.emergya.persistenceGeo.model.ZoneEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public interface ZoneEntityDao extends GenericDAO<ZoneEntity, Long> {
+public interface ZoneEntityDao extends GenericDAO<AbstractZoneEntity, Long> {
 
 	/**
 	 * Create a new zone in the system
@@ -48,7 +48,7 @@ public interface ZoneEntityDao extends GenericDAO<ZoneEntity, Long> {
 	 * 
 	 * @return Entity from the created zone
 	 */
-	public ZoneEntity createZone(String zone);
+	public AbstractZoneEntity createZone(String zone);
 	
 	/**
 	 * Get a zones list by the zone name 
@@ -57,7 +57,7 @@ public interface ZoneEntityDao extends GenericDAO<ZoneEntity, Long> {
 	 * 
 	 * @return Entities list associated with the zone name or null if not found 
 	 */
-	public List<ZoneEntity> getZones(String zoneName);
+	public List<AbstractZoneEntity> getZones(String zoneName);
 	
 	/**
 	 * Delete a zone by the zone identifier 

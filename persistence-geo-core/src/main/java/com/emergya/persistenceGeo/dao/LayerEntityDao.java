@@ -31,10 +31,10 @@ package com.emergya.persistenceGeo.dao;
 
 import java.util.List;
 
-import com.emergya.persistenceGeo.model.FolderEntity;
-import com.emergya.persistenceGeo.model.LayerEntity;
-import com.emergya.persistenceGeo.model.StyleEntity;
-import com.emergya.persistenceGeo.model.UserEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 
 /**
  * DAO that represents the layer
@@ -42,7 +42,7 @@ import com.emergya.persistenceGeo.model.UserEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public interface LayerEntityDao extends GenericDAO<LayerEntity, Long> {
+public interface LayerEntityDao extends GenericDAO<AbstractLayerEntity, Long> {
 
 	/**
 	 * Create a new layer in the system
@@ -51,7 +51,7 @@ public interface LayerEntityDao extends GenericDAO<LayerEntity, Long> {
 	 * 
 	 * @return Entity from the new layer
 	 */
-	public LayerEntity createLayer(String layerName);
+	public AbstractLayerEntity createLayer(String layerName);
 	
 	/**
 	 * Save the layer in the system
@@ -60,7 +60,7 @@ public interface LayerEntityDao extends GenericDAO<LayerEntity, Long> {
 	 * 
 	 * @return Entity identifier from the save layer
 	 */
-	public Long save(LayerEntity layerEntity);
+	public Long save(AbstractLayerEntity layerEntity);
 	
 	/**
 	 * Get a layers list by the private layer name 
@@ -69,7 +69,7 @@ public interface LayerEntityDao extends GenericDAO<LayerEntity, Long> {
 	 * 
 	 * @return Entities list associated with the layer name or null if not found 
 	 */
-	public List<LayerEntity> getLayers(String layerName);
+	public List<AbstractLayerEntity> getLayers(String layerName);
 	
 	/**
 	 * Delete a layer by the layer identifier 
@@ -86,7 +86,7 @@ public interface LayerEntityDao extends GenericDAO<LayerEntity, Long> {
 	 * 
 	 * @return Entities list associated with the layer identifier or null if not found 
 	 */
-	public UserEntity findByLayer(Long layerID);
+	public AbstractUserEntity findByLayer(Long layerID);
 	
 	/**
 	 * Get a folders list by the layer identifier
@@ -95,7 +95,7 @@ public interface LayerEntityDao extends GenericDAO<LayerEntity, Long> {
 	 * 
 	 * @return Entities list associated with the layer identifier or null if not found 
 	 */
-	public List<FolderEntity> findFolderByLayer(Long layerID);
+	public List<AbstractFolderEntity> findFolderByLayer(Long layerID);
 	
 	/**
 	 * Get a style list by the layer identifier
@@ -104,5 +104,5 @@ public interface LayerEntityDao extends GenericDAO<LayerEntity, Long> {
 	 * 
 	 * @return Entities list associated with the layer identifier or null if not found 
 	 */
-	public List<StyleEntity> findStyleByLayer(Long layerID);
+	public List<AbstractStyleEntity> findStyleByLayer(Long layerID);
 }

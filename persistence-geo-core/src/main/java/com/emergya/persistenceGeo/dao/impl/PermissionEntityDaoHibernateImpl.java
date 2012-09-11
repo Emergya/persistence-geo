@@ -35,7 +35,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.PermissionEntityDao;
-import com.emergya.persistenceGeo.model.PermissionEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
 
 /**
  * Permission DAO Hibernate Implementation
@@ -44,7 +44,7 @@ import com.emergya.persistenceGeo.model.PermissionEntity;
  *
  */
 @Repository("permissionEntityDao")
-public class PermissionEntityDaoHibernateImpl extends GenericHibernateDAOImpl<PermissionEntity, Long> implements PermissionEntityDao {
+public class PermissionEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractPermissionEntity, Long> implements PermissionEntityDao {
 
 	/**
 	 * Create a new permission in the system
@@ -53,8 +53,8 @@ public class PermissionEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Pe
 	 * 
 	 * @return Entity from the created permission
 	 */
-	public PermissionEntity createPermission(String permission) {
-		PermissionEntity permissionEntity = new PermissionEntity(permission);
+	public AbstractPermissionEntity createPermission(String permission) {
+		AbstractPermissionEntity permissionEntity = new AbstractPermissionEntity(permission);
 		getHibernateTemplate().save(permissionEntity);
 		return permissionEntity;
 	}
@@ -66,7 +66,7 @@ public class PermissionEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Pe
 	 * 
 	 * @return Entities list associated with the permission name or null if not found 
 	 */
-	public List<PermissionEntity> getPermissions(String permissionName) {
+	public List<AbstractPermissionEntity> getPermissions(String permissionName) {
 		return findByCriteria(Restrictions.eq("name", permissionName));
 	}
 
@@ -77,7 +77,7 @@ public class PermissionEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Pe
 	 * 
 	 */
 	public void deletePermission(Long permissionID) {
-		PermissionEntity permissionEntity = findById(permissionID, false);
+		AbstractPermissionEntity permissionEntity = findById(permissionID, false);
 		if(permissionEntity != null){
 			getHibernateTemplate().delete(permissionEntity);
 		}

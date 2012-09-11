@@ -31,7 +31,7 @@ package com.emergya.persistenceGeo.dao;
 
 import java.util.List;
 
-import com.emergya.persistenceGeo.model.PrivateLayerEntity;
+import com.emergya.persistenceGeo.metaModel.PrivateLayerEntity;
 
 /**
  * DAO that represents the private layer
