@@ -31,7 +31,11 @@ package com.emergya.persistenceGeo.dao.impl;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.LayerEntityDao;
@@ -39,6 +43,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
+import com.emergya.persistenceGeo.metaModel.Instancer;
 
 /**
  * Layer DAO Hibernate Implementation
@@ -49,6 +54,15 @@ import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 @Repository("layerEntityDao")
 public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractLayerEntity, Long> implements LayerEntityDao {
 
+	@Resource
+	private Instancer instancer;
+
+	@Autowired
+    public void init(SessionFactory sessionFactory) {
+        super.init(sessionFactory);
+		this.persistentClass = (Class<AbstractLayerEntity>) instancer.createLayer().getClass();
+    }
+	
 	/**
 	 * Create a new layer in the system
 	 * 
@@ -57,7 +71,8 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 	 * @return Entity from the new layer
 	 */
 	public AbstractLayerEntity createLayer(String layerName) {
-		AbstractLayerEntity entity = new AbstractLayerEntity(layerName);
+		AbstractLayerEntity entity = instancer.createLayer();
+		entity.setName(layerName);
 		this.save(entity);
 		return entity;
 	}

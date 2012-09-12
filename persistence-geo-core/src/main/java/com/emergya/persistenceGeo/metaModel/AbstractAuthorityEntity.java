@@ -54,10 +54,9 @@ public abstract class AbstractAuthorityEntity extends AbstractEntity{
 	protected Date createDate;
 	protected Date updateDate;
     
-	protected Set<AbstractUserEntity> people;
+	protected Set<? extends AbstractUserEntity> people;
 	protected AbstractAuthorityTypeEntity authType;
-	protected List<AbstractLayerEntity> layerList;
-	protected List<PrivateLayerEntity> privateLayerList;
+	protected List layerList;
 	protected AbstractZoneEntity zone;
 
 	/**
@@ -65,12 +64,11 @@ public abstract class AbstractAuthorityEntity extends AbstractEntity{
 	 */
     public abstract Long getId();
     public abstract String getAuthority();
-    public abstract Set<AbstractUserEntity> getPeople();
+    public abstract Set getPeople();
     public abstract Date getCreateDate();
     public abstract Date getUpdateDate();
 	public abstract AbstractAuthorityTypeEntity getAuthType();
-	public abstract List<AbstractLayerEntity> getLayerList();
-	public abstract List<PrivateLayerEntity> getPrivateLayerList();
+	public abstract List getLayerList();
 	public abstract AbstractZoneEntity getZone();
 
     public AbstractAuthorityEntity() {
@@ -104,12 +102,8 @@ public abstract class AbstractAuthorityEntity extends AbstractEntity{
 		this.authType = authType;
 	}
 
-	public void setLayerList(List<AbstractLayerEntity> layerList) {
+	public void setLayerList(List layerList) {
 		this.layerList = layerList;
-	}
-
-	public void setPrivateLayerList(List<PrivateLayerEntity> privateLayerList) {
-		this.privateLayerList = privateLayerList;
 	}
 
 	public void setZone(AbstractZoneEntity zone) {

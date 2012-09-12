@@ -30,13 +30,19 @@
 package com.emergya.persistenceGeo.dao.impl;
 
 import java.util.List;
+import java.util.Set;
 
+import javax.annotation.Resource;
+
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.AuthorityEntityDao;
 import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
+import com.emergya.persistenceGeo.metaModel.Instancer;
 
 /**
  * Implementacion de authority dao para hibernate
@@ -46,6 +52,9 @@ import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
  */
 @Repository
 public class AuthorityEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractAuthorityEntity, Long> implements AuthorityEntityDao{
+
+	@Resource
+	private Instancer instancer;
 	
 	protected final String PEOPLE = "people";
 	protected final String LAYER = "layer";
@@ -54,6 +63,12 @@ public class AuthorityEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abs
 	protected final String PEOPLE_USER_ID = PEOPLE + "." + USER_ID;
 	protected final String LAYER_LAYER_ID = LAYER + "." + LAYER_ID;
 	protected final String AUTHORITY = "authority";
+
+	@Autowired
+    public void init(SessionFactory sessionFactory) {
+        super.init(sessionFactory);
+		this.persistentClass = (Class<AbstractAuthorityEntity>) instancer.createAuthority().getClass();
+    }
 
 	public Long save(AbstractAuthorityEntity AbstractAuthorityEntity) {
 		return (Long) getHibernateTemplate().save(AbstractAuthorityEntity);
@@ -68,7 +83,7 @@ public class AuthorityEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abs
 
 	@SuppressWarnings("unchecked")
 	public List<AbstractAuthorityEntity> findByUser(Long user_id) {
-		return getSession().createCriteria(AbstractAuthorityEntity.class)
+		return getSession().createCriteria(persistentClass)
 				.createAlias(PEOPLE, PEOPLE)
 				.add(Restrictions.eq(PEOPLE_USER_ID, user_id)).list();
 	}
@@ -77,8 +92,9 @@ public class AuthorityEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abs
 		List<AbstractAuthorityEntity> authorities = findByUser(user_id);
 		if(authorities != null){
 			for (AbstractAuthorityEntity authority: authorities){
-				for(AbstractUserEntity user: authority.getPeople()){
-					if(user.getUser_id().equals(user_id)){
+				Set<AbstractUserEntity> users = (Set<AbstractUserEntity>) authority.getPeople();
+				for(AbstractUserEntity user: users){
+					if(user.getId().equals(user_id)){
 						authority.getPeople().remove(user);
 						break;
 					}
@@ -99,7 +115,7 @@ public class AuthorityEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abs
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<AbstractAuthorityEntity> findByLayer(Long layer_id) {
-		return getSession().createCriteria(AbstractAuthorityEntity.class)
+		return getSession().createCriteria(instancer.createAuthority().getClass())
 				.createAlias(LAYER, LAYER)
 				.add(Restrictions.eq(LAYER_LAYER_ID, layer_id)).list();
 	}

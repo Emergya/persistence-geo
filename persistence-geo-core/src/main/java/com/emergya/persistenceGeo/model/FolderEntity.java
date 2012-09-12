@@ -47,6 +47,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
+
 /**
  * Entidad de carpeta
  * 
@@ -55,25 +59,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "folders")
-public class FolderEntity extends AbstractEntity {
+public class FolderEntity extends AbstractFolderEntity {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2877181555393537995L;
-	
-	private Long id;
-	
-	private String name;
-	private Boolean enabled;
-	private Boolean es_canal;
-	private Boolean es_instrumento_planificacion;
-	private Date fechaCreacion;
-	private Date fechaActualizacion;
-	
-	private List<FolderEntity> folderList;
-	private List<ZoneEntity> zoneList;
-	private LayerEntity layer;
+	private static final long serialVersionUID = -7230829079248633279L;
 
 	public FolderEntity(){
 		
@@ -88,17 +79,9 @@ public class FolderEntity extends AbstractEntity {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	@Column(name = "enabled")
 	public Boolean getEnabled() {
 		return enabled;
-	}
-
-	public void setEnabled(Boolean enabled) {
-		this.enabled = enabled;
 	}
 
 	@Column(name = "canal")
@@ -106,17 +89,9 @@ public class FolderEntity extends AbstractEntity {
 		return es_canal;
 	}
 
-	public void setEs_canal(Boolean es_canal) {
-		this.es_canal = es_canal;
-	}
-
 	@Column(name = "instrumento_planificacion")
 	public Boolean getEs_instrumento_planificacion() {
 		return es_instrumento_planificacion;
-	}
-
-	public void setEs_instrumento_planificacion(Boolean es_instrumento_planificacion) {
-		this.es_instrumento_planificacion = es_instrumento_planificacion;
 	}
 
 	@Column(name = "createDate")
@@ -124,17 +99,9 @@ public class FolderEntity extends AbstractEntity {
 		return fechaCreacion;
 	}
 
-	public void setFechaCreacion(Date fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
-	}
-
 	@Column(name = "updateDate")
 	public Date getFechaActualizacion() {
 		return fechaActualizacion;
-	}
-
-	public void setFechaActualizacion(Date fechaActualizacion) {
-		this.fechaActualizacion = fechaActualizacion;
 	}
 	
 	@Id
@@ -142,10 +109,6 @@ public class FolderEntity extends AbstractEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
 	public Long getId() {
 		return id;
-	}
-
-	public void setId(Serializable id) {
-		this.id = (Long) id;
 	}
 	
 	@OneToMany(targetEntity = FolderEntity.class,
@@ -159,26 +122,19 @@ public class FolderEntity extends AbstractEntity {
 		return folderList;
 	}
 
-	public void setFolderList(List<FolderEntity> folderList) {
-		this.folderList = folderList;
-	}
-
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "zoneList")
 	public List<ZoneEntity> getZoneList() {
 		return zoneList;
 	}
 
-	public void setZoneList(List<ZoneEntity> zoneList) {
-		this.zoneList = zoneList;
-	}
-
 	@ManyToOne
     @JoinColumn(name = "id", insertable = false, updatable = false)
 	public LayerEntity getLayer() {
-		return layer;
+		return (LayerEntity) layer;
 	}
 
-	public void setLayer(LayerEntity layer) {
-		this.layer = layer;
+	@Override
+	public void setId(Serializable id) {
+		this.id = (Long) id;
 	}
 }

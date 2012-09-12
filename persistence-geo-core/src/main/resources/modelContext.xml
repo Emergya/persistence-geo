@@ -32,6 +32,9 @@
     <!-- ============================== -->
     <!-- ==========  DAO layer ======== -->
     <!-- ============================== -->
+
+	<!-- Persistence geo instancer -->
+    <bean id="instancer" class="com.emergya.persistenceGeo.model.InstancerImpl" />
 	
     <!-- Hibernate -->
     <tx:annotation-driven/>
@@ -51,7 +54,7 @@
         <property name="dataSource" ref="dataSourceHibernate"/>
         <property name="packagesToScan">
         	<list>
-                <value>com.emergya</value>
+                <value>com.emergya.persistenceGeo.model</value>
             </list>
         </property>
         <property name="hibernateProperties">

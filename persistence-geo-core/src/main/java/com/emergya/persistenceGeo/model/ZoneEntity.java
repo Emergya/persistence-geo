@@ -45,6 +45,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
+
 /**
  * Entidad de ámbito territorial
  * 
@@ -53,25 +57,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "zones")
-public class ZoneEntity extends AbstractEntity {
+public class ZoneEntity extends AbstractZoneEntity {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7702334870312919540L;
-	
-	private Long id;
-	
-	private String code;
-	private String name;
-	private String type;
-	private String extension;
-	private Date fechaCreacion;
-	private Date fechaActualizacion;
-	
-	private List<ZoneEntity> zoneList;
-	private List<FolderEntity> folderList;
-	private List<AuthorityEntity> authList;
 	
 	public ZoneEntity(){
 		
@@ -86,17 +77,9 @@ public class ZoneEntity extends AbstractEntity {
 		return code;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
-	}
-
 	@Column(name = "name_zone")
 	public String getName() {
 		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	@Column(name = "type_zone")
@@ -104,35 +87,19 @@ public class ZoneEntity extends AbstractEntity {
 		return type;
 	}
 
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	@Column(name = "extension")
 	public String getExtension() {
 		return extension;
-	}
-
-	public void setExtension(String extension) {
-		this.extension = extension;
 	}
 
 	@Column(name = "fechaCreacion")
 	public Date getFechaCreacion() {
 		return fechaCreacion;
 	}
-
-	public void setFechaCreacion(Date fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
-	}
 	
 	@Column(name = "fechaActualizacion")
 	public Date getFechaActualizacion() {
 		return fechaActualizacion;
-	}
-
-	public void setFechaActualizacion(Date fechaActualizacion) {
-		this.fechaActualizacion = fechaActualizacion;
 	}
  
 	@Id
@@ -156,10 +123,6 @@ public class ZoneEntity extends AbstractEntity {
 	public List<ZoneEntity> getZoneList() {
 		return zoneList;
 	}
-
-	public void setZoneList(List<ZoneEntity> zoneList) {
-		this.zoneList = zoneList;
-	}
 	
 	@ManyToMany(targetEntity = FolderEntity.class,
 	cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -172,17 +135,9 @@ public class ZoneEntity extends AbstractEntity {
 		return folderList;
 	}
 
-	public void setFolderList(List<FolderEntity> folderList) {
-		this.folderList = folderList;
-	}
-
 	@OneToMany(mappedBy = "zone")
 	public List<AuthorityEntity> getAuthList() {
 		return authList;
-	}
-
-	public void setAuthList(List<AuthorityEntity> authList) {
-		this.authList = authList;
 	}
 
 }

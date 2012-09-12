@@ -55,7 +55,6 @@ import com.emergya.persistenceGeo.metaModel.AbstractRuleEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
-import com.emergya.persistenceGeo.metaModel.PrivateLayerEntity;
 import com.emergya.persistenceGeo.service.LayerAdminService;
 
 /**
@@ -267,10 +266,10 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 		AbstractLayerEntity entity = layerDao.findById(layer_id, false);
 		AbstractUserEntity user = entity.getUser();
 		if(user == null){
-			user = new AbstractUserEntity();
+			user = instancer.createUser();
 		}
 		boolean enc = false;
-		if(user.getUser_id().equals(user_id)){
+		if(user.getId().equals(user_id)){
 			enc = true;
 		}
 		
@@ -386,7 +385,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			if(usersDto != null){
 				AbstractUserEntity user = userDao.getUser(usersDto);
 				if(user != null){
-					this.addUserToLayer(user.getUser_id(), dto.getId());
+					this.addUserToLayer((Long) user.getId(), dto.getId());
 				}
 			}
 			// Add authorities
@@ -447,19 +446,10 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			List<AbstractRuleEntity> rules = entity.getRuleList();
 			if(rules != null){
 				for(AbstractRuleEntity ruleEntity: rules){
-					rulesDto.add(ruleEntity.getId());
+					rulesDto.add((Long) ruleEntity.getId());
 				}
 			}
 			dto.setRuleList(rulesDto);
-			// Add private layers
-			List<String> privateLayersDto = new LinkedList<String>();
-			List<PrivateLayerEntity> privateLayers = entity.getPrivateLayerList();
-			if(privateLayers != null){
-				for(PrivateLayerEntity privateLayerEntity: privateLayers){
-					privateLayersDto.add(privateLayerEntity.getName());
-				}
-			}
-			dto.setPrivateLayerList(privateLayersDto);
 		}
 		return dto;
 	}
@@ -469,7 +459,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 		if(entity != null){
 			dto = new RuleDto();
 			// Add own attributes
-			dto.setRule_id(entity.getId());
+			dto.setRule_id((Long )entity.getId());
 			dto.setSymbolizer(entity.getSymbolizer());
 			dto.setFilter(entity.getFilter());
 			dto.setCreateDate(entity.getFechaCreacion());

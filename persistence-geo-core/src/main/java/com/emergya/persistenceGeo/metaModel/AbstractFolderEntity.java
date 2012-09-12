@@ -54,8 +54,8 @@ public abstract class AbstractFolderEntity extends AbstractEntity {
 	protected Date fechaCreacion;
 	protected Date fechaActualizacion;
 	
-	protected List<AbstractFolderEntity> folderList;
-	protected List<AbstractZoneEntity> zoneList;
+	protected List folderList;
+	protected List zoneList;
 	protected AbstractLayerEntity layer;
 
 	public AbstractFolderEntity(){
@@ -98,11 +98,11 @@ public abstract class AbstractFolderEntity extends AbstractEntity {
 	/**
 	 * @return the folderList
 	 */
-	public abstract List<AbstractFolderEntity> getFolderList();
+	public abstract List getFolderList();
 	/**
 	 * @return the zoneList
 	 */
-	public abstract List<AbstractZoneEntity> getZoneList();
+	public abstract List getZoneList();
 	/**
 	 * @return the layer
 	 */
@@ -159,14 +159,14 @@ public abstract class AbstractFolderEntity extends AbstractEntity {
 	/**
 	 * @param folderList the folderList to set
 	 */
-	public void setFolderList(List<AbstractFolderEntity> folderList) {
+	public void setFolderList(List folderList) {
 		this.folderList = folderList;
 	}
 
 	/**
 	 * @param zoneList the zoneList to set
 	 */
-	public void setZoneList(List<AbstractZoneEntity> zoneList) {
+	public void setZoneList(List zoneList) {
 		this.zoneList = zoneList;
 	}
 

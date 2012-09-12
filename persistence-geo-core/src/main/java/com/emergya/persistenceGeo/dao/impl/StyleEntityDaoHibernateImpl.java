@@ -32,11 +32,17 @@ package com.emergya.persistenceGeo.dao.impl;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.StyleEntityDao;
+import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
+import com.emergya.persistenceGeo.metaModel.Instancer;
 
 /**
  * Style DAO Hibernate Implementation
@@ -47,6 +53,15 @@ import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
 @Repository("styleEntityDao")
 public class StyleEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractStyleEntity, Long> implements StyleEntityDao {
 
+	@Resource
+	private Instancer instancer;
+
+	@Autowired
+    public void init(SessionFactory sessionFactory) {
+        super.init(sessionFactory);
+		this.persistentClass = (Class<AbstractStyleEntity>) instancer.createStyle().getClass();
+    }
+
 	/**
 	 * Create a new style in the system
 	 * 
@@ -55,7 +70,8 @@ public class StyleEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 	 * @return Entity from the created style
 	 */
 	public AbstractStyleEntity createStyle(String style) {
-		AbstractStyleEntity styleEntity = new AbstractStyleEntity(style);
+		AbstractStyleEntity styleEntity = instancer.createStyle();
+		styleEntity.setName(style);
 		getHibernateTemplate().save(styleEntity);
 		return styleEntity;
 	}

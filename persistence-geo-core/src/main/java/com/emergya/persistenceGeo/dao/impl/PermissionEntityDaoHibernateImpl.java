@@ -31,11 +31,17 @@ package com.emergya.persistenceGeo.dao.impl;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.PermissionEntityDao;
+import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
+import com.emergya.persistenceGeo.metaModel.Instancer;
 
 /**
  * Permission DAO Hibernate Implementation
@@ -46,6 +52,15 @@ import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
 @Repository("permissionEntityDao")
 public class PermissionEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractPermissionEntity, Long> implements PermissionEntityDao {
 
+	@Resource
+	private Instancer instancer;
+
+	@Autowired
+    public void init(SessionFactory sessionFactory) {
+        super.init(sessionFactory);
+		this.persistentClass = (Class<AbstractPermissionEntity>) instancer.createPermission().getClass();
+    }
+	
 	/**
 	 * Create a new permission in the system
 	 * 
@@ -54,7 +69,8 @@ public class PermissionEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Ab
 	 * @return Entity from the created permission
 	 */
 	public AbstractPermissionEntity createPermission(String permission) {
-		AbstractPermissionEntity permissionEntity = new AbstractPermissionEntity(permission);
+		AbstractPermissionEntity permissionEntity = instancer.createPermission();
+		permissionEntity.setName(permission);
 		getHibernateTemplate().save(permissionEntity);
 		return permissionEntity;
 	}

@@ -49,7 +49,6 @@ import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
-import com.emergya.persistenceGeo.metaModel.PrivateLayerEntity;
 import com.emergya.persistenceGeo.service.UserAdminService;
 
 /**
@@ -231,7 +230,7 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 		if (user != null) {
 			dto = new UserDto();
 			// Add own attributes
-			dto.setId(user.getUser_id());
+			dto.setId((Long) user.getId());
 			dto.setUsername(user.getUsername());
 			dto.setAdmin(user.getAdmin());
 			dto.setApellidos(user.getApellidos());
@@ -244,27 +243,18 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 			dto.setValid(user.getValid());
 			// Add relational parameters
 			// Add authority
-			AbstractAuthorityEntity authority = userDao.findByUserID(user.getUser_id());
+			AbstractAuthorityEntity authority = userDao.findByUserID((Long) user.getId());
 			if (authority != null) {
 				dto.setAuthority(authority.getAuthority());
 			}
 			// Add layer
-			List<AbstractLayerEntity> layers = userDao.findLayerByUserID(user.getUser_id());
+			List<AbstractLayerEntity> layers = userDao.findLayerByUserID((Long) user.getId());
 			List<String> layersDto = new LinkedList<String>();
 			if (layersDto != null && layers != null) {
 				for(AbstractLayerEntity layer: layers){
 					layersDto.add(layer.getName());
 				}
 				dto.setLayerList(layersDto);
-			}
-			// Add private layer
-			List<PrivateLayerEntity> privateLayers = userDao.findPrivateLayerByUserID(user.getUser_id());
-			List<String> privateLayersDto = new LinkedList<String>();
-			if (privateLayers != null) {
-				for(PrivateLayerEntity privateLayer: privateLayers){
-					privateLayersDto.add(privateLayer.getName());
-				}
-				dto.setPrivateLayerList(privateLayersDto);
 			}
 		}
 		return dto;
@@ -278,7 +268,8 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 			dto.setId(entity.getId());
 			List<String> usuarios = new LinkedList<String>();
 			if (entity.getPeople() != null) {
-				for (AbstractUserEntity user : entity.getPeople()) {
+				Set<AbstractUserEntity> users = (Set<AbstractUserEntity>) entity.getPeople();
+				for (AbstractUserEntity user : users) {
 					usuarios.add(user.getUsername());
 				}
 			}

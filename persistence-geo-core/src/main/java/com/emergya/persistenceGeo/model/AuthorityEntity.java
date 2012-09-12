@@ -29,7 +29,6 @@
  */
 package com.emergya.persistenceGeo.model;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -44,124 +43,75 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractAuthorityTypeEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
+
 /**
  * Entity that represents the users group
  * 
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
- *
+ * 
  */
 @Entity
 @Table(name = "authorities")
-public class AuthorityEntity extends AbstractEntity{
+public class AuthorityEntity extends AbstractAuthorityEntity {
 
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6293606419664405344L;
-	
-	private Long id;
-    private String authority;
-    
-    private Date createDate;
-    private Date updateDate;
-    
-    private Set<UserEntity> people;
-    private AuthorityTypeEntity authType;
-    private List<LayerEntity> layerList;
-    private List<PrivateLayerEntity> privateLayerList;
-    private ZoneEntity zone;
+	private static final long serialVersionUID = -2805722865035814185L;
 
-    public AuthorityEntity() {
-    }
+	public AuthorityEntity() {
+	}
 
-    public AuthorityEntity(String authString) {
-        authority = authString;
-    }
+	public AuthorityEntity(String authString) {
+		authority = authString;
+	}
 
-    @Column(name = "authority", nullable = false)
-    public String getAuthority() {
-        return authority;
-    }
+	@Column(name = "authority", nullable = false)
+	public String getAuthority() {
+		return authority;
+	}
 
-    public void setAuthority(String authority) {
-        this.authority = authority;
-    }
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	public Long getId() {
+		return id;
+	}
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() {
-        return id;
-    }
+	@OneToMany(mappedBy = "authority")
+	public Set<UserEntity> getPeople() {
+		return (Set<UserEntity>) people;
+	}
 
-    public void setId(Serializable id) {
-        this.id = (Long) id;
-    }
-
-    @OneToMany(mappedBy = "authority")
-    public Set<UserEntity> getPeople() {
-        return people;
-    }
-
-    public void setPeople(Set<UserEntity> people) {
-        this.people = people;
-    }
-
-    @Column(name = "createDate")
+	@Column(name = "createDate")
 	public Date getCreateDate() {
 		return createDate;
 	}
 
-	public void setcreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
-    @Column(name = "updateDate")
+	@Column(name = "updateDate")
 	public Date getUpdateDate() {
 		return updateDate;
 	}
 
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
-	}
-
 	@ManyToOne
-    @JoinColumn(name = "auth_type_id")
+	@JoinColumn(name = "auth_type_id")
 	public AuthorityTypeEntity getAuthType() {
-		return authType;
-	}
-
-	public void setAuthType(AuthorityTypeEntity authType) {
-		this.authType = authType;
+		return (AuthorityTypeEntity) authType;
 	}
 
 	@OneToMany(mappedBy = "auth")
 	public List<LayerEntity> getLayerList() {
-		return layerList;
-	}
-
-	public void setLayerList(List<LayerEntity> layerList) {
-		this.layerList = layerList;
-	}
-
-	@OneToMany(mappedBy = "auth")
-	public List<PrivateLayerEntity> getPrivateLayerList() {
-		return privateLayerList;
-	}
-
-	public void setPrivateLayerList(List<PrivateLayerEntity> privateLayerList) {
-		this.privateLayerList = privateLayerList;
+		return (List<LayerEntity>) layerList;
 	}
 
 	@ManyToOne
-    @JoinColumn(name = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "id", insertable = false, updatable = false)
 	public ZoneEntity getZone() {
-		return zone;
-	}
-
-	public void setZone(ZoneEntity zone) {
-		this.zone = zone;
+		return (ZoneEntity) zone;
 	}
 
 }

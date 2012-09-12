@@ -29,10 +29,16 @@
  */
 package com.emergya.persistenceGeo.dao.impl;
 
+import javax.annotation.Resource;
+
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.AuthorityTypeEntityDao;
+import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractAuthorityTypeEntity;
+import com.emergya.persistenceGeo.metaModel.Instancer;
 
 /**
  * Folder DAO Hibernate Implementation
@@ -43,6 +49,15 @@ import com.emergya.persistenceGeo.metaModel.AbstractAuthorityTypeEntity;
 @Repository("authorityTypeEntityDao")
 public class AuthorityTypeEntityDaoHibernateImpl extends
 		GenericHibernateDAOImpl<AbstractAuthorityTypeEntity, Long> implements AuthorityTypeEntityDao {
+
+	@Resource
+	private Instancer instancer;
+
+	@Autowired
+    public void init(SessionFactory sessionFactory) {
+        super.init(sessionFactory);
+		this.persistentClass = (Class<AbstractAuthorityTypeEntity>) instancer.createAuthorityTypeEntity().getClass();
+    }
 
 	/**
 	 * Save an authority type in the system

@@ -29,6 +29,7 @@
  */
 package com.emergya.persistenceGeo.metaModel;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -51,13 +52,8 @@ public abstract class AbstractAuthorityTypeEntity extends AbstractEntity {
 	protected Date createDate;
 	protected Date updateDate;
 	
-	protected List<AbstractAuthorityEntity> authList;
-	protected List<AbstractPermissionEntity> permissionList;
-
-	/**
-	 * @return the auth_type_id
-	 */
-	public abstract Long getAuth_type_id();
+	protected List authList;
+	protected List permissionList;
 	/**
 	 * @return the name
 	 */
@@ -73,17 +69,17 @@ public abstract class AbstractAuthorityTypeEntity extends AbstractEntity {
 	/**
 	 * @return the authList
 	 */
-	public abstract List<AbstractAuthorityEntity> getAuthList();
+	public abstract List getAuthList();
 	/**
 	 * @return the permissionList
 	 */
-	public abstract List<AbstractPermissionEntity> getPermissionList();
+	public abstract List getPermissionList();
 	
 	/**
 	 * @param auth_type_id the auth_type_id to set
 	 */
-	public void setAuth_type_id(Long auth_type_id) {
-		this.auth_type_id = auth_type_id;
+	public void setId(Serializable auth_type_id) {
+		this.auth_type_id = (Long) auth_type_id;
 	}
 	/**
 	 * @param name the name to set
@@ -106,13 +102,13 @@ public abstract class AbstractAuthorityTypeEntity extends AbstractEntity {
 	/**
 	 * @param authList the authList to set
 	 */
-	public void setAuthList(List<AbstractAuthorityEntity> authList) {
+	public void setAuthList(List authList) {
 		this.authList = authList;
 	}
 	/**
 	 * @param permissionList the permissionList to set
 	 */
-	public void setPermissionList(List<AbstractPermissionEntity> permissionList) {
+	public void setPermissionList(List permissionList) {
 		this.permissionList = permissionList;
 	}
 	

@@ -34,7 +34,6 @@ import java.util.List;
 import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
-import com.emergya.persistenceGeo.metaModel.PrivateLayerEntity;
 
 /**
  * Dao para usuarios
@@ -99,14 +98,5 @@ public interface UserEntityDao extends GenericDAO<AbstractUserEntity, Long>{
 	 * @return Entity associated with the user identifier or null if not found
 	 */
 	public List<AbstractLayerEntity> findLayerByUserID(Long user_id);
-	
-	/**
-	 * Get a private layer by a user identifier
-	 * 
-	 * @param user_id
-	 * 
-	 * @return Entity associated with the user identifier or null if not found
-	 */
-	public List<PrivateLayerEntity> findPrivateLayerByUserID(Long user_id);
 
 }

@@ -45,6 +45,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractAuthorityTypeEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
+
 /**
  * Entity that represents the types users group
  * 
@@ -53,22 +57,13 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "authorityTypes")
-public class AuthorityTypeEntity extends AbstractEntity {
-
+public class AuthorityTypeEntity extends AbstractAuthorityTypeEntity {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2355239823795963260L;
-	
-	private Long auth_type_id;
-	
-	private String name;
-	private Date createDate;
-    private Date updateDate;
-	
-	private List<AuthorityEntity> authList;
-	private List<PermissionEntity> permissionList;
-	
+	private static final long serialVersionUID = 2090474619237255968L;
+
 	public AuthorityTypeEntity(){
 		
 	}
@@ -82,26 +77,14 @@ public class AuthorityTypeEntity extends AbstractEntity {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	@Column(name = "createDate")
 	public Date getCreateDate() {
 		return createDate;
 	}
 
-	public void setcreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
     @Column(name = "updateDate")
 	public Date getUpdateDate() {
 		return updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
 	}
 
 	@Id
@@ -110,18 +93,10 @@ public class AuthorityTypeEntity extends AbstractEntity {
 	public Long getId() {
 		return auth_type_id;
 	}
-
-	public void setId(Serializable id) {
-		auth_type_id = (Long) id;
-	}
 	
 	@OneToMany(mappedBy = "authType")
 	public List<AuthorityEntity> getAuthList() {
 		return authList;
-	}
-
-	public void setAuthList(List<AuthorityEntity> authList) {
-		this.authList = authList;
 	}
 
 	@ManyToMany(targetEntity = PermissionEntity.class,
@@ -133,10 +108,6 @@ public class AuthorityTypeEntity extends AbstractEntity {
 	@JoinColumn(name = "permission_id"))
 	public List<PermissionEntity> getPermissionList() {
 		return permissionList;
-	}
-
-	public void setPermissionList(List<PermissionEntity> permissionList) {
-		this.permissionList = permissionList;
 	}
 
 }

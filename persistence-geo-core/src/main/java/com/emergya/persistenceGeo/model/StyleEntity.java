@@ -43,6 +43,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractRuleEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
+
 /**
  * Entidad de estilo
  * 
@@ -51,22 +55,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "styles")
-public class StyleEntity extends AbstractEntity {
+public class StyleEntity extends AbstractStyleEntity {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8414310574032934037L;
-	
-	private Long id;
-	
-	private String name;
-	private Date fechaCreacion;
-	private Date fechaActualizacion;
-	
-	private List<LayerEntity> layerList;
-	private List<RuleEntity> ruleList;
-	private List<PrivateLayerEntity> privateLayerList;
 
 	public StyleEntity(){
 		
@@ -81,26 +75,14 @@ public class StyleEntity extends AbstractEntity {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	@Column(name = "fechaCreacion")
 	public Date getFechaCreacion() {
 		return fechaCreacion;
 	}
 
-	public void setFechaCreacion(Date fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
-	}
-
 	@Column(name = "fechaActualizacion")
 	public Date getFechaActualizacion() {
 		return fechaActualizacion;
-	}
-
-	public void setFechaActualizacion(Date fechaActualizacion) {
-		this.fechaActualizacion = fechaActualizacion;
 	}
 
 	@Id
@@ -119,26 +101,9 @@ public class StyleEntity extends AbstractEntity {
 		return layerList;
 	}
 
-	public void setLayerList(List<LayerEntity> layerList) {
-		this.layerList = layerList;
-	}
-
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "style")
 	public List<RuleEntity> getRuleList() {
 		return ruleList;
-	}
-
-	public void setRuleList(List<RuleEntity> ruleList) {
-		this.ruleList = ruleList;
-	}
-
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "styleList")
-	public List<PrivateLayerEntity> getPrivateLayerList() {
-		return privateLayerList;
-	}
-
-	public void setPrivateLayerList(List<PrivateLayerEntity> privateLayerList) {
-		this.privateLayerList = privateLayerList;
 	}
 
 }

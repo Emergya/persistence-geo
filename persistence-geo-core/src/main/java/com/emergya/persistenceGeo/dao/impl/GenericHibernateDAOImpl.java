@@ -50,7 +50,7 @@ import com.emergya.persistenceGeo.dao.GenericDAO;
  */
 public abstract class GenericHibernateDAOImpl<T, ID extends Serializable> extends HibernateDaoSupport implements GenericDAO<T, ID> {
 
-	private Class<T> persistentClass;
+	protected Class<T> persistentClass;
 
 	@Autowired
     public void init(SessionFactory sessionFactory) {

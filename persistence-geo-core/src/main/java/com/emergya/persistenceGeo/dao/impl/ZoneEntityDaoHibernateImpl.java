@@ -31,11 +31,17 @@ package com.emergya.persistenceGeo.dao.impl;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.ZoneEntityDao;
+import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
+import com.emergya.persistenceGeo.metaModel.Instancer;
 
 /**
  * Zone DAO Hibernate Implementation
@@ -46,6 +52,15 @@ import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
 @Repository("zoneEntityDao")
 public class ZoneEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractZoneEntity, Long> implements ZoneEntityDao {
 
+	@Resource
+	private Instancer instancer;
+
+	@Autowired
+    public void init(SessionFactory sessionFactory) {
+        super.init(sessionFactory);
+		this.persistentClass = (Class<AbstractZoneEntity>) instancer.createZone().getClass();
+    }
+
 	/**
 	 * Create a new zone in the system
 	 * 
@@ -54,7 +69,8 @@ public class ZoneEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstract
 	 * @return Entity from the created zone
 	 */
 	public AbstractZoneEntity createZone(String zone) {
-		AbstractZoneEntity zoneEntity = new AbstractZoneEntity(zone);
+		AbstractZoneEntity zoneEntity = instancer.createZone();
+		zoneEntity.setName(zone);
 		getHibernateTemplate().save(zoneEntity);
 		return zoneEntity;
 	}

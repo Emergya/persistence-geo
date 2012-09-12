@@ -33,15 +33,51 @@ package com.emergya.persistenceGeo.metaModel;
  * Interface for create instances of final entities
  * 
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
- *
+ * 
  */
 public interface Instancer {
+	/**
+	 * @return new authority entity
+	 */
 	public AbstractAuthorityEntity createAuthority();
+
+	/**
+	 * @return new authority type entity
+	 */
 	public AbstractAuthorityTypeEntity createAuthorityTypeEntity();
+
+	/**
+	 * @return new folder entity
+	 */
 	public AbstractFolderEntity createFolder();
+
+	/**
+	 * @return new layer entity
+	 */
 	public AbstractLayerEntity createLayer();
+
+	/**
+	 * @return new permission entity
+	 */
 	public AbstractPermissionEntity createPermission();
+
+	/**
+	 * @return new rule entity
+	 */
 	public AbstractRuleEntity createRule();
+
+	/**
+	 * @return new style entity
+	 */
 	public AbstractStyleEntity createStyle();
+
+	/**
+	 * @return new user entity
+	 */
 	public AbstractUserEntity createUser();
+
+	/**
+	 * @return new zone entity
+	 */
+	public AbstractZoneEntity createZone();
 }

@@ -46,6 +46,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
+
 /**
  * Entidad de capa
  * 
@@ -54,29 +59,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "layers")
-public class LayerEntity extends AbstractEntity {
+public class LayerEntity extends AbstractLayerEntity {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2844502275010469666L;
-
-	private Long id;
-	
-	private String name;
-	private String order;
-	private String type;
-	private String server_resource;
-	private Boolean publicized;
-	private Boolean enabled;
-	private Boolean pertenece_a_canal;
-	private Date fechaCreacion;
-	private Date fechaActualizacion;
-	
-	private UserEntity user;
-	private AuthorityEntity auth;
-	private List<StyleEntity> styleList;
-	private List<FolderEntity> folderList;
 	
 	public LayerEntity(){
 		
@@ -90,18 +78,10 @@ public class LayerEntity extends AbstractEntity {
 	public String getName() {
 		return name;
 	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
+	
 	@Column(name = "order_layer")
 	public String getOrder() {
 		return order;
-	}
-
-	public void setOrder(String order) {
-		this.order = order;
 	}
 
 	@Column(name = "type_layer")
@@ -109,17 +89,9 @@ public class LayerEntity extends AbstractEntity {
 		return type;
 	}
 
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	@Column(name = "server_resource")
 	public String getServer_resource() {
 		return server_resource;
-	}
-
-	public void setServer_resource(String server_resource) {
-		this.server_resource = server_resource;
 	}
 
 	@Column(name = "publicized")
@@ -127,17 +99,9 @@ public class LayerEntity extends AbstractEntity {
 		return publicized;
 	}
 
-	public void setPublicized(Boolean publicized) {
-		this.publicized = publicized;
-	}
-
 	@Column(name = "enabled")
 	public Boolean getEnabled() {
 		return enabled;
-	}
-
-	public void setEnabled(Boolean enabled) {
-		this.enabled = enabled;
 	}
 
 	@Column(name = "pertenece_a_canal")
@@ -145,26 +109,14 @@ public class LayerEntity extends AbstractEntity {
 		return pertenece_a_canal;
 	}
 
-	public void setPertenece_a_canal(Boolean pertenece_a_canal) {
-		this.pertenece_a_canal = pertenece_a_canal;
-	}
-
 	@Column(name = "fechaCreacion")
 	public Date getFechaCreacion() {
 		return fechaCreacion;
 	}
 
-	public void setFechaCreacion(Date fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
-	}
-
 	@Column(name = "fechaActualizacion")
 	public Date getFechaActualizacion() {
 		return fechaActualizacion;
-	}
-
-	public void setFechaActualizacion(Date fechaActualizacion) {
-		this.fechaActualizacion = fechaActualizacion;
 	}
 
 	@Id
@@ -173,29 +125,17 @@ public class LayerEntity extends AbstractEntity {
 	public Long getId() {
 		return id;
 	}
-
-	public void setId(Serializable id) {
-		this.id = (Long) id;
-	}
 	
 	@ManyToOne
     @JoinColumn(name = "user_id")
 	public UserEntity getUser() {
-		return user;
-	}
-
-	public void setUser(UserEntity user) {
-		this.user = user;
+		return (UserEntity) user;
 	}
 
 	@ManyToOne
     @JoinColumn(name = "id", insertable = false, updatable = false)
 	public AuthorityEntity getAuth() {
-		return auth;
-	}
-
-	public void setAuth(AuthorityEntity auth) {
-		this.auth = auth;
+		return (AuthorityEntity) auth;
 	}
 
 	@ManyToMany(targetEntity = StyleEntity.class,
@@ -209,17 +149,14 @@ public class LayerEntity extends AbstractEntity {
 		return styleList;
 	}
 
-	public void setStyleList(List<StyleEntity> styleList) {
-		this.styleList = styleList;
-	}
-
 	@OneToMany(mappedBy = "layer")
 	public List<FolderEntity> getFolderList() {
 		return folderList;
 	}
 
-	public void setFolderList(List<FolderEntity> folderList) {
-		this.folderList = folderList;
+	@Override
+	public void setId(Serializable id) {
+		this.id = (Long) id;
 	}
 
 }

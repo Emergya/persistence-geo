@@ -6,182 +6,187 @@
  * This file is part of Proyecto persistenceGeo
  * 
  * This software is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
+ * under the terms of the GNU General public abstract License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any
  * later version.
  * 
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * FOR A PARTICULAR PURPOSE. See the GNU General public abstract License for more
  * details.
  * 
- * You should have received a copy of the GNU General Public License along with
+ * You should have received a copy of the GNU General public abstract License along with
  * this library; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  * 
  * As a special exception, if you link this library with other files to produce
  * an executable, this library does not by itself cause the resulting executable
- * to be covered by the GNU General Public License. This exception does not
+ * to be covered by the GNU General public abstract License. This exception does not
  * however invalidate any other reasons why the executable file might be covered
- * by the GNU General Public License.
+ * by the GNU General public abstract License.
  * 
  * Authors:: Moisés Arcos Santiago (mailto:marcos@emergya.com)
  */
 package com.emergya.persistenceGeo.metaModel;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 /**
- * Entidad de ámbito territorial
+ * Zone entity
  * 
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
- *
+ * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
+ * 
  */
-@Entity
-@Table(name = "zones")
-public class AbstractZoneEntity extends AbstractEntity {
+public abstract class AbstractZoneEntity extends AbstractEntity {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7702334870312919540L;
-	
-	private Long id;
-	
-	private String code;
-	private String name;
-	private String type;
-	private String extension;
-	private Date fechaCreacion;
-	private Date fechaActualizacion;
-	
-	private List<AbstractZoneEntity> zoneList;
-	private List<AbstractFolderEntity> folderList;
-	private List<AbstractAuthorityEntity> authList;
-	
-	public AbstractZoneEntity(){
-		
+
+	protected Long id;
+
+	protected String code;
+	protected String name;
+	protected String type;
+
+	protected String extension;
+	protected Date fechaCreacion;
+	protected Date fechaActualizacion;
+
+	protected List zoneList;
+	protected List folderList;
+	protected List authList;
+
+	/**
+	 * @return the id
+	 */
+	public abstract Long getId();
+
+	/**
+	 * @return the code
+	 */
+	public abstract String getCode();
+
+	/**
+	 * @return the name
+	 */
+	public abstract String getName();
+
+	/**
+	 * @return the type
+	 */
+	public abstract String getType();
+
+	/**
+	 * @return the extension
+	 */
+	public abstract String getExtension();
+
+	/**
+	 * @return the fechaCreacion
+	 */
+	public abstract Date getFechaCreacion();
+
+	/**
+	 * @return the fechaActualizacion
+	 */
+	public abstract Date getFechaActualizacion();
+
+	/**
+	 * @return the zoneList
+	 */
+	public abstract List getZoneList();
+
+	/**
+	 * @return the folderList
+	 */
+	public abstract List getFolderList();
+
+	/**
+	 * @return the authList
+	 */
+	public abstract List getAuthList();
+
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public AbstractZoneEntity(String zoneName){
-		name = zoneName;
-	}
-
-	@Column(name = "code")
-	public String getCode() {
-		return code;
-	}
-
+	/**
+	 * @param code
+	 *            the code to set
+	 */
 	public void setCode(String code) {
 		this.code = code;
 	}
 
-	@Column(name = "name_zone")
-	public String getName() {
-		return name;
-	}
-
+	/**
+	 * @param name
+	 *            the name to set
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	@Column(name = "type_zone")
-	public String getType() {
-		return type;
-	}
-
+	/**
+	 * @param type
+	 *            the type to set
+	 */
 	public void setType(String type) {
 		this.type = type;
 	}
 
-	@Column(name = "extension")
-	public String getExtension() {
-		return extension;
-	}
-
+	/**
+	 * @param extension
+	 *            the extension to set
+	 */
 	public void setExtension(String extension) {
 		this.extension = extension;
 	}
 
-	@Column(name = "fechaCreacion")
-	public Date getFechaCreacion() {
-		return fechaCreacion;
-	}
-
+	/**
+	 * @param fechaCreacion
+	 *            the fechaCreacion to set
+	 */
 	public void setFechaCreacion(Date fechaCreacion) {
 		this.fechaCreacion = fechaCreacion;
 	}
-	
-	@Column(name = "fechaActualizacion")
-	public Date getFechaActualizacion() {
-		return fechaActualizacion;
-	}
 
+	/**
+	 * @param fechaActualizacion
+	 *            the fechaActualizacion to set
+	 */
 	public void setFechaActualizacion(Date fechaActualizacion) {
 		this.fechaActualizacion = fechaActualizacion;
 	}
- 
-	@Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-	public Long getId() {
-		return id;
-	}
-	
-	public void setId(Serializable id) {
-		this.id = (Long) id;
-	}
 
-	@OneToMany(targetEntity = AbstractZoneEntity.class,
-	cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JoinTable(name = "zones_in_zone",
-	joinColumns =
-	@JoinColumn(name = "zone_id"),
-	inverseJoinColumns =
-	@JoinColumn(name = "subzone_id"))
-	public List<AbstractZoneEntity> getZoneList() {
-		return zoneList;
-	}
-
-	public void setZoneList(List<AbstractZoneEntity> zoneList) {
+	/**
+	 * @param zoneList
+	 *            the zoneList to set
+	 */
+	public void setZoneList(List zoneList) {
 		this.zoneList = zoneList;
 	}
-	
-	@ManyToMany(targetEntity = AbstractFolderEntity.class,
-	cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JoinTable(name = "folder_in_zone",
-	joinColumns =
-	@JoinColumn(name = "folder_id"),
-	inverseJoinColumns =
-	@JoinColumn(name = "zone_id"))
-	public List<AbstractFolderEntity> getFolderList() {
-		return folderList;
-	}
 
-	public void setFolderList(List<AbstractFolderEntity> folderList) {
+	/**
+	 * @param folderList
+	 *            the folderList to set
+	 */
+	public void setFolderList(List folderList) {
 		this.folderList = folderList;
 	}
 
-	@OneToMany(mappedBy = "zone")
-	public List<AbstractAuthorityEntity> getAuthList() {
-		return authList;
-	}
-
-	public void setAuthList(List<AbstractAuthorityEntity> authList) {
+	/**
+	 * @param authList
+	 *            the authList to set
+	 */
+	public void setAuthList(List authList) {
 		this.authList = authList;
 	}
 
