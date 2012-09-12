@@ -1,7 +1,7 @@
 /*
  * UserAdminService.java
  * 
- * Copyright (C) 2011
+ * Copyright (C) 2012
  * 
  * This file is part of Proyecto persistenceGeo
  * 

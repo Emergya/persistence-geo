@@ -29,7 +29,6 @@
  */
 package com.emergya.persistenceGeo.model;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -42,7 +41,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import com.emergya.persistenceGeo.metaModel.AbstractAuthorityTypeEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
 
 /**
@@ -51,6 +49,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
+@SuppressWarnings("unchecked")
 @Entity
 @Table(name = "permissions")
 public class PermissionEntity extends AbstractPermissionEntity {

@@ -48,8 +48,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
-import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
-import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
 
 /**
  * Entidad de carpeta
@@ -57,6 +55,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
+@SuppressWarnings("unchecked")
 @Entity
 @Table(name = "folders")
 public class FolderEntity extends AbstractFolderEntity {

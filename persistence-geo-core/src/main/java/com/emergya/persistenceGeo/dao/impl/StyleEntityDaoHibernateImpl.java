@@ -40,7 +40,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.StyleEntityDao;
-import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
 
@@ -50,6 +49,7 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
+@SuppressWarnings("unchecked")
 @Repository("styleEntityDao")
 public class StyleEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractStyleEntity, Long> implements StyleEntityDao {
 

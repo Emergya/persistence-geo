@@ -50,6 +50,7 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
+@SuppressWarnings("unchecked")
 @Repository
 public class AuthorityEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractAuthorityEntity, Long> implements AuthorityEntityDao{
 
@@ -81,7 +82,6 @@ public class AuthorityEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abs
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AbstractAuthorityEntity> findByUser(Long user_id) {
 		return getSession().createCriteria(persistentClass)
 				.createAlias(PEOPLE, PEOPLE)
@@ -112,7 +112,6 @@ public class AuthorityEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abs
 		return findByCriteria(Restrictions.in(AUTHORITY, names));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<AbstractAuthorityEntity> findByLayer(Long layer_id) {
 		return getSession().createCriteria(instancer.createAuthority().getClass())

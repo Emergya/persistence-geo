@@ -41,6 +41,7 @@ import java.util.Set;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
+@SuppressWarnings("rawtypes")
 public abstract class AbstractAuthorityEntity extends AbstractEntity{
 	
 	/**

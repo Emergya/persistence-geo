@@ -29,7 +29,6 @@
  */
 package com.emergya.persistenceGeo.model;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -45,9 +44,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractAuthorityTypeEntity;
-import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
 
 /**
  * Entity that represents the types users group
@@ -55,6 +52,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
+@SuppressWarnings("unchecked")
 @Entity
 @Table(name = "authorityTypes")
 public class AuthorityTypeEntity extends AbstractAuthorityTypeEntity {

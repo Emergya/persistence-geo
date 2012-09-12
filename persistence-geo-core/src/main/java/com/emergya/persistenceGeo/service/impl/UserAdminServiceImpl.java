@@ -43,11 +43,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.emergya.persistenceGeo.dao.AbstractGenericDao;
 import com.emergya.persistenceGeo.dao.AuthorityEntityDao;
 import com.emergya.persistenceGeo.dao.UserEntityDao;
+import com.emergya.persistenceGeo.dao.ZoneEntityDao;
 import com.emergya.persistenceGeo.dto.AuthorityDto;
 import com.emergya.persistenceGeo.dto.UserDto;
 import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
 import com.emergya.persistenceGeo.service.UserAdminService;
 
@@ -58,6 +60,7 @@ import com.emergya.persistenceGeo.service.UserAdminService;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  * 
  */
+@SuppressWarnings("unchecked")
 @Repository
 @Transactional
 public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractUserEntity> implements UserAdminService {
@@ -68,6 +71,8 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 	private UserEntityDao userDao;
 	@Resource
 	private AuthorityEntityDao authorityDao;
+	@Resource
+	private ZoneEntityDao zoneDao;
 
 	public UserAdminServiceImpl() {
 		super();
@@ -292,10 +297,25 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 			Set<AbstractUserEntity> people = new HashSet<AbstractUserEntity>();
 			if (dto.getUsuarios() != null) {
 				for (String userName : dto.getUsuarios()) {
-					people.add(userDao.getUser(userName));
+					AbstractUserEntity user = userDao.getUser(userName);
+					people.add(user);
 				}
 			}
 			entity.setPeople(people);
+
+			// Zone
+			if(dto.getZone() != null){
+				List<AbstractZoneEntity> zones = zoneDao.getZones(dto.getZone());
+				if(zones != null
+						&& zones.size()>0){
+					entity.setZone(zones.get(0));
+				}else{
+					//TODO: ¿Creates a new zone if not exists?
+					entity.setZone(zoneDao.createZone(dto.getZone()));
+				}
+			}
+				
+			
 		}
 		return entity;
 	}

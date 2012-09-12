@@ -64,6 +64,7 @@ import com.emergya.persistenceGeo.service.LayerAdminService;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  * 
  */
+@SuppressWarnings("unchecked")
 @Repository
 @Transactional
 public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, AbstractLayerEntity>

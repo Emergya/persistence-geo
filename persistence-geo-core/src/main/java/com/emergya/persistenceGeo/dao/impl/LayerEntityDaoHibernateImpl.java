@@ -51,6 +51,7 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
+@SuppressWarnings("unchecked")
 @Repository("layerEntityDao")
 public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractLayerEntity, Long> implements LayerEntityDao {
 

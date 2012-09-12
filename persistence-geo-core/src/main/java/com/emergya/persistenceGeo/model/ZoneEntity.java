@@ -45,8 +45,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
-import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
 
 /**
@@ -55,6 +53,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
+@SuppressWarnings("unchecked")
 @Entity
 @Table(name = "zones")
 public class ZoneEntity extends AbstractZoneEntity {

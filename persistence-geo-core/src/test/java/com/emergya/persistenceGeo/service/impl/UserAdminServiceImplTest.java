@@ -93,6 +93,7 @@ public class UserAdminServiceImplTest{
 		try {
 			AuthorityDto dto = new AuthorityDto();
 			dto.setNombre("grupoTest");
+			dto.setZone("Sevilla");
 			Long id = userAdminService.crearGrupoUsuarios(dto);
 			Assert.assertEquals(dto.getNombre(), userAdminService.obtenerGrupoUsuarios(id).getNombre());
 		} catch (Exception e) {
@@ -107,6 +108,7 @@ public class UserAdminServiceImplTest{
 			testCreateUser();
 			AuthorityDto dto = new AuthorityDto();
 			dto.setNombre("grupoTest");
+			dto.setZone("Sevilla");
 			Long id = userAdminService.crearGrupoUsuarios(dto);
 			Assert.assertEquals(dto.getNombre(), userAdminService.obtenerGrupoUsuarios(id).getNombre());
 			dto.setId(id);

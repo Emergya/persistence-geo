@@ -46,10 +46,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
-import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
-import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 
 /**
  * Entidad de capa
@@ -57,6 +54,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
+@SuppressWarnings("unchecked")
 @Entity
 @Table(name = "layers")
 public class LayerEntity extends AbstractLayerEntity {

@@ -39,6 +39,7 @@ import java.util.List;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  * 
  */
+@SuppressWarnings("rawtypes")
 public abstract class AbstractZoneEntity extends AbstractEntity {
 
 	/**
@@ -55,7 +56,6 @@ public abstract class AbstractZoneEntity extends AbstractEntity {
 	protected String extension;
 	protected Date fechaCreacion;
 	protected Date fechaActualizacion;
-
 	protected List zoneList;
 	protected List folderList;
 	protected List authList;

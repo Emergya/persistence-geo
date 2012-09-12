@@ -43,8 +43,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
-import com.emergya.persistenceGeo.metaModel.AbstractRuleEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
 
 /**
@@ -53,6 +51,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
+@SuppressWarnings("unchecked")
 @Entity
 @Table(name = "styles")
 public class StyleEntity extends AbstractStyleEntity {

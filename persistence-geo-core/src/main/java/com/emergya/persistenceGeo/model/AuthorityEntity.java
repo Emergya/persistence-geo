@@ -44,8 +44,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
-import com.emergya.persistenceGeo.metaModel.AbstractAuthorityTypeEntity;
-import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
 
 /**
  * Entity that represents the users group
@@ -54,6 +52,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  * 
  */
+@SuppressWarnings("unchecked")
 @Entity
 @Table(name = "authorities")
 public class AuthorityEntity extends AbstractAuthorityEntity {
@@ -81,7 +80,7 @@ public class AuthorityEntity extends AbstractAuthorityEntity {
 	public Long getId() {
 		return id;
 	}
-
+	
 	@OneToMany(mappedBy = "authority")
 	public Set<UserEntity> getPeople() {
 		return (Set<UserEntity>) people;

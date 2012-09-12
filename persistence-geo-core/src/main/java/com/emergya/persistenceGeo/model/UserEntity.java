@@ -42,8 +42,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
-import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 
 /**
@@ -52,6 +50,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
+@SuppressWarnings("unchecked")
 @Entity
 @Table(name = "users")
 public class UserEntity extends AbstractUserEntity {

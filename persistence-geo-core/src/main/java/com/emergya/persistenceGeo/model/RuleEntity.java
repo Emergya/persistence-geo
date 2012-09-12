@@ -42,7 +42,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.emergya.persistenceGeo.metaModel.AbstractRuleEntity;
-import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
 
 /**
  * Entidad de regla

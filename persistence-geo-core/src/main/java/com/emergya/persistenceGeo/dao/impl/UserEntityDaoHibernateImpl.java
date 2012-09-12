@@ -41,7 +41,6 @@ import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.UserEntityDao;
 import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
-import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
@@ -52,6 +51,7 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
+@SuppressWarnings("unchecked")
 @Repository("userEntityDao")
 public class UserEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractUserEntity, Long> implements UserEntityDao{
 

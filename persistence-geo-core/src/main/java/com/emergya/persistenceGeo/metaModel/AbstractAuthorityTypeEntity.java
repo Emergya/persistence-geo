@@ -39,6 +39,7 @@ import java.util.List;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
+@SuppressWarnings("rawtypes")
 public abstract class AbstractAuthorityTypeEntity extends AbstractEntity {
 	
 	/**
