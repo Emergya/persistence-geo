@@ -29,12 +29,15 @@
  */
 package com.emergya.persistenceGeo.service.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -323,6 +326,17 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			dto.setCreateDate(entity.getFechaCreacion());
 			dto.setUpdateDate(entity.getFechaActualizacion());
 			
+			if(entity.getData() != null){
+				try {
+					File file = createFileTemp(entity.getName());
+					FileUtils.writeByteArrayToFile(file, entity.getData());
+					dto.setData(file);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
 			// Add relational parameters
 			// Add users
 			AbstractUserEntity user = layerDao.findByLayer(entity.getId());
@@ -470,6 +484,61 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			dto.setStyle(entity.getStyle().getName());
 		}
 		return dto;
+	}
+
+	private static final String PUNTO = ".";
+
+	/**
+	 * Crea un fichero temporal 
+	 * 
+	 * @param fileName
+	 * 
+	 * @return fichero temporal
+	 * 
+	 * @throws IOException
+	 */
+	public static File createFileTemp(String fileName) throws IOException{
+		String extension = null;
+		String name = null;
+		try{
+			extension = getDocumentExtension(fileName);
+			name = getDocumentName(fileName);
+		}catch (Exception e){
+			return null;
+		}
+		return File.createTempFile(name, extension);
+	}
+
+	/**
+	 * Obtiene a extension
+	 * 
+	 * @param path
+	 * @return extension del documento 
+	 */
+	public static String getDocumentExtension(String path) {
+		String extension = null;
+		try{
+			extension = path.substring(path.lastIndexOf(PUNTO)+1);
+		}catch (Exception e){
+			return null;
+		}
+		return extension;
+	}
+
+	/**
+	 * Obtiene el nombre del documento
+	 * 
+	 * @param path
+	 * @return nombre del documento 
+	 */
+	public static String getDocumentName(String path) {
+		String name = null;
+		try{
+			name = path.substring(0, path.lastIndexOf(PUNTO));
+		}catch (Exception e){
+			return null;
+		}
+		return name;
 	}
 
 	

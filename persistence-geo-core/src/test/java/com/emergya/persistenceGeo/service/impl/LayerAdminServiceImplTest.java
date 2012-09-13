@@ -31,6 +31,7 @@ package com.emergya.persistenceGeo.service.impl;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Properties;
 
 import javax.annotation.Resource;
@@ -45,10 +46,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.emergya.persistenceGeo.dto.AuthorityDto;
-import com.emergya.persistenceGeo.dto.UserDto;
+import com.emergya.persistenceGeo.dto.LayerDto;
 import com.emergya.persistenceGeo.service.LayerAdminService;
-import com.emergya.persistenceGeo.service.UserAdminService;
 
 
 /**
@@ -76,9 +75,17 @@ public class LayerAdminServiceImplTest{
 	@Resource
 	private LayerAdminService layerAdminService;
 
+	protected static final String PR_1_LAYER_NAME = "tmpLayer";
+	
 	@Test
-	public void testCreateUser() {
-		
+	public void testCreateLayer() {
+		LayerDto layer = new LayerDto();
+		layer.setName(PR_1_LAYER_NAME);
+		Long idLayer = (Long) layerAdminService.create(layer);
+		List<LayerDto> layers = layerAdminService.getLayersByName(PR_1_LAYER_NAME);
+		Assert.assertNotNull(layers);
+		Assert.assertEquals(layers.size(), 1);
+		Assert.assertEquals(layers.get(0).getId(), idLayer);
 	}
 
 }
