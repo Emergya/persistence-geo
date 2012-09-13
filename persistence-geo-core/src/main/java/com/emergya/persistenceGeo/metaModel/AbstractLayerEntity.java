@@ -29,6 +29,7 @@
  */
 package com.emergya.persistenceGeo.metaModel;
 
+import java.sql.Blob;
 import java.util.Date;
 import java.util.List;
 
@@ -52,6 +53,8 @@ public abstract class AbstractLayerEntity extends AbstractEntity {
 	protected String order;
 	protected String type;
 	protected String server_resource;
+	protected Blob data;
+
 	protected Boolean publicized;
 	protected Boolean enabled;
 	protected Boolean pertenece_a_canal;
@@ -127,6 +130,11 @@ public abstract class AbstractLayerEntity extends AbstractEntity {
 	 * @return the folderList
 	 */
 	public abstract List getFolderList();
+	
+	/**
+	 * @return the data
+	 */
+	public abstract Blob getData();
 
 	/**
 	 * @param id the id to set
@@ -224,5 +232,12 @@ public abstract class AbstractLayerEntity extends AbstractEntity {
 	 */
 	public void setFolderList(List folderList) {
 		this.folderList = folderList;
+	}
+
+	/**
+	 * @param data the data to set
+	 */
+	public void setData(Blob data) {
+		this.data = data;
 	}
 }
