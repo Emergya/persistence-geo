@@ -31,8 +31,6 @@ package com.emergya.persistenceGeo.service.impl;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Properties;
 
 import javax.annotation.Resource;
@@ -96,27 +94,6 @@ public class UserAdminServiceImplTest{
 			dto.setZone("Sevilla");
 			Long id = userAdminService.crearGrupoUsuarios(dto);
 			Assert.assertEquals(dto.getNombre(), userAdminService.obtenerGrupoUsuarios(id).getNombre());
-		} catch (Exception e) {
-			LOG.error("Error  \n", e);
-			Assert.fail();
-		}
-	}
-
-	@Test
-	public void testModifyCreateGroup() {
-		try {
-			testCreateUser();
-			AuthorityDto dto = new AuthorityDto();
-			dto.setNombre("grupoTest");
-			dto.setZone("Sevilla");
-			Long id = userAdminService.crearGrupoUsuarios(dto);
-			Assert.assertEquals(dto.getNombre(), userAdminService.obtenerGrupoUsuarios(id).getNombre());
-			dto.setId(id);
-			List<String> usuarios = new LinkedList<String>();
-			usuarios.add(testProperties.getProperty(PR_1_PARAM_1));
-			dto.setUsuarios(usuarios);
-			userAdminService.modificarGrupoUsuarios(dto);
-			Assert.assertEquals(testProperties.getProperty(PR_1_PARAM_1), userAdminService.obtenerGrupoUsuarios(id).getUsuarios().get(0));
 		} catch (Exception e) {
 			LOG.error("Error  \n", e);
 			Assert.fail();
