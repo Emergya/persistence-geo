@@ -29,6 +29,7 @@
  */
 package com.emergya.persistenceGeo.dto;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -53,6 +54,7 @@ public class LayerDto implements Serializable {
 	private String order;
 	private String type;
 	private String server_resource;
+	private File data;
 	private Boolean published;
 	private Boolean enabled;
 	private Boolean pertenece_a_canal;
@@ -148,6 +150,18 @@ public class LayerDto implements Serializable {
 	}
 	public void setFolderList(List<String> folderList) {
 		this.folderList = folderList;
+	}
+	/**
+	 * @return the data
+	 */
+	public File getData() {
+		return data;
+	}
+	/**
+	 * @param data the data to set
+	 */
+	public void setData(File data) {
+		this.data = data;
 	}
 
 }

@@ -30,7 +30,6 @@
 package com.emergya.persistenceGeo.model;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.util.Date;
 import java.util.List;
 
@@ -154,7 +153,7 @@ public class LayerEntity extends AbstractLayerEntity {
 	}
 
 	@Column(name = "data")
-	public Blob getData() {
+	public byte[] getData() {
 		return data;
 	}
 
