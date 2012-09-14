@@ -32,8 +32,10 @@ package com.emergya.persistenceGeo.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -54,6 +56,7 @@ import com.emergya.persistenceGeo.dto.StyleDto;
 import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractLayerPropertyEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractRuleEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
@@ -367,6 +370,16 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 				}
 			}
 			dto.setFolderList(folderDto);
+			
+			// Properties
+			if(entity.getProperties() != null && entity.getProperties().size()>0){
+				Map<String, String> properties = new HashMap<String, String>();
+				List<AbstractLayerPropertyEntity> propertiesList = entity.getProperties();
+				for(AbstractLayerPropertyEntity property: propertiesList){
+					properties.put(property.getName(), property.getValue());
+				}
+				dto.setProperties(properties);
+			}
 		}
 		return dto;
 	}
@@ -383,6 +396,19 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 				entity =  layerDao.createLayer(dto.getName());
 				entity.setFechaCreacion(now);
 			}
+			
+			// Properties
+			if(dto.getProperties() != null && dto.getProperties().size()>0){
+				List<AbstractLayerPropertyEntity> propertiesList = new LinkedList<AbstractLayerPropertyEntity>();
+				for(String name: dto.getProperties().keySet()){
+					AbstractLayerPropertyEntity property = instancer.createLayerProperty();
+					property.setName(name);
+					property.setValue(dto.getProperties().get(name));
+					propertiesList.add(property);
+				}
+				entity.setProperties(propertiesList);
+			}
+			
 			// Add own parameters
 			//entity.setId(dto.getId());
 			entity.setName(dto.getName());

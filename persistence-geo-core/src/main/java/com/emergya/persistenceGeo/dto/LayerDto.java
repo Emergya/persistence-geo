@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Layer Data Transfer Object 
@@ -65,6 +66,7 @@ public class LayerDto implements Serializable {
 	private String auth;
 	private List<String> styleList;
 	private List<String> folderList;
+	private Map<String, String> properties;
 	
 	public Long getId() {
 		return id;
@@ -162,6 +164,19 @@ public class LayerDto implements Serializable {
 	 */
 	public void setData(File data) {
 		this.data = data;
+	}
+	
+	/**
+	 * @return the properties
+	 */
+	public Map<String, String> getProperties() {
+		return properties;
+	}
+	/**
+	 * @param properties the properties to set
+	 */
+	public void setProperties(Map<String, String> properties) {
+		this.properties = properties;
 	}
 
 }

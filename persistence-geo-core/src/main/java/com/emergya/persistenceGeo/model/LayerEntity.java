@@ -161,5 +161,11 @@ public class LayerEntity extends AbstractLayerEntity {
 	public void setId(Serializable id) {
 		this.id = (Long) id;
 	}
+	
+	@OneToMany(targetEntity=LayerPropertyEntity.class, orphanRemoval = true,
+			cascade = {CascadeType.ALL})
+	public List<LayerPropertyEntity> getProperties() {
+		return this.properties;
+	}
 
 }

@@ -64,6 +64,7 @@ public abstract class AbstractLayerEntity extends AbstractEntity {
 	protected AbstractAuthorityEntity auth;
 	protected List styleList;
 	protected List folderList;
+	protected List properties;
 
 	public AbstractLayerEntity(){
 		
@@ -134,6 +135,11 @@ public abstract class AbstractLayerEntity extends AbstractEntity {
 	 * @return the data
 	 */
 	public abstract byte[] getData();
+	
+	/**
+	 * @return the properties
+	 */
+	public abstract List getProperties();
 
 	/**
 	 * @param id the id to set
@@ -238,5 +244,12 @@ public abstract class AbstractLayerEntity extends AbstractEntity {
 	 */
 	public void setData(byte[] data) {
 		this.data = data;
+	}
+
+	/**
+	 * @param properties the properties to set
+	 */
+	public void setProperties(List properties) {
+		this.properties = properties;
 	}
 }

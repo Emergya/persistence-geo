@@ -1,5 +1,5 @@
 /*
- * Instancer.java
+ * LayerPropertyEntity.java
  * 
  * Copyright (C) 2012
  * 
@@ -27,62 +27,55 @@
  * 
  * Authors:: Alejandro Díaz Torres (mailto:adiaz@emergya.com)
  */
-package com.emergya.persistenceGeo.metaModel;
+package com.emergya.persistenceGeo.model;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.emergya.persistenceGeo.metaModel.AbstractLayerPropertyEntity;
 
 /**
- * Interface for create instances of final entities
+ * Layer property entity mapping
  * 
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
- * 
+ *
  */
-public interface Instancer {
-	/**
-	 * @return new authority entity
-	 */
-	public AbstractAuthorityEntity createAuthority();
+@Entity
+@Table(name = "layer_properties")
+public class LayerPropertyEntity extends AbstractLayerPropertyEntity {
 
 	/**
-	 * @return new authority type entity
+	 * 
 	 */
-	public AbstractAuthorityTypeEntity createAuthorityTypeEntity();
+	private static final long serialVersionUID = -6555360095146423311L;
 
-	/**
-	 * @return new folder entity
-	 */
-	public AbstractFolderEntity createFolder();
+	@Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+	public Serializable getId() {
+		return this.id;
+	}
 
-	/**
-	 * @return new layer entity
-	 */
-	public AbstractLayerEntity createLayer();
+    @Column(name = "name")
+	public String getName() {
+		return this.name;
+	}
 
-	/**
-	 * @return new layer property entity
-	 */
-	public AbstractLayerPropertyEntity createLayerProperty();
+    @Column(name = "value")
+	public String getValue() {
+		return this.value;
+	}
 
-	/**
-	 * @return new permission entity
-	 */
-	public AbstractPermissionEntity createPermission();
+	public void setId(Serializable id) {
+		this.id = (Long) id;
+	}
 
-	/**
-	 * @return new rule entity
-	 */
-	public AbstractRuleEntity createRule();
+	
 
-	/**
-	 * @return new style entity
-	 */
-	public AbstractStyleEntity createStyle();
-
-	/**
-	 * @return new user entity
-	 */
-	public AbstractUserEntity createUser();
-
-	/**
-	 * @return new zone entity
-	 */
-	public AbstractZoneEntity createZone();
 }
