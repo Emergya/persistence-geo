@@ -29,12 +29,15 @@
  */
 package com.emergya.persistenceGeo.web;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -142,6 +145,55 @@ public class RestLayersAdminController implements Serializable{
 	}
 
 	/**
+	 * This method loads layers.json related with a folder
+	 * 
+	 * @param username
+	 * 
+	 * @return JSON file with layers
+	 */
+	@RequestMapping(value = "/rest/loadLayersFolder/{folder}", method = RequestMethod.GET, 
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	public @ResponseBody
+	List<LayerDto> loadLayersFolder(@PathVariable String folder){
+		List<LayerDto> layers = null;
+		try{
+			/*
+			//TODO: Secure with logged user
+			String username = ((UserDetails) SecurityContextHolder.getContext()
+					.getAuthentication().getPrincipal()).getUsername(); 
+			 */
+		}catch (Exception e){
+			System.out.println(e);
+		}
+		return layers;
+	}
+
+	/**
+	 * This method loads layers.json related with a folder
+	 * 
+	 * @param username
+	 * 
+	 * @return JSON file with layers
+	 */
+	@RequestMapping(value = "/rest/moveLayerTo", method = RequestMethod.GET, 
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	public @ResponseBody
+	List<LayerDto> moveLayerTo(@RequestParam("toFolder") String toFolder,
+			@RequestParam(value="toOrder",required=false) String toOrder){
+		List<LayerDto> layers = null;
+		try{
+			/*
+			//TODO: Secure with logged user
+			String username = ((UserDetails) SecurityContextHolder.getContext()
+					.getAuthentication().getPrincipal()).getUsername(); 
+			 */
+		}catch (Exception e){
+			System.out.println(e);
+		}
+		return layers;
+	}
+
+	/**
 	 * This method saves a layer related with a user
 	 * 
 	 * @param username
@@ -152,7 +204,8 @@ public class RestLayersAdminController implements Serializable{
 	void saveLayerByUser(@PathVariable String username,
 			@RequestParam("name") String name,
 			@RequestParam("type") String type,
-			@RequestParam("uploadfile") MultipartFile uploadfile){
+			@RequestParam(value="properties", required=false) Map<String, String> properties,
+			@RequestParam(value="uploadfile", required=false) MultipartFile uploadfile){
 		try{
 			/*
 			//TODO: Secure with logged user
@@ -176,7 +229,17 @@ public class RestLayersAdminController implements Serializable{
 			// Add request parameter
 			layer.setName(name);
 			layer.setType(type);
-			// Load the layer depend on the layer type
+			//Layer properties
+			layer.setProperties(properties);
+
+			//Layer data
+			if(uploadfile != null){
+				byte[] data = IOUtils.toByteArray(uploadfile.getInputStream());
+				File temp = com.emergya.persistenceGeo.utils.FileUtils.createFileTemp(layer.getName(), layer.getType());
+				org.apache.commons.io.FileUtils.writeByteArrayToFile(temp, data);
+				layer.setData(temp);
+			}
+			
 			// Save the layer
 			layerAdminService.create(layer);
 		}catch (Exception e){
@@ -190,12 +253,13 @@ public class RestLayersAdminController implements Serializable{
 	 * @param group
 	 * @param uploadfile
 	 */
-	@RequestMapping(value = "/rest/saveLayerByGroup/{group}", method = RequestMethod.POST)
+	@RequestMapping(value = "/rest/saveLayer/{group}", method = RequestMethod.POST)
 	public @ResponseBody 
 	void saveLayerByGroup(@PathVariable Long group,
 			@RequestParam("name") String name,
 			@RequestParam("type") String type,
-			@RequestParam("uploadfile") MultipartFile uploadfile){
+			@RequestParam(value="layerData", required=false) LayerDto layerData,
+			@RequestParam(value="uploadfile", required=false) MultipartFile uploadfile){
 		try{
 			/*
 			//TODO: Secure with logged user
@@ -210,7 +274,7 @@ public class RestLayersAdminController implements Serializable{
 				layersFromGroup.add(name);
 				auth.setLayerList(layersFromGroup);
 			}
-			// Save the grouop
+			// Save the group
 			userAdminService.modificarGrupoUsuarios(auth);
 			// Create the layerDto
 			LayerDto layer = new LayerDto();
@@ -222,6 +286,30 @@ public class RestLayersAdminController implements Serializable{
 			// Load the layer depend on the layer type 
 			// Save the layer
 			layerAdminService.create(layer);
+		}catch (Exception e){
+			System.out.println(e);
+		}
+	}
+
+	/**
+	 * This method saves a layer related with a group
+	 * 
+	 * @param group
+	 * @param uploadfile
+	 */
+	@RequestMapping(value = "/rest/saveFolder", method = RequestMethod.POST)
+	public @ResponseBody 
+	void saveFolder(@RequestParam("name") String name,
+			@RequestParam("type") String type,
+			@RequestParam("enabled") Boolean enabled,
+			@RequestParam("isChannel") Boolean isChannel,
+			@RequestParam("isPlain") Boolean isPlain){
+		try{
+			/*
+			//TODO: Secure with logged user
+			String username = ((UserDetails) SecurityContextHolder.getContext()
+					.getAuthentication().getPrincipal()).getUsername(); 
+			 */
 		}catch (Exception e){
 			System.out.println(e);
 		}

@@ -31,46 +31,63 @@ package com.emergya.persistenceGeo.web;
 
 import java.io.Serializable;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.emergya.persistenceGeo.dto.AuthorityDto;
+import com.emergya.persistenceGeo.dto.UserDto;
 
 /**
- * Simple index page controller for user admin
+ * Simple REST controller for user admin
  * 
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  */
 @Controller
 public class RestUserAdminController implements Serializable{
-
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -1811767661679593998L;
 
-	/**
-	 * Sube una nueva plantilla al sistema
-	 * 
-	 * @param uploadfile
-	 * @param model
-	 * @param httpServletRequest
-	 * @param response
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "submitTemplate", method = RequestMethod.POST)
-	public String submitTemplate(
-			@RequestParam("uploadfile") MultipartFile uploadfile, Model model,
-			HttpServletRequest httpServletRequest, HttpServletResponse response) {
+	@RequestMapping(value = "/rest/admin/createUser", method = RequestMethod.POST)
+	public @ResponseBody
+		UserDto createUser(
+			@RequestParam("username") String username,
+			@RequestParam("userGroup") String userGroup,
+			@RequestParam("userAuth") String userAuth,
+			@RequestParam(value="userZone", required=false) String userZone) {
+
+		//TODO: Core call 
 		
-		return "";
+		return null;
 	}
 
+	@RequestMapping(value = "/rest/admin/modifyUser", method = RequestMethod.POST)
+	public @ResponseBody
+		UserDto modifyUser(
+			@RequestParam("username") String username,
+			@RequestParam("userGroup") String userGroup,
+			@RequestParam("userAuth") String userAuth,
+			@RequestParam(value="userZone", required=false) String userZone) {
+
+		//TODO: Core call 
+		
+		return null;
+	}
+
+	@RequestMapping(value = "/rest/admin/createGroup", method = RequestMethod.POST)
+	public @ResponseBody
+		AuthorityDto createGroup(
+			@RequestParam("userGroup") String userGroup,
+			@RequestParam(value="userZone", required=false) String userZone) {
+
+		//TODO: Core call 
+		
+		return null;
+	}
 
 }
