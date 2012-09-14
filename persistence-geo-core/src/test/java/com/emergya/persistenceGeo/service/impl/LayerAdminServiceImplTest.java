@@ -29,6 +29,7 @@
  */
 package com.emergya.persistenceGeo.service.impl;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -76,16 +77,45 @@ public class LayerAdminServiceImplTest{
 	private LayerAdminService layerAdminService;
 
 	protected static final String PR_1_LAYER_NAME = "tmpLayer";
+	protected static final String PR_1_LAYER_DATA = "target/classes/test-classes/ficheros/Barcelona_4326.kml";
 	
 	@Test
-	public void testCreateLayer() {
-		LayerDto layer = new LayerDto();
-		layer.setName(PR_1_LAYER_NAME);
-		Long idLayer = (Long) layerAdminService.create(layer);
-		List<LayerDto> layers = layerAdminService.getLayersByName(PR_1_LAYER_NAME);
-		Assert.assertNotNull(layers);
-		Assert.assertEquals(layers.size(), 1);
-		Assert.assertEquals(layers.get(0).getId(), idLayer);
+	public void testCreateLayerKML() {
+		try{
+			LayerDto layer = new LayerDto();
+			layer.setName(PR_1_LAYER_NAME);
+			layer.setType(LayerAdminService.TYPE_KML);
+			layer.setData(new File(PR_1_LAYER_DATA));
+			layer = (LayerDto) layerAdminService.create(layer);
+			List<LayerDto> layers = layerAdminService.getLayersByName(PR_1_LAYER_NAME);
+			Assert.assertNotNull(layers);
+			Assert.assertEquals(layers.size(), 1);
+			Assert.assertEquals(layers.get(0).getId(), layer.getId());
+		}catch (Exception e){
+			LOG.error(e);
+			Assert.fail();
+		}
+	}
+
+	protected static final String PR_2_LAYER_NAME = "tmpLayer2";
+	protected static final String PR_2_LAYER_DATA = "target/classes/test-classes/ficheros/Auxiliar_GML_23031.kml";
+	
+	@Test
+	public void testCreateLayerGML() {
+		try{
+			LayerDto layer = new LayerDto();
+			layer.setName(PR_2_LAYER_NAME);
+			layer.setType(LayerAdminService.TYPE_KML);
+			layer.setData(new File(PR_2_LAYER_DATA));
+			layer = (LayerDto) layerAdminService.create(layer);
+			List<LayerDto> layers = layerAdminService.getLayersByName(PR_2_LAYER_NAME);
+			Assert.assertNotNull(layers);
+			Assert.assertEquals(layers.size(), 1);
+			Assert.assertEquals(layers.get(0).getId(), layer.getId());
+		}catch (Exception e){
+			LOG.error(e);
+			Assert.fail();
+		}
 	}
 
 }

@@ -42,6 +42,31 @@ import com.emergya.persistenceGeo.dto.StyleDto;
  *
  */
 public interface LayerAdminService extends AbstractService {
+	
+	/**
+	 * Layer type KML
+	 */
+	public static final String TYPE_KML = "KML";
+	
+	/**
+	 * Layer type GML
+	 */
+	public static final String TYPE_GML = "GML";
+	
+	/**
+	 * Layer type TEXT
+	 */
+	public static final String TYPE_TEXT = "TEXT";
+	
+	/**
+	 * Layer type WMS
+	 */
+	public static final String TYPE_WMS = "WMS";
+	
+	/**
+	 * Layer type WFS
+	 */
+	public static final String TYPE_WFS = "WFS";
 
 	/**
 	 * Get a layer list by name

@@ -131,7 +131,7 @@ public class LayerEntity extends AbstractLayerEntity {
 	}
 
 	@ManyToOne
-    @JoinColumn(name = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "auth_id")
 	public AuthorityEntity getAuth() {
 		return (AuthorityEntity) auth;
 	}
@@ -140,14 +140,14 @@ public class LayerEntity extends AbstractLayerEntity {
 	cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "layer_with_style",
 	joinColumns =
-	@JoinColumn(name = "id", insertable = false, updatable = false),
+	@JoinColumn(name = "style_id", insertable = false, updatable = false),
 	inverseJoinColumns =
-	@JoinColumn(name = "layerList"))
+	@JoinColumn(name = "layer_id"))
 	public List<StyleEntity> getStyleList() {
 		return styleList;
 	}
 
-	@OneToMany(mappedBy = "layer")
+	@OneToMany(targetEntity = FolderEntity.class)
 	public List<FolderEntity> getFolderList() {
 		return folderList;
 	}

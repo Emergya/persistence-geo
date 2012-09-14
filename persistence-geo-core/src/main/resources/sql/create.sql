@@ -30,7 +30,7 @@
 
 -- Schema: persistence_geo_db (ya como usuario persistence_geo)
 
--- DROP SCHEMA persistence_geo;
+-- DROP SCHEMA persistence_geo CASCADE;
 
 CREATE SCHEMA persistence_geo
   AUTHORIZATION persistence_geo;

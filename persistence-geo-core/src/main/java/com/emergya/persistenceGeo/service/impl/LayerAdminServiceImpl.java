@@ -328,7 +328,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			
 			if(entity.getData() != null){
 				try {
-					File file = createFileTemp(entity.getName());
+					File file = createFileTemp(entity.getName(), entity.getType());
 					FileUtils.writeByteArrayToFile(file, entity.getData());
 					dto.setData(file);
 				} catch (IOException e) {
@@ -345,7 +345,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			}
 			// Add authorities
 			List<AbstractAuthorityEntity> authorities = authDao.findByLayer(entity.getId());
-			if(authorities != null){
+			if(authorities != null && !authorities.isEmpty()){
 				// Authorities have just one element
 				dto.setAuth(authorities.get(0).getAuthority());
 			}
@@ -378,13 +378,13 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			if(dto.getId() != null && dto.getId() > 0){
 				entity = (AbstractLayerEntity) layerDao.findById(dto.getId(), true);
 				//Grupos
-				authDao.clearUser(dto.getId());
+//				authDao.clearUser(dto.getId());
 			}else{
 				entity =  layerDao.createLayer(dto.getName());
 				entity.setFechaCreacion(now);
 			}
 			// Add own parameters
-			entity.setId(dto.getId());
+			//entity.setId(dto.getId());
 			entity.setName(dto.getName());
 			entity.setOrder(dto.getOrder());
 			entity.setType(dto.getType());
@@ -394,6 +394,16 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			entity.setPertenece_a_canal(dto.getPertenece_a_canal());
 			entity.setFechaCreacion(dto.getCreateDate());
 			entity.setFechaActualizacion(dto.getUpdateDate());
+			
+			//Layer data
+			if(dto.getData() != null){
+				try {
+					entity.setData(FileUtils.readFileToByteArray(dto.getData()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
 			// Add relational parameters
 			// Add users
 			String usersDto = dto.getUser();
@@ -492,17 +502,18 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 	 * Crea un fichero temporal 
 	 * 
 	 * @param fileName
+	 * @param type 
 	 * 
 	 * @return fichero temporal
 	 * 
 	 * @throws IOException
 	 */
-	public static File createFileTemp(String fileName) throws IOException{
+	public static File createFileTemp(String fileName, String type) throws IOException{
 		String extension = null;
 		String name = null;
 		try{
-			extension = getDocumentExtension(fileName);
-			name = getDocumentName(fileName);
+			extension = type != null ? type.toLowerCase() : getDocumentExtension(fileName);
+			name = type != null ? fileName : getDocumentName(fileName);
 		}catch (Exception e){
 			return null;
 		}

@@ -101,14 +101,14 @@ public class AuthorityEntity extends AbstractAuthorityEntity {
 	public AuthorityTypeEntity getAuthType() {
 		return (AuthorityTypeEntity) authType;
 	}
-
-	@OneToMany(mappedBy = "auth")
+	
+	@OneToMany
 	public List<LayerEntity> getLayerList() {
 		return (List<LayerEntity>) layerList;
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "zone_id", insertable = false, updatable = false)
 	public ZoneEntity getZone() {
 		return (ZoneEntity) zone;
 	}
