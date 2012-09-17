@@ -24,6 +24,9 @@
     <!-- ============================== -->
     <!-- ==========  DAO layer ======== -->
     <!-- ============================== -->
+
+	<!-- Persistence geo instancer -->
+    <bean id="instancer" class="com.emergya.persistenceGeo.model.InstancerImpl" />
 	
     <!-- Hibernate -->
     <tx:annotation-driven/>

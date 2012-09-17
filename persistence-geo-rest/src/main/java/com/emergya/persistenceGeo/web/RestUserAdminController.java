@@ -30,6 +30,7 @@
 package com.emergya.persistenceGeo.web;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.emergya.persistenceGeo.dto.AuthorityDto;
 import com.emergya.persistenceGeo.dto.UserDto;
+import com.emergya.persistenceGeo.service.UserAdminService;
 
 /**
  * Simple REST controller for user admin
@@ -52,8 +54,10 @@ public class RestUserAdminController implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -1811767661679593998L;
+	
+	private UserAdminService userAdminService;
 
-	@RequestMapping(value = "/rest/admin/createUser", method = RequestMethod.POST)
+	@RequestMapping(value = "/persistenceGeo/admin/createUser", method = RequestMethod.POST)
 	public @ResponseBody
 		UserDto createUser(
 			@RequestParam("username") String username,
@@ -66,7 +70,7 @@ public class RestUserAdminController implements Serializable{
 		return null;
 	}
 
-	@RequestMapping(value = "/rest/admin/modifyUser", method = RequestMethod.POST)
+	@RequestMapping(value = "/persistenceGeo/admin/modifyUser", method = RequestMethod.POST)
 	public @ResponseBody
 		UserDto modifyUser(
 			@RequestParam("username") String username,
@@ -79,7 +83,7 @@ public class RestUserAdminController implements Serializable{
 		return null;
 	}
 
-	@RequestMapping(value = "/rest/admin/createGroup", method = RequestMethod.POST)
+	@RequestMapping(value = "/persistenceGeo/admin/createGroup", method = RequestMethod.POST)
 	public @ResponseBody
 		AuthorityDto createGroup(
 			@RequestParam("userGroup") String userGroup,
@@ -88,6 +92,14 @@ public class RestUserAdminController implements Serializable{
 		//TODO: Core call 
 		
 		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/persistenceGeo/getAllUsers", method = RequestMethod.GET)
+	public @ResponseBody
+	List<UserDto> getAllUsers() {
+		//TODO: get user by authority group of user 
+		return (List<UserDto>) userAdminService.getAll();
 	}
 
 }

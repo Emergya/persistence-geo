@@ -78,7 +78,7 @@ public class RestLayersAdminController implements Serializable{
 	 * 
 	 * @return JSON file with layers
 	 */
-	@RequestMapping(value = "/rest/loadLayers/{username}", method = RequestMethod.GET, 
+	@RequestMapping(value = "/persistenceGeo/loadLayers/{username}", method = RequestMethod.GET, 
 			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody
 	List<LayerDto> loadLayers(@PathVariable String username){
@@ -112,7 +112,7 @@ public class RestLayersAdminController implements Serializable{
 	 * 
 	 * @return JSON file with layers
 	 */
-	@RequestMapping(value = "/rest/loadLayersGroup/{group}", method = RequestMethod.GET)
+	@RequestMapping(value = "/persistenceGeo/loadLayersGroup/{group}", method = RequestMethod.GET)
 	public @ResponseBody 
 	List<LayerDto> loadLayersGroup(@PathVariable String group){
 		List<LayerDto> layers = null;
@@ -151,7 +151,7 @@ public class RestLayersAdminController implements Serializable{
 	 * 
 	 * @return JSON file with layers
 	 */
-	@RequestMapping(value = "/rest/loadLayersFolder/{folder}", method = RequestMethod.GET, 
+	@RequestMapping(value = "/persistenceGeo/loadLayersFolder/{folder}", method = RequestMethod.GET, 
 			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody
 	List<LayerDto> loadLayersFolder(@PathVariable String folder){
@@ -175,7 +175,7 @@ public class RestLayersAdminController implements Serializable{
 	 * 
 	 * @return JSON file with layers
 	 */
-	@RequestMapping(value = "/rest/moveLayerTo", method = RequestMethod.GET, 
+	@RequestMapping(value = "/persistenceGeo/moveLayerTo", method = RequestMethod.GET, 
 			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody
 	List<LayerDto> moveLayerTo(@RequestParam("toFolder") String toFolder,
@@ -199,9 +199,44 @@ public class RestLayersAdminController implements Serializable{
 	 * @param username
 	 * @param uploadfile
 	 */
-	@RequestMapping(value = "/rest/saveLayerByUser/{username}", method = RequestMethod.POST)
+	@RequestMapping(value = "/persistenceGeo/saveLayerByUser/{username}/{name}/{type}", method = RequestMethod.GET)
 	public @ResponseBody 
-	void saveLayerByUser(@PathVariable String username,
+	Boolean saveLayerByUser(@PathVariable String username,
+			@PathVariable("name") String name,
+			@PathVariable("type") String type){
+		try{
+			/*
+			//TODO: Secure with logged user
+			String username = ((UserDetails) SecurityContextHolder.getContext()
+					.getAuthentication().getPrincipal()).getUsername(); 
+			 */
+			// Create the layerDto
+			LayerDto layer = new LayerDto();
+			// Assign the user
+			layer.setUser(username);
+			// Add request parameter
+			layer.setName(name);
+			layer.setType(type);
+			
+			// Save the layer
+			layerAdminService.create(layer);
+			
+			return true;
+		}catch (Exception e){
+			System.out.println(e);
+			return false;
+		}
+	}
+
+	/**
+	 * This method saves a layer related with a user
+	 * 
+	 * @param username
+	 * @param uploadfile
+	 */
+	@RequestMapping(value = "/persistenceGeo/saveLayerByUser/{username}", method = RequestMethod.POST)
+	public @ResponseBody 
+	LayerDto saveLayerByUser(@PathVariable String username,
 			@RequestParam("name") String name,
 			@RequestParam("type") String type,
 			@RequestParam(value="properties", required=false) Map<String, String> properties,
@@ -212,16 +247,6 @@ public class RestLayersAdminController implements Serializable{
 			String username = ((UserDetails) SecurityContextHolder.getContext()
 					.getAuthentication().getPrincipal()).getUsername(); 
 			 */
-			// Get the user and his layers
-			UserDto user = userAdminService.obtenerUsuario(username);
-			List<String> layersFromUser = user.getLayerList();
-			// Add the new layer
-			if(layersFromUser != null){
-				layersFromUser.add("Nombre de la capa");
-				user.setLayerList(layersFromUser);
-			}
-			// Save the user
-			userAdminService.update(user);
 			// Create the layerDto
 			LayerDto layer = new LayerDto();
 			// Assign the user
@@ -241,9 +266,12 @@ public class RestLayersAdminController implements Serializable{
 			}
 			
 			// Save the layer
-			layerAdminService.create(layer);
+			layer = (LayerDto) layerAdminService.create(layer);
+			
+			return layer;
 		}catch (Exception e){
 			System.out.println(e);
+			return null;
 		}
 	}
 
@@ -253,7 +281,7 @@ public class RestLayersAdminController implements Serializable{
 	 * @param group
 	 * @param uploadfile
 	 */
-	@RequestMapping(value = "/rest/saveLayer/{group}", method = RequestMethod.POST)
+	@RequestMapping(value = "/persistenceGeo/saveLayer/{group}", method = RequestMethod.POST)
 	public @ResponseBody 
 	void saveLayerByGroup(@PathVariable Long group,
 			@RequestParam("name") String name,
@@ -297,7 +325,7 @@ public class RestLayersAdminController implements Serializable{
 	 * @param group
 	 * @param uploadfile
 	 */
-	@RequestMapping(value = "/rest/saveFolder", method = RequestMethod.POST)
+	@RequestMapping(value = "/persistenceGeo/saveFolder", method = RequestMethod.POST)
 	public @ResponseBody 
 	void saveFolder(@RequestParam("name") String name,
 			@RequestParam("type") String type,

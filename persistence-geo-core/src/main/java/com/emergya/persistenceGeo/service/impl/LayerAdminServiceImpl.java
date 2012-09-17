@@ -271,19 +271,9 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 	 */
 	public void addUserToLayer(Long user_id, Long layer_id) {
 		AbstractLayerEntity entity = layerDao.findById(layer_id, false);
-		AbstractUserEntity user = entity.getUser();
-		if(user == null){
-			user = instancer.createUser();
-		}
-		boolean enc = false;
-		if(user.getId().equals(user_id)){
-			enc = true;
-		}
-		
-		if(!enc){
-			entity.setUser(userDao.findById(user_id, false));
-			layerDao.save(entity);
-		}
+		AbstractUserEntity user = userDao.findById(user_id, false);
+		entity.setUser(user);
+		layerDao.save(entity);
 	}
 	
 	/**
@@ -331,7 +321,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			
 			if(entity.getData() != null){
 				try {
-					File file = createFileTemp(entity.getName(), entity.getType());
+					File file = com.emergya.persistenceGeo.utils.FileUtils.createFileTemp(entity.getName(), entity.getType());
 					FileUtils.writeByteArrayToFile(file, entity.getData());
 					dto.setData(file);
 				} catch (IOException e) {
@@ -394,6 +384,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 //				authDao.clearUser(dto.getId());
 			}else{
 				entity =  layerDao.createLayer(dto.getName());
+				dto.setId(entity.getId());
 				entity.setFechaCreacion(now);
 			}
 			
@@ -418,8 +409,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			entity.setPublicized(dto.getPublicized());
 			entity.setEnabled(dto.getEnabled());
 			entity.setPertenece_a_canal(dto.getPertenece_a_canal());
-			entity.setFechaCreacion(dto.getCreateDate());
-			entity.setFechaActualizacion(dto.getUpdateDate());
+			entity.setFechaActualizacion(now);
 			
 			//Layer data
 			if(dto.getData() != null){
@@ -520,62 +510,6 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			dto.setStyle(entity.getStyle().getName());
 		}
 		return dto;
-	}
-
-	private static final String PUNTO = ".";
-
-	/**
-	 * Crea un fichero temporal 
-	 * 
-	 * @param fileName
-	 * @param type 
-	 * 
-	 * @return fichero temporal
-	 * 
-	 * @throws IOException
-	 */
-	public static File createFileTemp(String fileName, String type) throws IOException{
-		String extension = null;
-		String name = null;
-		try{
-			extension = type != null ? type.toLowerCase() : getDocumentExtension(fileName);
-			name = type != null ? fileName : getDocumentName(fileName);
-		}catch (Exception e){
-			return null;
-		}
-		return File.createTempFile(name, extension);
-	}
-
-	/**
-	 * Obtiene a extension
-	 * 
-	 * @param path
-	 * @return extension del documento 
-	 */
-	public static String getDocumentExtension(String path) {
-		String extension = null;
-		try{
-			extension = path.substring(path.lastIndexOf(PUNTO)+1);
-		}catch (Exception e){
-			return null;
-		}
-		return extension;
-	}
-
-	/**
-	 * Obtiene el nombre del documento
-	 * 
-	 * @param path
-	 * @return nombre del documento 
-	 */
-	public static String getDocumentName(String path) {
-		String name = null;
-		try{
-			name = path.substring(0, path.lastIndexOf(PUNTO));
-		}catch (Exception e){
-			return null;
-		}
-		return name;
 	}
 
 	
