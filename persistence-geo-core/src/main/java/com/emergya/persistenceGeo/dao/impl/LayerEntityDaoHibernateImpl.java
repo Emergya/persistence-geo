@@ -33,6 +33,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,6 +148,26 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 	public List<AbstractStyleEntity> findStyleByLayer(Long layerID) {
 		AbstractLayerEntity entity = findById(layerID, false);
 		return entity.getStyleList();
+	}
+
+	@Override
+	public List<AbstractLayerEntity> findByUserId(Long id) {
+		
+		Criteria criteria = getSession().createCriteria(persistentClass)
+						.createAlias("user", "user")
+						.add(Restrictions.eq("user.id", id));
+		
+		return criteria.list();
+	}
+
+	@Override
+	public List<AbstractLayerEntity> findByAuthorityId(Long id) {
+		
+		Criteria criteria = getSession().createCriteria(persistentClass)
+						.createAlias("auth", "auth")
+						.add(Restrictions.eq("auth.id", id));
+		
+		return criteria.list();
 	}
 
 }

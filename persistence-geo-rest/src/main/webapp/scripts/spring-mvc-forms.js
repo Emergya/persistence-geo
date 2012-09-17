@@ -1,9 +1,72 @@
-var saveLayerUrl = "rest/persistenceGeo/saveLayerByUser/userTest";
+var saveLayerBaseUrl = "rest/persistenceGeo/saveLayerByUser/";
+var saveLayerUrl;
+
+var createUserUrl = "rest/persistenceGeo/admin/createUser";
 
 var loadLayersUrl = "rest/persistenceGeo/loadLayers/";
 
+var allGroupsUrl = "rest/persistenceGeo/getAllGroups";
+
+var allUsersUrl = "rest/persistenceGeo/getAllUsers";
+
 Ext.onReady(function(){
 	Ext.QuickTips.init();
+	
+	var fileCombo = {
+			xtype : 'fileuploadfield',
+			emptyText : "Select layer file...",
+			fieldLabel : "File",
+			name : 'uploadfile',
+			cls : 'upload-button',
+			buttonText : '',
+			buttonCfg : {
+				iconCls : 'upload-icon'
+			}
+		};
+
+	var saveUserForm = new Ext.FormPanel({
+			url: createUserUrl,
+	        title: 'Save User Form',
+			renderTo: Ext.getBody(),
+			frame: true,
+			cls: 'my-form-class',
+			width: 350,
+			height: 200,
+			items: [{
+					xtype: 'textfield',
+					fieldLabel: 'Name',
+					name: 'username'
+			},
+			{
+		         fieldLabel:'Select group'
+				,xtype:'combo'
+				,name: 'userGroup'
+		        ,displayField:'nombre'
+		        ,valueField:'id'
+		        ,store: new Ext.data.JsonStore({
+		             url: allGroupsUrl,
+		             remoteSort: false,
+		             autoLoad:true,
+		             idProperty: 'id',
+		             root: 'data',
+		             totalProperty: 'results',
+		             fields: ['id','nombre']
+		         })
+		        ,triggerAction:'all'
+		        ,mode:'local'
+		        ,listeners:{select:{fn:function(combo, value) {
+		        	console.log(value);
+		            }}
+		        }
+			}],
+		    buttons: [{
+				text: 'Save',
+				handler: function() {
+					fnLoadForm(saveUserForm, createUserUrl);
+					saveLayerForm.refresh();
+				}
+			}]
+	});
 
 	var saveLayerForm = new Ext.FormPanel({
 			url: saveLayerUrl,
@@ -12,6 +75,7 @@ Ext.onReady(function(){
 			frame: true,
 			cls: 'my-form-class',
 			width: 350,
+			height: 200,
 			items: [{
 					xtype: 'textfield',
 					fieldLabel: 'Name',
@@ -20,9 +84,30 @@ Ext.onReady(function(){
 					xtype: 'textfield',
 					fieldLabel: 'Type',
 					name: 'type'
-			}],
+			},
+			{
+		         fieldLabel:'Select user'
+				,xtype:'combo'
+		        ,displayField:'username'
+		        ,valueField:'id'
+		        ,store: new Ext.data.JsonStore({
+		             url: allUsersUrl,
+		             remoteSort: false,
+		             autoLoad:true,
+		             idProperty: 'username',
+		             root: 'data',
+		             totalProperty: 'results',
+		             fields: ['id','username']
+		         })
+		        ,triggerAction:'all'
+		        ,mode:'local'
+		        ,listeners:{select:{fn:function(combo, value) {
+		        	saveLayerUrl = saveLayerBaseUrl + value;
+		            }}
+		        }
+			},
+			fileCombo],
 		    buttons: [{
-				id: 'mf.btn.load',
 				text: 'Save',
 				handler: function() {
 					fnLoadForm(saveLayerForm, saveLayerUrl);
@@ -35,15 +120,20 @@ Ext.onReady(function(){
 	
 	 var window = new Ext.Window({
 	        title: 'Example Forms',
-	        width: 350,
-	        height:200,
+	        width: 600,
+	        height:400,
 	        minWidth: 200,
 	        minHeight: 200,
 	        layout: 'fit',
 	        plain:true,
 	        bodyStyle:'padding:5px;',
 	        buttonAlign:'center',
-	        items: saveLayerForm
+	        items: [{
+	        	xtype: "tabpanel",
+	            anchor: "95%",
+	            activeTab: 0,
+	            items: [saveUserForm,saveLayerForm]
+	        	}]
 	    });
 	 
 	 window.show();

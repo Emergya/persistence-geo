@@ -47,7 +47,6 @@ import com.emergya.persistenceGeo.dao.ZoneEntityDao;
 import com.emergya.persistenceGeo.dto.AuthorityDto;
 import com.emergya.persistenceGeo.dto.UserDto;
 import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
-import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
@@ -252,15 +251,15 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 			if (authority != null) {
 				dto.setAuthority(authority.getAuthority());
 			}
-			// Add layer
-			List<AbstractLayerEntity> layers = userDao.findLayerByUserID((Long) user.getId());
-			List<String> layersDto = new LinkedList<String>();
-			if (layersDto != null && layers != null) {
-				for(AbstractLayerEntity layer: layers){
-					layersDto.add(layer.getName());
-				}
-				dto.setLayerList(layersDto);
-			}
+//			// Add layer
+//			List<AbstractLayerEntity> layers = user.getLayerList();
+//			List<String> layersDto = new LinkedList<String>();
+//			if (layersDto != null && layers != null) {
+//				for(AbstractLayerEntity layer: layers){
+//					layersDto.add(layer.getName());
+//				}
+//				dto.setLayerList(layersDto);
+//			}
 		}
 		return dto;
 	}

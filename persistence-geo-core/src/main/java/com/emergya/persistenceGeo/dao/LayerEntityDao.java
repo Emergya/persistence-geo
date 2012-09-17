@@ -98,6 +98,24 @@ public interface LayerEntityDao extends GenericDAO<AbstractLayerEntity, Long> {
 	public List<AbstractFolderEntity> findFolderByLayer(Long layerID);
 	
 	/**
+	 * Get a layers list by user
+	 * 
+	 * @param <code>id</code>
+	 * 
+	 * @return Entities list associated with the identifier or null if not found 
+	 */
+	public List<AbstractLayerEntity> findByUserId(Long id);
+	
+	/**
+	 * Get a layers list by authority
+	 * 
+	 * @param <code>id</code>
+	 * 
+	 * @return Entities list associated with the identifier or null if not found 
+	 */
+	public List<AbstractLayerEntity> findByAuthorityId(Long id);
+	
+	/**
 	 * Get a style list by the layer identifier
 	 * 
 	 * @param <code>layerID</code>

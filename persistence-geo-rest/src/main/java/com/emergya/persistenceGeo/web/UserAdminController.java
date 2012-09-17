@@ -31,7 +31,6 @@ package com.emergya.persistenceGeo.web;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -163,8 +162,6 @@ public class UserAdminController extends AbstractController
 		usuario.setFechaActualizacion(new Date());
 		// Set relations attributes
 		usuario.setAuthority("");
-		usuario.setLayerList(new LinkedList<String>());
-		usuario.setPrivateLayerList(new LinkedList<String>());
 		
 		if(usuario.getId() != null){
 			usuario = (UserDto) userAdminService.update(usuario);

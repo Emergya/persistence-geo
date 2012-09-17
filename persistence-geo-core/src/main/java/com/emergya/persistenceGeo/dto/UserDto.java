@@ -31,7 +31,6 @@ package com.emergya.persistenceGeo.dto;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Dto de usuario
@@ -61,8 +60,6 @@ public class UserDto implements Serializable {
     
     //private List<String> grupos;
     private String authority;
-    private List<String> layer;
-    private List<String> privateLayerList;
 	
 	public Long getId() {
 		return id;
@@ -142,18 +139,6 @@ public class UserDto implements Serializable {
 	}
 	public void setAuthority(String authority) {
 		this.authority = authority;
-	}
-	public List<String> getLayerList() {
-		return layer;
-	}
-	public void setLayerList(List<String> layer) {
-		this.layer = layer;
-	}
-	public List<String> getPrivateLayerList() {
-		return privateLayerList;
-	}
-	public void setPrivateLayerList(List<String> privateLayerList) {
-		this.privateLayerList = privateLayerList;
 	}
 
 }

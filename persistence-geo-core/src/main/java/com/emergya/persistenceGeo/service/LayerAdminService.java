@@ -69,6 +69,24 @@ public interface LayerAdminService extends AbstractService {
 	public static final String TYPE_WFS = "WFS";
 
 	/**
+	 * Get a layer list by user id
+	 * 
+	 * @param layerName
+	 * 
+	 * @return list
+	 */
+	public List<LayerDto> getLayersByUser(Long idUser);
+
+	/**
+	 * Get a layer list by authority id
+	 * 
+	 * @param layerName
+	 * 
+	 * @return list
+	 */
+	public List<LayerDto> getLayersByAuthority(Long id);
+
+	/**
 	 * Get a layer list by name
 	 * 
 	 * @param layerName

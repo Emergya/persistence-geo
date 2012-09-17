@@ -37,6 +37,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -78,6 +79,7 @@ public class RestLayersAdminController implements Serializable{
 	 * 
 	 * @return JSON file with layers
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/persistenceGeo/loadLayers/{username}", method = RequestMethod.GET, 
 			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody
@@ -92,15 +94,14 @@ public class RestLayersAdminController implements Serializable{
 			if(username != null){
 				layers = new LinkedList<LayerDto>();
 				UserDto userDto = userAdminService.obtenerUsuario(username);
-				List<String> layersName = userDto.getLayerList();
-				if(layersName != null){
-					for(String layerName: layersName){
-						layers.addAll(layerAdminService.getLayersByName(layerName));
-					}
+				if(userDto.getId() != null){
+					layers = layerAdminService.getLayersByUser(userDto.getId());
+				}else{
+					layers = ListUtils.EMPTY_LIST;
 				}
 			}
 		}catch (Exception e){
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		return layers;
 	}
@@ -139,7 +140,7 @@ public class RestLayersAdminController implements Serializable{
 				}
 			}
 		}catch (Exception e){
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		return layers;
 	}
@@ -163,7 +164,7 @@ public class RestLayersAdminController implements Serializable{
 					.getAuthentication().getPrincipal()).getUsername(); 
 			 */
 		}catch (Exception e){
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		return layers;
 	}
@@ -188,7 +189,7 @@ public class RestLayersAdminController implements Serializable{
 					.getAuthentication().getPrincipal()).getUsername(); 
 			 */
 		}catch (Exception e){
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		return layers;
 	}
@@ -223,7 +224,7 @@ public class RestLayersAdminController implements Serializable{
 			
 			return true;
 		}catch (Exception e){
-			System.out.println(e);
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -270,7 +271,7 @@ public class RestLayersAdminController implements Serializable{
 			
 			return layer;
 		}catch (Exception e){
-			System.out.println(e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -315,7 +316,7 @@ public class RestLayersAdminController implements Serializable{
 			// Save the layer
 			layerAdminService.create(layer);
 		}catch (Exception e){
-			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 
@@ -339,7 +340,7 @@ public class RestLayersAdminController implements Serializable{
 					.getAuthentication().getPrincipal()).getUsername(); 
 			 */
 		}catch (Exception e){
-			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 

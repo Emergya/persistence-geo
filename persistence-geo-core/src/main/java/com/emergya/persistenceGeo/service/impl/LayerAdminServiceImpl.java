@@ -512,6 +512,16 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 		return dto;
 	}
 
+	@Override
+	public List<LayerDto> getLayersByUser(Long idUser) {
+		return (List<LayerDto>) entitiesToDtos(layerDao.findByUserId(idUser));
+	}
+
+	@Override
+	public List<LayerDto> getLayersByAuthority(Long id) {
+		return (List<LayerDto>) entitiesToDtos(layerDao.findByAuthorityId(id));
+	}
+
 	
 
 }

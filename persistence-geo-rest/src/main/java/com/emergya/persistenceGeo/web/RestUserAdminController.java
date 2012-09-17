@@ -30,8 +30,13 @@
 package com.emergya.persistenceGeo.web;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.ListUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -55,6 +60,7 @@ public class RestUserAdminController implements Serializable{
 	 */
 	private static final long serialVersionUID = -1811767661679593998L;
 	
+	@Resource
 	private UserAdminService userAdminService;
 
 	@RequestMapping(value = "/persistenceGeo/admin/createUser", method = RequestMethod.POST)
@@ -62,12 +68,17 @@ public class RestUserAdminController implements Serializable{
 		UserDto createUser(
 			@RequestParam("username") String username,
 			@RequestParam("userGroup") String userGroup,
-			@RequestParam("userAuth") String userAuth,
 			@RequestParam(value="userZone", required=false) String userZone) {
-
-		//TODO: Core call 
 		
-		return null;
+		UserDto user = new UserDto();
+		user.setUsername(username);
+		user.setPassword(username);
+		user.setAuthority(userGroup);
+		if(userZone != null){
+			//TODO:
+		}
+		
+		return (UserDto) userAdminService.create(user);
 	}
 
 	@RequestMapping(value = "/persistenceGeo/admin/modifyUser", method = RequestMethod.POST)
@@ -94,12 +105,34 @@ public class RestUserAdminController implements Serializable{
 		return null;
 	}
 	
+	protected final String RESULTS= "results";
+	protected final String ROOT= "data";
+	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/persistenceGeo/getAllUsers", method = RequestMethod.GET)
 	public @ResponseBody
-	List<UserDto> getAllUsers() {
-		//TODO: get user by authority group of user 
-		return (List<UserDto>) userAdminService.getAll();
+	Map<String, Object> getAllUsers() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		//TODO: get user by authority group of user logged
+		List<UserDto> users = (List<UserDto>) userAdminService.getAll();
+		
+		result.put(RESULTS, users != null ? users.size() : 0);
+		result.put(ROOT, users != null ? users : ListUtils.EMPTY_LIST);
+		
+		return result;
+	}
+	
+	@RequestMapping(value = "/persistenceGeo/getAllGroups", method = RequestMethod.GET)
+	public @ResponseBody
+	Map<String, Object> getAllGroups() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		//TODO: get user by authority group of user logged
+		List<AuthorityDto> groups = (List<AuthorityDto>) userAdminService.obtenerGruposUsuarios();
+		
+		result.put(RESULTS, groups != null ? groups.size() : 0);
+		result.put(ROOT, groups != null ? groups : ListUtils.EMPTY_LIST);
+		
+		return result;
 	}
 
 }
