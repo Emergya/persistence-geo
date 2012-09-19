@@ -152,7 +152,7 @@ public class LayerEntity extends AbstractLayerEntity {
 		return folderList;
 	}
 
-	@Column(name = "data")
+	@Column(name = "data", nullable=true)
 	public byte[] getData() {
 		return data;
 	}

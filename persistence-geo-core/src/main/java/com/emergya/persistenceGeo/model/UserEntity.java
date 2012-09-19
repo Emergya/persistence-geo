@@ -30,7 +30,6 @@
 package com.emergya.persistenceGeo.model;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,7 +38,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
@@ -50,7 +48,6 @@ import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
-@SuppressWarnings("unchecked")
 @Entity
 @Table(name = "users")
 public class UserEntity extends AbstractUserEntity {
@@ -129,10 +126,5 @@ public class UserEntity extends AbstractUserEntity {
     @JoinColumn(name = "user_id")
 	public AuthorityEntity getAuthority() {
 		return (AuthorityEntity) authority;
-	}
-
-	@OneToMany(mappedBy = "user")
-	public List<LayerEntity> getLayerList() {
-		return layerList;
 	}
 }

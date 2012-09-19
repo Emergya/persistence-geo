@@ -107,6 +107,31 @@ public class RestLayersAdminController implements Serializable{
 	}
 
 	/**
+	 * This method loads layers.json related with a user
+	 * 
+	 * @param username
+	 * 
+	 * @return JSON file with layers
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/persistenceGeo/getLayerResource/{layer_id}", method = RequestMethod.GET, 
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	public @ResponseBody
+	List<LayerDto> loadLayer(@PathVariable String layerId){
+		List<LayerDto> layers = null;
+		try{
+			/*
+			//TODO: Secure with logged user
+			String username = ((UserDetails) SecurityContextHolder.getContext()
+					.getAuthentication().getPrincipal()).getUsername(); 
+			 */
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return layers;
+	}
+
+	/**
 	 * This method loads layers.json related with a group
 	 * 
 	 * @param username

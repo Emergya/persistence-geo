@@ -41,7 +41,6 @@ import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.UserEntityDao;
 import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
-import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
 
@@ -150,21 +149,5 @@ public class UserEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstract
 			auth = res.get(0).getAuthority();
 		}
 		return auth;
-	}
-
-	/**
-	 * Get a layer by a user identifier
-	 * 
-	 * @param user_id
-	 * 
-	 * @return Entity associated with the user identifier or null if not found
-	 */
-	public List<AbstractLayerEntity> findLayerByUserID(Long user_id) {
-		List<AbstractUserEntity> res = findByCriteria(Restrictions.eq("id", user_id));
-		List<AbstractLayerEntity> layer = null;
-		if(res != null && res.size()>0){
-			layer = res.get(0).getLayerList();
-		}
-		return layer;
 	}
 }

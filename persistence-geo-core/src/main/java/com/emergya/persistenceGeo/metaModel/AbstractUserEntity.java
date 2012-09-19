@@ -31,7 +31,6 @@ package com.emergya.persistenceGeo.metaModel;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Entidad de usuario
@@ -39,7 +38,6 @@ import java.util.List;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  * 
  */
-@SuppressWarnings("rawtypes")
 public abstract class AbstractUserEntity extends AbstractEntity {
 
 	/**
@@ -61,7 +59,6 @@ public abstract class AbstractUserEntity extends AbstractEntity {
 	protected Date fechaActualizacion;
 
 	protected AbstractAuthorityEntity authority;
-	protected List layerList;
 
 	/**
 	 * @return the username
@@ -117,11 +114,6 @@ public abstract class AbstractUserEntity extends AbstractEntity {
 	 * @return the authority
 	 */
 	public abstract AbstractAuthorityEntity getAuthority();
-
-	/**
-	 * @return the layerList
-	 */
-	public abstract List getLayerList();
 
 	/**
 	 * @param user_id
@@ -217,13 +209,5 @@ public abstract class AbstractUserEntity extends AbstractEntity {
 	 */
 	public void setAuthority(AbstractAuthorityEntity authority) {
 		this.authority = authority;
-	}
-
-	/**
-	 * @param layerList
-	 *            the layerList to set
-	 */
-	public void setLayerList(List layerList) {
-		this.layerList = layerList;
 	}
 }

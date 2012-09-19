@@ -72,6 +72,7 @@ Ext.onReady(function(){
 			url: saveLayerUrl,
 	        title: 'Save layer Form',
 			renderTo: Ext.getBody(),
+	        fileUpload: true,
 			frame: true,
 			cls: 'my-form-class',
 			width: 350,
@@ -102,7 +103,7 @@ Ext.onReady(function(){
 		        ,triggerAction:'all'
 		        ,mode:'local'
 		        ,listeners:{select:{fn:function(combo, value) {
-		        	saveLayerUrl = saveLayerBaseUrl + value;
+		        	saveLayerUrl = saveLayerBaseUrl + value.id;
 		            }}
 		        }
 			},
