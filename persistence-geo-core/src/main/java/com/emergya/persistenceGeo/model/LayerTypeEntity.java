@@ -1,7 +1,7 @@
 /*
- * LayerPropertyEntity.java
+ * LayerEntity.java
  * 
- * Copyright (C) 2012
+ * Copyright (C) 2011
  * 
  * This file is part of Proyecto persistenceGeo
  * 
@@ -30,52 +30,56 @@
 package com.emergya.persistenceGeo.model;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.emergya.persistenceGeo.metaModel.AbstractLayerPropertyEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractLayerTypeEntity;
 
 /**
- * Layer property entity mapping
+ * Layer type entity
  * 
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
 @Entity
-@Table(name = "layer_properties")
-public class LayerPropertyEntity extends AbstractLayerPropertyEntity {
+@Table(name = "layer_type")
+public class LayerTypeEntity extends AbstractLayerTypeEntity {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6555360095146423311L;
+	private static final long serialVersionUID = -4009179253952548062L;
 
 	@Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
 	public Long getId() {
-		return this.id;
+		return id;
 	}
 
-    @Column(name = "name")
+	@Column(name = "name")
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
-    @Column(name = "value")
-	public String getValue() {
-		return this.value;
+	@SuppressWarnings("unchecked")
+	@OneToMany(targetEntity = LayerTypePropertyEntity.class, orphanRemoval = true,
+			cascade = {CascadeType.ALL})
+	public List<LayerTypePropertyEntity> getDefaultProperties() {
+		return defaultProperties;
 	}
 
+	@Override
 	public void setId(Serializable id) {
 		this.id = (Long) id;
-	}
-
-	
+	}	
 
 }

@@ -56,7 +56,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
  */
 @SuppressWarnings("unchecked")
 @Entity
-@Table(name = "layers")
+@Table(name = "layer")
 public class LayerEntity extends AbstractLayerEntity {
 
 	/**
@@ -82,9 +82,10 @@ public class LayerEntity extends AbstractLayerEntity {
 		return order;
 	}
 
-	@Column(name = "type_layer")
-	public String getType() {
-		return type;
+	@ManyToOne
+    @JoinColumn(name = "layer_typ_id")
+	public LayerTypeEntity getType() {
+		return (LayerTypeEntity) type;
 	}
 
 	@Column(name = "server_resource")

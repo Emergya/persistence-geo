@@ -50,7 +50,7 @@ public abstract class AbstractLayerEntity extends AbstractEntity {
 	
 	protected String name;
 	protected String order;
-	protected String type;
+	protected AbstractLayerTypeEntity type;
 	protected String server_resource;
 	protected byte[] data;
 
@@ -89,7 +89,7 @@ public abstract class AbstractLayerEntity extends AbstractEntity {
 	/**
 	 * @return the type
 	 */
-	public abstract String getType();
+	public abstract AbstractLayerTypeEntity getType();
 	/**
 	 * @return the server_resource
 	 */
@@ -165,7 +165,7 @@ public abstract class AbstractLayerEntity extends AbstractEntity {
 	/**
 	 * @param type the type to set
 	 */
-	public void setType(String type) {
+	public void setType(AbstractLayerTypeEntity type) {
 		this.type = type;
 	}
 

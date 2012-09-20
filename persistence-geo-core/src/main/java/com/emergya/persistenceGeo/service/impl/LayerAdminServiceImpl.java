@@ -47,6 +47,7 @@ import com.emergya.persistenceGeo.dao.AbstractGenericDao;
 import com.emergya.persistenceGeo.dao.AuthorityEntityDao;
 import com.emergya.persistenceGeo.dao.FolderEntityDao;
 import com.emergya.persistenceGeo.dao.LayerEntityDao;
+import com.emergya.persistenceGeo.dao.LayerTypeEntityDao;
 import com.emergya.persistenceGeo.dao.RuleEntityDao;
 import com.emergya.persistenceGeo.dao.StyleEntityDao;
 import com.emergya.persistenceGeo.dao.UserEntityDao;
@@ -57,6 +58,8 @@ import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractLayerPropertyEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractLayerTypeEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractLayerTypePropertyEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractRuleEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
@@ -80,6 +83,8 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 	private Instancer instancer;
 	@Resource
 	private LayerEntityDao layerDao;
+	@Resource
+	private LayerTypeEntityDao layerTypeDao;
 	@Resource
 	private StyleEntityDao styleDao;
 	@Resource
@@ -311,7 +316,6 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			dto.setId(entity.getId());
 			dto.setName(entity.getName());
 			dto.setOrder(entity.getOrder());
-			dto.setType(entity.getType());
 			dto.setServer_resource(entity.getServer_resource());
 			dto.setPublicized(entity.getPublicized());
 			dto.setEnabled(entity.getEnabled());
@@ -319,9 +323,15 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			dto.setCreateDate(entity.getFechaCreacion());
 			dto.setUpdateDate(entity.getFechaActualizacion());
 			
+			//Layer type
+			if(entity.getType() != null
+					&& entity.getType().getName() != null){
+				dto.setType(entity.getType().getName());
+			}
+			
 			if(entity.getData() != null){
 				try {
-					File file = com.emergya.persistenceGeo.utils.FileUtils.createFileTemp(entity.getName(), entity.getType());
+					File file = com.emergya.persistenceGeo.utils.FileUtils.createFileTemp(entity.getName(), entity.getType() != null ? entity.getType().getName() : "xml");
 					FileUtils.writeByteArrayToFile(file, entity.getData());
 					dto.setData(file);
 				} catch (IOException e) {
@@ -404,12 +414,16 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			//entity.setId(dto.getId());
 			entity.setName(dto.getName());
 			entity.setOrder(dto.getOrder());
-			entity.setType(dto.getType());
 			entity.setServer_resource(dto.getServer_resource());
 			entity.setPublicized(dto.getPublicized());
 			entity.setEnabled(dto.getEnabled());
 			entity.setPertenece_a_canal(dto.getPertenece_a_canal());
 			entity.setFechaActualizacion(now);
+			
+			//Layer type
+			if(dto.getType() != null){
+				entity.setType(layerTypeDao.getLayerType(dto.getType()));
+			}
 			
 			//Layer data
 			if(dto.getData() != null){
@@ -522,6 +536,26 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 		return (List<LayerDto>) entitiesToDtos(layerDao.findByAuthorityId(id));
 	}
 
-	
+	@Override
+	public List<String> getAllLayerTypes() {
+		List<String> result = new LinkedList<String>();
+		
+		for(AbstractLayerTypeEntity layerType: layerTypeDao.findAll()){
+			result.add(layerType.getName());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public List<String> getAllLayerTypeProperties(String layerType) {
+		List<String> result = new LinkedList<String>();
+		
+		for(AbstractLayerTypePropertyEntity layerTypeProperty: layerTypeDao.getLayerTypeProperties(layerType)){
+			result.add(layerTypeProperty.getName());
+		}
+		
+		return result;
+	}
 
 }

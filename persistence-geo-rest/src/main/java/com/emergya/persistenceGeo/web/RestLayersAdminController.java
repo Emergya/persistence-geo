@@ -38,12 +38,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,7 +49,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.support.ContextExposingHttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.emergya.persistenceGeo.dto.AuthorityDto;
@@ -80,8 +77,8 @@ public class RestLayersAdminController implements Serializable{
 	
 	private Map<Long, File> loadedLayers = new HashMap<Long, File>();
 	
-	@Autowired
-	private ServletContext context;
+	protected final String RESULTS= "results";
+	protected final String ROOT= "data";
 
 	/**
 	 * This method loads layers.json related with a user
@@ -102,8 +99,6 @@ public class RestLayersAdminController implements Serializable{
 			String username = ((UserDetails) SecurityContextHolder.getContext()
 					.getAuthentication().getPrincipal()).getUsername(); 
 			 */
-			context.getRealPath("/");
-			context.getContextPath();
 			if(username != null){
 				layers = new LinkedList<LayerDto>();
 				UserDto userDto = userAdminService.obtenerUsuario(username);
@@ -124,6 +119,47 @@ public class RestLayersAdminController implements Serializable{
 			e.printStackTrace();
 		}
 		return layers;
+	}
+
+	/**
+	 * This method loads json file related with a user
+	 * 
+	 * @param username
+	 * 
+	 * @return JSON file with layer type properties
+	 */
+	@RequestMapping(value = "/persistenceGeo/getLayerTypeProperties/{layerType}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public @ResponseBody
+	Map<String, Object> getLayerTypeProperties(@PathVariable String layerType) {
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		List<String> list = layerAdminService
+				.getAllLayerTypeProperties(layerType);
+
+		result.put(RESULTS, list != null ? list.size() : 0);
+		result.put(ROOT, list != null ? list : ListUtils.EMPTY_LIST);
+
+		return result;
+	}
+
+	/**
+	 * This method loads json file with layer types
+	 * 
+	 * @param username
+	 * 
+	 * @return JSON file with layer types
+	 */
+	@RequestMapping(value = "/persistenceGeo/getLayerTypes", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public @ResponseBody
+	Map<String, Object> getLayerTypes() {
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		List<String> list = layerAdminService.getAllLayerTypes();
+
+		result.put(RESULTS, list != null ? list.size() : 0);
+		result.put(ROOT, list != null ? list : ListUtils.EMPTY_LIST);
+
+		return result;
 	}
 
 	/**
@@ -288,7 +324,7 @@ public class RestLayersAdminController implements Serializable{
 	LayerDto saveLayerByUser(@PathVariable String username,
 			@RequestParam("name") String name,
 			@RequestParam("type") String type,
-			@RequestParam(value="properties", required=false) Map<String, String> properties,
+			@RequestParam(value="properties", required=false) String properties,
 			@RequestParam(value="uploadfile", required=false) MultipartFile uploadfile){
 		try{
 			/*
@@ -304,7 +340,9 @@ public class RestLayersAdminController implements Serializable{
 			layer.setName(name);
 			layer.setType(type);
 			//Layer properties
-			layer.setProperties(properties);
+			if(properties != null){
+				layer.setProperties(getMapFromString(properties));
+			}
 
 			//Layer data
 			if(uploadfile != null){
@@ -322,6 +360,30 @@ public class RestLayersAdminController implements Serializable{
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	private static final String PROPERTIES_SEPARATOR = ",,,";
+	private static final String PROPERTIES_NAM_VALUE_SEPARATOR = "===";
+	
+	/**
+	 * Parse a string as 'test===valueTest,,,test2===value2' to map of values 
+	 * 
+	 * @param properties to be parsed
+	 * 
+	 * @return map with values
+	 */
+	private static Map<String, String> getMapFromString(String properties){
+		Map<String,String> map = new HashMap<String, String>();
+		if(properties.split(PROPERTIES_SEPARATOR) != null){
+			for(String property: properties.split(PROPERTIES_SEPARATOR)){
+				if(property != null 
+						&& property.split(PROPERTIES_NAM_VALUE_SEPARATOR) != null
+						&& property.split(PROPERTIES_NAM_VALUE_SEPARATOR).length == 2){
+					map.put(property.split(PROPERTIES_NAM_VALUE_SEPARATOR)[0], property.split(PROPERTIES_NAM_VALUE_SEPARATOR)[1]);
+				}
+			}
+		}
+		return map;
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*
- * LayerPropertyEntity.java
+ * LayerTypeEntityDao.java
  * 
  * Copyright (C) 2012
  * 
@@ -27,55 +27,36 @@
  * 
  * Authors:: Alejandro Díaz Torres (mailto:adiaz@emergya.com)
  */
-package com.emergya.persistenceGeo.model;
+package com.emergya.persistenceGeo.dao;
 
-import java.io.Serializable;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import com.emergya.persistenceGeo.metaModel.AbstractLayerPropertyEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractLayerTypeEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractLayerTypePropertyEntity;
 
 /**
- * Layer property entity mapping
+ * DAO that represents the layer type
  * 
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
-@Entity
-@Table(name = "layer_properties")
-public class LayerPropertyEntity extends AbstractLayerPropertyEntity {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6555360095146423311L;
-
-	@Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-	public Long getId() {
-		return this.id;
-	}
-
-    @Column(name = "name")
-	public String getName() {
-		return this.name;
-	}
-
-    @Column(name = "value")
-	public String getValue() {
-		return this.value;
-	}
-
-	public void setId(Serializable id) {
-		this.id = (Long) id;
-	}
-
+public interface LayerTypeEntityDao extends GenericDAO<AbstractLayerTypeEntity, Long> {
 	
-
+	/**
+	 * Get a layer type properties type by the layer type name 
+	 * 
+	 * @param <code>layerTypeName</code>
+	 * 
+	 * @return String list associated with the layer type or null if not found 
+	 */
+	public List<AbstractLayerTypePropertyEntity> getLayerTypeProperties(String layerTypeName);
+	
+	/**
+	 * Get a layer type type by name 
+	 * 
+	 * @param <code>layerTypeName</code>
+	 * 
+	 * @return AbstractLayerTypeEntity by name 
+	 */
+	public AbstractLayerTypeEntity getLayerType(String layerTypeName);
 }

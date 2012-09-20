@@ -57,6 +57,11 @@ public interface Instancer {
 	public AbstractLayerEntity createLayer();
 
 	/**
+	 * @return new layer type entity
+	 */
+	public AbstractLayerTypeEntity createLayerType();
+
+	/**
 	 * @return new layer property entity
 	 */
 	public AbstractLayerPropertyEntity createLayerProperty();

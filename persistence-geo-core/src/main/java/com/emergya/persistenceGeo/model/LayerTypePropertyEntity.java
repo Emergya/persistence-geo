@@ -1,5 +1,5 @@
 /*
- * LayerPropertyEntity.java
+ * LayerTypePropertyEntity.java
  * 
  * Copyright (C) 2012
  * 
@@ -38,22 +38,22 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.emergya.persistenceGeo.metaModel.AbstractLayerPropertyEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractLayerTypePropertyEntity;
 
 /**
- * Layer property entity mapping
+ * Layer type property entity mapping
  * 
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
 @Entity
-@Table(name = "layer_properties")
-public class LayerPropertyEntity extends AbstractLayerPropertyEntity {
+@Table(name = "layer_type_property")
+public class LayerTypePropertyEntity extends AbstractLayerTypePropertyEntity {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6555360095146423311L;
+	private static final long serialVersionUID = 6846865868174003607L;
 
 	@Id
     @Column(name = "id")
@@ -65,11 +65,6 @@ public class LayerPropertyEntity extends AbstractLayerPropertyEntity {
     @Column(name = "name")
 	public String getName() {
 		return this.name;
-	}
-
-    @Column(name = "value")
-	public String getValue() {
-		return this.value;
 	}
 
 	public void setId(Serializable id) {

@@ -143,32 +143,57 @@ Ext.onReady(function(){
 
 function fnLoadForm(theForm, url)
 {
-//	theForm.submit();
-//	console.log(theForm);
-//	console.log(theForm.items.items[0].getValue());
-//	//for the purpose of this tutorial, load 1 record.
-//	theForm.getForm().load({
-//		url: loadUrl,
-//		headers: {Accept: 'application/json, text/javascript, */*; q=0.01'},
-//		Params: {name: theForm.items.items[0].getValue(), 
-//				 type: theForm.items.items[1].getValue()},
-//    waitMsg: 'loading...',
-//		params : {
-//			id: 1
-//		},
-//		success: function(form, action) {
-//			Ext.getCmp('mf.btn.add').setDisabled(false);
-//			Ext.getCmp('mf.btn.reset').setDisabled(false);
-//			Ext.getCmp('mf.btn.load').setDisabled(true);
-//		},
-//		failure: function(form, action) {
-//			Ext.Msg.alert('Warning', 'Error Unable to Load Form Data.');
-//		}
-//	});
+
+	if(url == saveLayerUrl && !!!theForm.items.items[3].getValue()){
+		fnSaveLayerForm(theForm, url);
+	}else{
+		theForm.getForm().getEl().dom.action = url;
+		theForm.getForm().getEl().dom.method = 'POST';
+		theForm.getForm().submit();
+	}
+	
+} //end fnLoadForm
+function fnSaveLayerForm(theForm, url)
+{
 	
 	theForm.getForm().getEl().dom.action = url;
 	theForm.getForm().getEl().dom.method = 'POST';
-	theForm.getForm().submit();
+	
+	var params = {
+			name: theForm.items.items[0].getValue(), 
+			type: theForm.items.items[1].getValue()
+		 };
+	
+	if(!!theForm.items.items[3].getValue()){ //TODO
+		params.uploadfile = theForm.items.items[3].getValue();
+	}
+	
+	if(true){ //if properties != null
+		params.properties = "test===test,,,other===other";
+	}
+	
+	theForm.getForm().load({
+		url: url,
+		headers: {Accept: 'application/json, text/javascript, */*; q=0.01'},
+		waitMsg: 'loading...',
+		params : params,
+        fileUpload: true,
+		success: function(form, action) {
+			Ext.Msg.alert('OK', 'OK.');
+		},
+		failure: function(form, action) {
+			if(!!action
+					&& !!action.response
+					&& !!action.response.status
+					&& action.response.status == "200"
+					&& !!action.response.responseText){
+				Ext.Msg.alert('Layer saved', action.response.responseText);
+			}else{
+				Ext.Msg.alert('Warning', 'Error Unable to Load Form Data.');
+			}
+		}
+	});
+	
 } //end fnLoadForm
 function fnUpdateForm(theForm)
 {

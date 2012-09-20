@@ -166,4 +166,18 @@ public interface LayerAdminService extends AbstractService {
 	 * 
 	 */
 	public void addFolderToLayer(Long folder_id, Long layer_id);
+	
+	/**
+	 * Get all layer types
+	 * 
+	 * @return supported layer types
+	 */
+	public List<String> getAllLayerTypes();
+	
+	/**
+	 * Get all layer type properties by name
+	 * 
+	 * @return layer type properties
+	 */
+	public List<String> getAllLayerTypeProperties(String layerType);
 }
