@@ -30,15 +30,20 @@
 package com.emergya.persistenceGeo.web;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +51,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.support.ContextExposingHttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.emergya.persistenceGeo.dto.AuthorityDto;
@@ -71,6 +77,11 @@ public class RestLayersAdminController implements Serializable{
 	private UserAdminService userAdminService;
 	@Resource
 	private LayerAdminService layerAdminService;
+	
+	private Map<Long, File> loadedLayers = new HashMap<Long, File>();
+	
+	@Autowired
+	private ServletContext context;
 
 	/**
 	 * This method loads layers.json related with a user
@@ -91,6 +102,8 @@ public class RestLayersAdminController implements Serializable{
 			String username = ((UserDetails) SecurityContextHolder.getContext()
 					.getAuthentication().getPrincipal()).getUsername(); 
 			 */
+			context.getRealPath("/");
+			context.getContextPath();
 			if(username != null){
 				layers = new LinkedList<LayerDto>();
 				UserDto userDto = userAdminService.obtenerUsuario(username);
@@ -98,6 +111,13 @@ public class RestLayersAdminController implements Serializable{
 					layers = layerAdminService.getLayersByUser(userDto.getId());
 				}else{
 					layers = ListUtils.EMPTY_LIST;
+				}
+				for(LayerDto layer: layers){
+					if(layer.getId() != null && layer.getData() != null){
+						loadedLayers.put(layer.getId(), layer.getData());
+						layer.setData(null);
+						layer.setServer_resource("rest/persistenceGeo/getLayerResource/"+layer.getId());
+					}
 				}
 			}
 		}catch (Exception e){
@@ -113,22 +133,25 @@ public class RestLayersAdminController implements Serializable{
 	 * 
 	 * @return JSON file with layers
 	 */
-	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/persistenceGeo/getLayerResource/{layer_id}", method = RequestMethod.GET, 
+	@RequestMapping(value = "/persistenceGeo/getLayerResource/{layerId}", method = RequestMethod.GET, 
 			produces = {MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody
-	List<LayerDto> loadLayer(@PathVariable String layerId){
-		List<LayerDto> layers = null;
+	public void loadLayer(@PathVariable String layerId,
+					HttpServletResponse response){
 		try{
 			/*
 			//TODO: Secure with logged user
 			String username = ((UserDetails) SecurityContextHolder.getContext()
 					.getAuthentication().getPrincipal()).getUsername(); 
 			 */
+			response.setContentType("application/xml");
+			response.setHeader("Content-Disposition",
+					"attachment; filename=test.xml");
+			IOUtils.copy(new FileInputStream(loadedLayers.get(Long.decode(layerId))), response
+						.getOutputStream());
+			response.flushBuffer();
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-		return layers;
 	}
 
 	/**
