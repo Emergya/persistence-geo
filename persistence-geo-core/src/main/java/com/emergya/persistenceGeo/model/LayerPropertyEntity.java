@@ -47,7 +47,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractLayerPropertyEntity;
  *
  */
 @Entity
-@Table(name = "layer_properties")
+@Table(name = "layer_property")
 public class LayerPropertyEntity extends AbstractLayerPropertyEntity {
 
 	/**

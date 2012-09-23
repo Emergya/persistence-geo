@@ -51,7 +51,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
  */
 @SuppressWarnings("unchecked")
 @Entity
-@Table(name = "permissions")
+@Table(name = "permission")
 public class PermissionEntity extends AbstractPermissionEntity {
 
 	/**

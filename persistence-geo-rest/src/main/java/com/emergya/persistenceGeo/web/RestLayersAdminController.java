@@ -53,6 +53,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.emergya.persistenceGeo.dto.AuthorityDto;
 import com.emergya.persistenceGeo.dto.LayerDto;
+import com.emergya.persistenceGeo.dto.SimplePropertyDto;
 import com.emergya.persistenceGeo.dto.UserDto;
 import com.emergya.persistenceGeo.service.LayerAdminService;
 import com.emergya.persistenceGeo.service.UserAdminService;
@@ -91,7 +92,8 @@ public class RestLayersAdminController implements Serializable{
 	@RequestMapping(value = "/persistenceGeo/loadLayers/{username}", method = RequestMethod.GET, 
 			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody
-	List<LayerDto> loadLayers(@PathVariable String username){
+	Map<String, Object> loadLayers(@PathVariable String username){
+		Map<String, Object> result = new HashMap<String, Object>();
 		List<LayerDto> layers = null;
 		try{
 			/*
@@ -118,7 +120,11 @@ public class RestLayersAdminController implements Serializable{
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-		return layers;
+		
+		result.put(RESULTS, layers.size());
+		result.put(ROOT, layers);
+
+		return result;
 	}
 
 	/**
@@ -133,11 +139,19 @@ public class RestLayersAdminController implements Serializable{
 	Map<String, Object> getLayerTypeProperties(@PathVariable String layerType) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
-		List<String> list = layerAdminService
+		List<String> listRes = layerAdminService
 				.getAllLayerTypeProperties(layerType);
-
-		result.put(RESULTS, list != null ? list.size() : 0);
-		result.put(ROOT, list != null ? list : ListUtils.EMPTY_LIST);
+		
+		List<SimplePropertyDto> list = new LinkedList<SimplePropertyDto>();
+		
+		if(listRes != null){
+			for(String property: listRes){
+				list.add(new SimplePropertyDto(property));
+			}
+		}
+		
+		result.put(RESULTS, list.size());
+		result.put(ROOT, list);
 
 		return result;
 	}
@@ -154,10 +168,18 @@ public class RestLayersAdminController implements Serializable{
 	Map<String, Object> getLayerTypes() {
 		Map<String, Object> result = new HashMap<String, Object>();
 
-		List<String> list = layerAdminService.getAllLayerTypes();
+		List<String> listRes = layerAdminService.getAllLayerTypes();
 
-		result.put(RESULTS, list != null ? list.size() : 0);
-		result.put(ROOT, list != null ? list : ListUtils.EMPTY_LIST);
+		List<SimplePropertyDto> list = new LinkedList<SimplePropertyDto>();
+		
+		if(listRes != null){
+			for(String property: listRes){
+				list.add(new SimplePropertyDto(property));
+			}
+		}
+		
+		result.put(RESULTS, list.size());
+		result.put(ROOT, list);
 
 		return result;
 	}
@@ -325,6 +347,7 @@ public class RestLayersAdminController implements Serializable{
 			@RequestParam("name") String name,
 			@RequestParam("type") String type,
 			@RequestParam(value="properties", required=false) String properties,
+			@RequestParam(value="server_resource", required=false) String server_resource,
 			@RequestParam(value="uploadfile", required=false) MultipartFile uploadfile){
 		try{
 			/*
@@ -342,6 +365,10 @@ public class RestLayersAdminController implements Serializable{
 			//Layer properties
 			if(properties != null){
 				layer.setProperties(getMapFromString(properties));
+			}
+			
+			if(server_resource != null){
+				layer.setServer_resource(server_resource);
 			}
 
 			//Layer data

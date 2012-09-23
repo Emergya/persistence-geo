@@ -54,7 +54,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
  */
 @SuppressWarnings("unchecked")
 @Entity
-@Table(name = "authorities")
+@Table(name = "authority")
 public class AuthorityEntity extends AbstractAuthorityEntity {
 
 	/**

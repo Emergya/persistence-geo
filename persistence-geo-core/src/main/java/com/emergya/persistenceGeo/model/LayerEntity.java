@@ -36,6 +36,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -82,7 +83,7 @@ public class LayerEntity extends AbstractLayerEntity {
 		return order;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "layer_typ_id")
 	public LayerTypeEntity getType() {
 		return (LayerTypeEntity) type;
@@ -125,20 +126,21 @@ public class LayerEntity extends AbstractLayerEntity {
 		return id;
 	}
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
 	public UserEntity getUser() {
 		return (UserEntity) user;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "auth_id")
 	public AuthorityEntity getAuth() {
 		return (AuthorityEntity) auth;
 	}
 
 	@ManyToMany(targetEntity = StyleEntity.class,
-	cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+	fetch = FetchType.LAZY)
 	@JoinTable(name = "layer_with_style",
 	joinColumns =
 	@JoinColumn(name = "style_id", insertable = false, updatable = false),
@@ -148,7 +150,7 @@ public class LayerEntity extends AbstractLayerEntity {
 		return styleList;
 	}
 
-	@OneToMany(targetEntity = FolderEntity.class)
+	@OneToMany(targetEntity = FolderEntity.class,fetch = FetchType.LAZY)
 	public List<FolderEntity> getFolderList() {
 		return folderList;
 	}
@@ -164,7 +166,8 @@ public class LayerEntity extends AbstractLayerEntity {
 	}
 	
 	@OneToMany(targetEntity=LayerPropertyEntity.class, orphanRemoval = true,
-			cascade = {CascadeType.ALL})
+			cascade = {CascadeType.ALL},
+			fetch = FetchType.LAZY)
 	public List<LayerPropertyEntity> getProperties() {
 		return this.properties;
 	}

@@ -9,6 +9,8 @@ var allGroupsUrl = "rest/persistenceGeo/getAllGroups";
 
 var allUsersUrl = "rest/persistenceGeo/getAllUsers";
 
+var allLayerTypesUrl = "rest/persistenceGeo/getLayerTypes";
+
 Ext.onReady(function(){
 	Ext.QuickTips.init();
 	
@@ -81,10 +83,33 @@ Ext.onReady(function(){
 					xtype: 'textfield',
 					fieldLabel: 'Name',
 					name: 'name'
-			},{
-					xtype: 'textfield',
-					fieldLabel: 'Type',
-					name: 'type'
+			},
+//			{
+//					xtype: 'textfield',
+//					fieldLabel: 'Type',
+//					name: 'type'
+//			},
+			{
+		         fieldLabel:'Select type'
+				,xtype:'combo'
+				,name: 'type'
+		        ,displayField:'name'
+		        ,valueField:'name'
+		        ,store: new Ext.data.JsonStore({
+		             url: allLayerTypesUrl,
+		             remoteSort: false,
+		             autoLoad:true,
+		             idProperty: 'name',
+		             root: 'data',
+		             totalProperty: 'results',
+		             fields: ['name']
+		         })
+		        ,triggerAction:'all'
+		        ,mode:'local'
+		        ,listeners:{select:{fn:function(combo, value) {
+		        	loadLayerType(saveLayerForm, value);
+		            }}
+		        }
 			},
 			{
 		         fieldLabel:'Select user'
@@ -141,6 +166,49 @@ Ext.onReady(function(){
 
 });
 
+var loadLayerTypeUrl = "rest/persistenceGeo/getLayerTypeProperties/";
+
+var store;
+var toRemove = new Array();
+var paramsToSend = {};
+
+function loadLayerType(theForm, layerType){
+	
+	paramsToSend = {};
+	
+	while (toRemove.length>0){
+		theForm.remove(toRemove.pop());
+	}
+	
+    store = new Ext.data.JsonStore({
+		             url: loadLayerTypeUrl + layerType.id,
+		             remoteSort: false,
+		             autoLoad:true,
+		             idProperty: 'name',
+		             root: 'data',
+		             totalProperty: 'results',
+		             fields: ['name'],
+		             listeners: {
+		                 load: function(store, records, options) {
+		                	 var i = 0; 
+		                	 while (i<records.length){
+		                		 toRemove.push(theForm.add({
+		             					xtype: 'textfield',
+		            					fieldLabel: records[i].id,
+		            					name: records[i++].id,
+		            					 listeners:{
+	            					        change: function(field, newValue, oldValue){
+	            					        	paramsToSend[field.name] = newValue;
+	            					        }
+	            					     }
+			                		 }));
+		                	 }
+		                	 theForm.doLayout();
+		                 }
+		             }
+		         });
+}
+
 function fnLoadForm(theForm, url)
 {
 
@@ -169,7 +237,19 @@ function fnSaveLayerForm(theForm, url)
 	}
 	
 	if(true){ //if properties != null
-		params.properties = "test===test,,,other===other";
+		var aux = 0;
+		params.properties = "";
+		for (param in paramsToSend){aux++;}
+		for (param in paramsToSend){
+			if(!!param
+					&& !!paramsToSend[param]){
+				params.properties += param + "===" + paramsToSend[param];
+				if(aux > 1){
+					params.properties += ",,,"
+				}
+			}
+			aux--;
+		}
 	}
 	
 	theForm.getForm().load({

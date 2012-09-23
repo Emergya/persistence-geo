@@ -55,7 +55,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
  */
 @SuppressWarnings("unchecked")
 @Entity
-@Table(name = "zones")
+@Table(name = "zone")
 public class ZoneEntity extends AbstractZoneEntity {
 
 	/**
@@ -114,7 +114,7 @@ public class ZoneEntity extends AbstractZoneEntity {
 
 	@OneToMany(targetEntity = ZoneEntity.class,
 	cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JoinTable(name = "zones_in_zone",
+	@JoinTable(name = "zone_in_zone",
 	joinColumns =
 	@JoinColumn(name = "zone_id"),
 	inverseJoinColumns =

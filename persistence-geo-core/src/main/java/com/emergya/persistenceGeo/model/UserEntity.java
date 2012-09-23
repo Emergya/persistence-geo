@@ -49,7 +49,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
  *
  */
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class UserEntity extends AbstractUserEntity {
 
     /**

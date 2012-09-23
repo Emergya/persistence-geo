@@ -50,7 +50,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractRuleEntity;
  *
  */
 @Entity
-@Table(name = "rules")
+@Table(name = "rule")
 public class RuleEntity extends AbstractRuleEntity {
 
 	/**

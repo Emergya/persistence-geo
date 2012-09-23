@@ -53,7 +53,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
  */
 @SuppressWarnings("unchecked")
 @Entity
-@Table(name = "styles")
+@Table(name = "style")
 public class StyleEntity extends AbstractStyleEntity {
 	
 	/**

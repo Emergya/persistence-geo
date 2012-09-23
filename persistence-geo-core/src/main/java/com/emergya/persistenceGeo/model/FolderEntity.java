@@ -57,7 +57,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
  */
 @SuppressWarnings("unchecked")
 @Entity
-@Table(name = "folders")
+@Table(name = "folder")
 public class FolderEntity extends AbstractFolderEntity {
 
 	/**
@@ -112,7 +112,7 @@ public class FolderEntity extends AbstractFolderEntity {
 	
 	@OneToMany(targetEntity = FolderEntity.class,
 	cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JoinTable(name = "folders_in_folder",
+	@JoinTable(name = "folder_in_folder",
 	joinColumns =
 	@JoinColumn(name = "folder_id"),
 	inverseJoinColumns =
