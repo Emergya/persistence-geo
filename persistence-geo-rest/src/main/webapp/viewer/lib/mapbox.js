@@ -13,6 +13,7 @@ var allLayerTypesUrl = "../rest/persistenceGeo/getLayerTypes";
 
 var loadLayerTypeUrl = "../rest/persistenceGeo/getLayerTypeProperties/";
 
+var user;
 var store;
 var toRemove = new Array();
 var paramsToSend = {};
@@ -133,11 +134,12 @@ Ext.onReady(function() {
 		        ,mode:'local'
 		        ,listeners:{select:{fn:function(combo, value) {
 		        	saveLayerUrl = saveLayerBaseUrl + value.id;
+		        	user = value.id;
 		            }}
 		        }
 			}
-//			,
-//			fileCombo
+			,
+			fileCombo
 			],
 		    buttons: [{
 				text: 'Save',
@@ -171,7 +173,7 @@ Ext.onReady(function() {
 		        ,mode:'local'
 		        ,listeners:{select:{fn:function(combo, value) {
 		        	PersistenceGeoParser.loadLayersByUser(value.id, function(layers){
-		        		//console.log(layers);
+		        		console.log(layers);
 		        		app.mapPanel.map.addLayers(layers);
 		        	});
 		            }}
@@ -326,67 +328,39 @@ function loadLayerType(theForm, layerType){
 function fnLoadForm(theForm, url)
 {
 
-//	if(url == saveLayerUrl && !!!theForm.items.items[3].getValue()){
+	if(url == saveLayerUrl && !!!theForm.items.items[4].getValue()){
 		fnSaveLayerForm(theForm, url);
-//	}else{
-//		theForm.getForm().getEl().dom.action = url;
-//		theForm.getForm().getEl().dom.method = 'POST';
-//		theForm.getForm().submit();
+	}else{
+		theForm.getForm().getEl().dom.action = url;
+		theForm.getForm().getEl().dom.method = 'POST';
+		theForm.getForm().submit();
 	}
 	
 } //end fnLoadForm
 function fnSaveLayerForm(theForm, url)
 {
-	
-	theForm.getForm().getEl().dom.action = url;
-	theForm.getForm().getEl().dom.method = 'POST';
-	
 	var params = {
-			name: theForm.items.items[0].getValue(), 
-			type: theForm.items.items[1].getValue()
+			name: theForm.items.items[0].getValue(),
+			server_resource: theForm.items.items[1].getValue(),
+			type: theForm.items.items[2].getValue(),
+			properties: paramsToSend
 		 };
 	
-	if(!!theForm.items.items[3].getValue()){ //TODO
-		params.uploadfile = theForm.items.items[3].getValue();
-	}
-	
-	if(true){ //if properties != null
-		var aux = 0;
-		params.properties = "";
-		for (param in paramsToSend){aux++;}
-		for (param in paramsToSend){
-			if(!!param
-					&& !!paramsToSend[param]){
-				params.properties += param + "===" + paramsToSend[param];
-				if(aux > 1){
-					params.properties += ",,,"
-				}
-			}
-			aux--;
-		}
-	}
-	
-	theForm.getForm().load({
-		url: url,
-		headers: {Accept: 'application/json, text/javascript, */*; q=0.01'},
-		waitMsg: 'loading...',
-		params : params,
-        fileUpload: true,
-		success: function(form, action) {
-			Ext.Msg.alert('OK', 'OK.');
-		},
-		failure: function(form, action) {
-			if(!!action
-					&& !!action.response
-					&& !!action.response.status
-					&& action.response.status == "200"
-					&& !!action.response.responseText){
+	PersistenceGeoParser.saveLayerByUser(user, params, 
+			function(form, action) {
 				Ext.Msg.alert('Layer saved', action.response.responseText);
-			}else{
-				Ext.Msg.alert('Warning', 'Error Unable to Load Form Data.');
-			}
-		}
-	});
+			},
+			function(form, action) {
+				if(!!action
+						&& !!action.response
+						&& !!action.response.status
+						&& action.response.status == "200"
+						&& !!action.response.responseText){
+					Ext.Msg.alert('Layer saved', action.response.responseText);
+				}else{
+					Ext.Msg.alert('Warning', 'Error Unable to Load Form Data.');
+				}
+			});
 	
 } //end fnLoadForm
 function fnUpdateForm(theForm)

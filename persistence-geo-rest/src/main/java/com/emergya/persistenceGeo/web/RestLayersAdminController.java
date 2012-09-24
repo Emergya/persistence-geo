@@ -347,6 +347,10 @@ public class RestLayersAdminController implements Serializable{
 			@RequestParam("name") String name,
 			@RequestParam("type") String type,
 			@RequestParam(value="properties", required=false) String properties,
+			@RequestParam(value="enabled", required=false) String enabled,
+			@RequestParam(value="order_layer", required=false) String order_layer,
+			@RequestParam(value="is_channel", required=false) String is_channel,
+			@RequestParam(value="publicized", required=false) String publicized,
 			@RequestParam(value="server_resource", required=false) String server_resource,
 			@RequestParam(value="uploadfile", required=false) MultipartFile uploadfile){
 		try{
@@ -362,13 +366,16 @@ public class RestLayersAdminController implements Serializable{
 			// Add request parameter
 			layer.setName(name);
 			layer.setType(type);
+			layer.setServer_resource(server_resource);
+			layer.setEnabled(enabled != null ? enabled.toLowerCase().equals("true"): false);
+			layer.setOrder(order_layer);
+			layer.setPertenece_a_canal(is_channel != null ? is_channel.toLowerCase().equals("true"): false);
+			layer.setPublicized(publicized != null ? publicized.toLowerCase().equals("true"): false);
+			layer.setServer_resource(server_resource);
+			
 			//Layer properties
 			if(properties != null){
 				layer.setProperties(getMapFromString(properties));
-			}
-			
-			if(server_resource != null){
-				layer.setServer_resource(server_resource);
 			}
 
 			//Layer data
