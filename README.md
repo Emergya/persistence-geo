@@ -15,11 +15,11 @@ Steps to use this library
 
 ## Database init
 
-You need create a database and a schema on PostgreSQL. You can see [create.sql](https://github.com/emergya/persistence-geo/blob/master/persistence-geo-core/src/main/resources/sql/create.sql)
+You need to create a database and a schema on PostgreSQL. You can see [create.sql](https://github.com/emergya/persistence-geo/blob/master/persistence-geo-core/src/main/resources/sql/create.sql)
 
 You still need to edit [local.properties](https://github.com/emergya/persistence-geo/blob/master/persistence-geo-core/src/main/filters/local.properties) to your database configuration.
 
-Then you need launch database initializer with persistence-geo-core:
+Then you need to launch database initializer with persistence-geo-core:
 
 <pre>
 ~persistence-geo/persistence-geo-core$ mvn clean test -Pfirst -DfilterToApply=local
@@ -53,7 +53,7 @@ Now you can see a demo with GXP mapbox on http://localhost:8080/persistence-geo-
 
 # Limitations
 
-This software is a alpha snapshot:
+This software is an alpha snapshot:
 
 * Only loads WMS layers
 * Integration with layer tree not implemented yet
@@ -65,4 +65,4 @@ We're working in the next features:
 * Load WFS, KML, GML layers.
 * Save and resque map configuration by admin.
 * Save and load layers by group.
-* Save and load folers.
+* Save and load folders.
