@@ -31,9 +31,7 @@ package com.emergya.persistenceGeo.dao;
 
 import java.util.List;
 
-import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
-import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 
 /**
@@ -89,15 +87,6 @@ public interface LayerEntityDao extends GenericDAO<AbstractLayerEntity, Long> {
 	public AbstractUserEntity findByLayer(Long layerID);
 	
 	/**
-	 * Get a folders list by the layer identifier
-	 * 
-	 * @param <code>layerID</code>
-	 * 
-	 * @return Entities list associated with the layer identifier or null if not found 
-	 */
-	public List<AbstractFolderEntity> findFolderByLayer(Long layerID);
-	
-	/**
 	 * Get a layers list by user
 	 * 
 	 * @param <code>id</code>
@@ -115,12 +104,4 @@ public interface LayerEntityDao extends GenericDAO<AbstractLayerEntity, Long> {
 	 */
 	public List<AbstractLayerEntity> findByAuthorityId(Long id);
 	
-	/**
-	 * Get a style list by the layer identifier
-	 * 
-	 * @param <code>layerID</code>
-	 * 
-	 * @return Entities list associated with the layer identifier or null if not found 
-	 */
-	public List<AbstractStyleEntity> findStyleByLayer(Long layerID);
 }

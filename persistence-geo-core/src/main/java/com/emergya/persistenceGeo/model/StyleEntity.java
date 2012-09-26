@@ -33,13 +33,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -74,14 +74,14 @@ public class StyleEntity extends AbstractStyleEntity {
 		return name;
 	}
 
-	@Column(name = "fechaCreacion")
-	public Date getFechaCreacion() {
-		return fechaCreacion;
+	@Column(name = "create_date")
+	public Date getCreateDate() {
+		return createDate;
 	}
 
-	@Column(name = "fechaActualizacion")
-	public Date getFechaActualizacion() {
-		return fechaActualizacion;
+	@Column(name = "update_date")
+	public Date getUpdateDate() {
+		return updateDate;
 	}
 
 	@Id
@@ -95,12 +95,12 @@ public class StyleEntity extends AbstractStyleEntity {
 		this.id = (Long) id;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "styleList")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	public List<LayerEntity> getLayerList() {
 		return layerList;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "style")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	public List<RuleEntity> getRuleList() {
 		return ruleList;
 	}

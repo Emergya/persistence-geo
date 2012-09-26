@@ -1,7 +1,7 @@
 /*
- * LayerTypePropertyEntity.java
+ * AbstractFolderInFolderEntity.java
  * 
- * Copyright (C) 2012
+ * Copyright (C) 2011
  * 
  * This file is part of Proyecto persistenceGeo
  * 
@@ -27,48 +27,48 @@
  * 
  * Authors:: Alejandro Díaz Torres (mailto:adiaz@emergya.com)
  */
-package com.emergya.persistenceGeo.model;
+package com.emergya.persistenceGeo.metaModel;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import com.emergya.persistenceGeo.metaModel.AbstractLayerTypePropertyEntity;
-
 /**
- * Layer type property entity mapping
+ * Folder in folder entity
  * 
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
-@Entity
-@Table(name = "layer_type_property")
-public class LayerTypePropertyEntity extends AbstractLayerTypePropertyEntity {
-
+public abstract class AbstractFolderInFolderEntity extends AbstractEntity {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6846865868174003607L;
+	private static final long serialVersionUID = 6047326743794471910L;
+	
+	protected Long id;
+	protected AbstractFolderEntity parent;
+	protected AbstractFolderEntity child;
 
-	@Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-	public Long getId() {
-		return this.id;
-	}
-
-    @Column(name = "name")
-	public String getName() {
-		return this.name;
-	}
-
+	public abstract Serializable getId();
+	public abstract AbstractFolderEntity getParent();
+	public abstract AbstractFolderEntity getChild();
+	
+	/**
+	 * @param id the id to set
+	 */
 	public void setId(Serializable id) {
 		this.id = (Long) id;
 	}
-
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(AbstractFolderEntity parent) {
+		this.parent = parent;
+	}
+	/**
+	 * @param child the child to set
+	 */
+	public void setChild(AbstractFolderEntity child) {
+		this.child = child;
+	}
+	
 }

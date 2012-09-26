@@ -38,6 +38,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
@@ -49,7 +50,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
  *
  */
 @Entity
-@Table(name = "user")
+@Table(name = "gis_user")
 public class UserEntity extends AbstractUserEntity {
 
     /**
@@ -67,9 +68,10 @@ public class UserEntity extends AbstractUserEntity {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "user_seq")
+    @SequenceGenerator(name="user_seq", sequenceName = "user_seq", initialValue=100)
     public Long getId() {
-        return user_id;
+        return id;
     }
 
     @Column(name = "username", nullable = false)
@@ -112,18 +114,18 @@ public class UserEntity extends AbstractUserEntity {
 		return valid;
 	}
 
-    @Column(name = "fechaCreacion")
-	public Date getFechaCreacion() {
-		return fechaCreacion;
+	@Column(name = "create_date")
+	public Date getCreateDate() {
+		return createDate;
 	}
 
-    @Column(name = "fechaActualizacion")
-	public Date getFechaActualizacion() {
-		return fechaActualizacion;
+	@Column(name = "update_date")
+	public Date getUpdateDate() {
+		return updateDate;
 	}
 	
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_authority_id")
 	public AuthorityEntity getAuthority() {
 		return (AuthorityEntity) authority;
 	}

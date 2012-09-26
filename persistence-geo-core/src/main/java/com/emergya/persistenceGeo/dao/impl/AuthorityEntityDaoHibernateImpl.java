@@ -63,7 +63,7 @@ public class AuthorityEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abs
 	protected final String LAYER_ID = "id";
 	protected final String PEOPLE_USER_ID = PEOPLE + "." + USER_ID;
 	protected final String LAYER_LAYER_ID = LAYER + "." + LAYER_ID;
-	protected final String AUTHORITY = "authority";
+	protected final String AUTHORITY = "name";
 
 	@Autowired
     public void init(SessionFactory sessionFactory) {

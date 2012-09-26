@@ -1,9 +1,5 @@
 /* 
- * UserEntityDaoHibernateImplTest.java
- * 
- * Copyright (C) 2011
- * 
- * This file is part of Proyecto persistenceGeo
+ * CreateLayersTest.java Copyright (C) 2012 This file is part of Proyecto persistenceGeo
  * 
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,10 +23,12 @@
  * 
  * Authors:: Alejandro Díaz Torres (mailto:adiaz@emergya.com)
  */
-package com.emergya.persistenceGeo.dao.impl;
+package com.emergya.persistenceGeo.service.impl;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Properties;
 
 import javax.annotation.Resource;
@@ -45,12 +43,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.emergya.persistenceGeo.dao.UserEntityDao;
-import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
+import com.emergya.persistenceGeo.dto.LayerDto;
+import com.emergya.persistenceGeo.service.LayerAdminService;
 
 
 /**
- * Test para UserEntityDao
+ * Test para LayerAdminService
  * 
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
@@ -59,30 +57,35 @@ import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 @ContextConfiguration(locations = {"classpath:modelContext.xml"})
 @TransactionConfiguration(defaultRollback = true, transactionManager = "transactionManager")
 @Transactional
-public class UserEntityDaoHibernateImplTest{
+public class CreateLayers2Test{
 
-	private static final Log LOG = LogFactory.getLog(UserEntityDaoHibernateImplTest.class);
+	private static final Log LOG = LogFactory.getLog(CreateLayers2Test.class);
 
 	@Resource
 	protected Properties testProperties;
 	
 	protected static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd/mm/yyyy");
-
-	// Propiedades a ser utilizada en los test procedentes de testProperties: testCreateUser
-	protected static final String PR_1_PARAM_1 = "pr1.username";
 	
 	@Resource
-	private UserEntityDao userDao;
+	private LayerAdminService layerAdminService;
 
+	protected static final String PR_2_LAYER_NAME = "tmpLayer2";
+	protected static final String PR_2_LAYER_DATA = "target/classes/test-classes/ficheros/Auxiliar_GML_23031.xml";
+	
 	@Test
-	public void testCreateUser() {
-		try {
-			String username = testProperties.getProperty(PR_1_PARAM_1)+ "test";
-			userDao.createUser(username, username);
-			AbstractUserEntity useEntity = userDao.getUser(username, username);
-			Assert.assertEquals(username, useEntity.getUsername());
-		} catch (Exception e) {
-			LOG.error("Error  \n", e);
+	public void testCreateLayerGML() {
+		try{
+			LayerDto layer = new LayerDto();
+			layer.setName(PR_2_LAYER_NAME);
+			layer.setType(LayerAdminService.TYPE_KML);
+			layer.setData(new File(PR_2_LAYER_DATA));
+			layer = (LayerDto) layerAdminService.create(layer);
+			List<LayerDto> layers = layerAdminService.getLayersByName(PR_2_LAYER_NAME);
+			Assert.assertNotNull(layers);
+			Assert.assertEquals(layers.size(), 1);
+			Assert.assertEquals(layers.get(0).getId(), layer.getId());
+		}catch (Exception e){
+			LOG.error(e);
 			Assert.fail();
 		}
 	}

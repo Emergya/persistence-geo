@@ -40,9 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.LayerEntityDao;
-import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
-import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
 
@@ -126,30 +124,6 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 		return entity.getUser();
 	}
 
-	/**
-	 * Get a folders list by the layer identifier
-	 * 
-	 * @param <code>layerID</code>
-	 * 
-	 * @return Entities list associated with the layer identifier or null if not found 
-	 */
-	public List<AbstractFolderEntity> findFolderByLayer(Long layerID) {
-		AbstractLayerEntity entity = findById(layerID, false);
-		return entity.getFolderList();
-	}
-
-	/**
-	 * Get a style list by the layer identifier
-	 * 
-	 * @param <code>layerID</code>
-	 * 
-	 * @return Entities list associated with the layer identifier or null if not found 
-	 */
-	public List<AbstractStyleEntity> findStyleByLayer(Long layerID) {
-		AbstractLayerEntity entity = findById(layerID, false);
-		return entity.getStyleList();
-	}
-
 	@Override
 	public List<AbstractLayerEntity> findByUserId(Long id) {
 		
@@ -162,7 +136,6 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 
 	@Override
 	public List<AbstractLayerEntity> findByAuthorityId(Long id) {
-		
 		Criteria criteria = getSession().createCriteria(persistentClass)
 						.createAlias("auth", "auth")
 						.add(Restrictions.eq("auth.id", id));

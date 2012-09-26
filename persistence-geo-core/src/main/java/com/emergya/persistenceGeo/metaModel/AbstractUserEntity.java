@@ -45,7 +45,7 @@ public abstract class AbstractUserEntity extends AbstractEntity {
 	 */
 	private static final long serialVersionUID = -2509076638431630708L;
 	
-	protected Long user_id;
+	protected Long id;
 	protected String username;
 
 	protected String password;
@@ -55,8 +55,8 @@ public abstract class AbstractUserEntity extends AbstractEntity {
 	protected String telefono;
 	protected Boolean admin;
 	protected Boolean valid;
-	protected Date fechaCreacion;
-	protected Date fechaActualizacion;
+	protected Date createDate;
+	protected Date updateDate;
 
 	protected AbstractAuthorityEntity authority;
 
@@ -99,16 +99,16 @@ public abstract class AbstractUserEntity extends AbstractEntity {
 	 * @return the valid
 	 */
 	public abstract Boolean getValid();
-
+	
 	/**
-	 * @return the fechaCreacion
+	 * @return the createDate
 	 */
-	public abstract Date getFechaCreacion();
-
+	public abstract Date getCreateDate();
+	
 	/**
-	 * @return the fechaActualizacion
+	 * @return the updateDate
 	 */
-	public abstract Date getFechaActualizacion();
+	public abstract Date getUpdateDate();
 
 	/**
 	 * @return the authority
@@ -119,8 +119,8 @@ public abstract class AbstractUserEntity extends AbstractEntity {
 	 * @param user_id
 	 *            the user_id to set
 	 */
-	public void setId(Serializable user_id) {
-		this.user_id = (Long) user_id;
+	public void setId(Serializable id) {
+		this.id = (Long) id;
 	}
 
 	/**
@@ -188,19 +188,17 @@ public abstract class AbstractUserEntity extends AbstractEntity {
 	}
 
 	/**
-	 * @param fechaCreacion
-	 *            the fechaCreacion to set
+	 * @param createDate the createDate to set
 	 */
-	public void setFechaCreacion(Date fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 
 	/**
-	 * @param fechaActualizacion
-	 *            the fechaActualizacion to set
+	 * @param updateDate the updateDate to set
 	 */
-	public void setFechaActualizacion(Date fechaActualizacion) {
-		this.fechaActualizacion = fechaActualizacion;
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	/**

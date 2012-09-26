@@ -41,8 +41,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -84,7 +82,7 @@ public class LayerEntity extends AbstractLayerEntity {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "layer_typ_id")
+    @JoinColumn(name = "layer_layer_type_id")
 	public LayerTypeEntity getType() {
 		return (LayerTypeEntity) type;
 	}
@@ -104,19 +102,19 @@ public class LayerEntity extends AbstractLayerEntity {
 		return enabled;
 	}
 
-	@Column(name = "pertenece_a_canal")
-	public Boolean getPertenece_a_canal() {
-		return pertenece_a_canal;
+	@Column(name = "is_channel")
+	public Boolean getIsChannel() {
+		return isChannel;
 	}
 
-	@Column(name = "fechaCreacion")
-	public Date getFechaCreacion() {
-		return fechaCreacion;
+	@Column(name = "creat_date")
+	public Date getCreateDate() {
+		return createDate;
 	}
 
-	@Column(name = "fechaActualizacion")
-	public Date getFechaActualizacion() {
-		return fechaActualizacion;
+	@Column(name = "update_date")
+	public Date getUpdateDate() {
+		return updateDate;
 	}
 
 	@Id
@@ -127,35 +125,32 @@ public class LayerEntity extends AbstractLayerEntity {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "layer_user_id")
 	public UserEntity getUser() {
 		return (UserEntity) user;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "auth_id")
+    @JoinColumn(name = "layer_auth_id")
 	public AuthorityEntity getAuth() {
 		return (AuthorityEntity) auth;
 	}
-
-	@ManyToMany(targetEntity = StyleEntity.class,
-	cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-	fetch = FetchType.LAZY)
-	@JoinTable(name = "layer_with_style",
-	joinColumns =
-	@JoinColumn(name = "style_id", insertable = false, updatable = false),
-	inverseJoinColumns =
-	@JoinColumn(name = "layer_id"))
-	public List<StyleEntity> getStyleList() {
-		return styleList;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="layer_style_id")
+	public StyleEntity getStyle() {
+		return (StyleEntity) style;
 	}
 
-	@OneToMany(targetEntity = FolderEntity.class,fetch = FetchType.LAZY)
-	public List<FolderEntity> getFolderList() {
-		return folderList;
+	@ManyToOne(fetch = FetchType.LAZY, 
+			cascade = CascadeType.ALL)
+	@JoinColumn(name="layer_folder_id")
+	public FolderEntity getFolder() {
+		return (FolderEntity) folder;
 	}
 
-	@Column(name = "data", nullable=true)
+	@Column(name = "data", nullable=true, 
+			columnDefinition = "BLOB")
 	public byte[] getData() {
 		return data;
 	}

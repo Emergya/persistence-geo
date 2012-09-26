@@ -117,4 +117,27 @@ public class FolderEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstra
 		return folderList;
 	}
 
+	@Override
+	public AbstractFolderEntity findRootByUser(Long idUser) {
+		return (AbstractFolderEntity) getSession().createCriteria(persistentClass)
+				.add(Restrictions.isNull("parent"))
+				.createAlias("user", "user")
+				.add(Restrictions.eq("user.id", idUser)).uniqueResult();
+	}
+
+	@Override
+	public AbstractFolderEntity findRootByGroup(Long idGroup) {
+		return (AbstractFolderEntity) getSession().createCriteria(persistentClass)
+				.add(Restrictions.isNull("parent"))
+				.createAlias("authority", "authority")
+				.add(Restrictions.eq("authority.id", idGroup)).uniqueResult();
+	}
+
+	@Override
+	public List<AbstractFolderEntity> getFolders(Long parentFolder) {
+		return getSession().createCriteria(persistentClass)
+				.createAlias("parent", "parent")
+				.add(Restrictions.eq("parent.id", parentFolder)).list();
+	}
+
 }

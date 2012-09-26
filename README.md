@@ -49,7 +49,7 @@ Only copy war on webapps directory:
 
 ### Testing
 
-Now you can see a demo with GXP mapbox on http://localhost:8080/persistence-geo-rest/viewer/
+Now you can see a demo with GXP mapbox on http://localhost:8080/persistence-geo-rest/
 
 # Limitations
 

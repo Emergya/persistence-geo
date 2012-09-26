@@ -149,6 +149,13 @@
 		   <artifactId>postgresql</artifactId>
 		   <version>${postgresql.version}</version>
 		</dependency>
+		
+		<!-- Oracle -->
+		<dependency>
+			<groupId>oracle</groupId>
+			<artifactId>ojdbc14</artifactId>
+			<version>1.4</version>
+		</dependency>
 
 		<!-- LOGGING DEPENDENCIES - LOG4J -->
 		<dependency>
@@ -237,8 +244,16 @@
 	    	<id>devel</id>
 	      	<properties>
 				<!-- Database validate -->
-				<database.hibernate.hbm2ddl.auto>create</database.hibernate.hbm2ddl.auto>
+				<database.hibernate.hbm2ddl.auto>validate</database.hibernate.hbm2ddl.auto>
 	    		<filter.profile>devel.properties</filter.profile>
+	    	</properties>
+	    </profile>
+	    <profile>
+	    	<id>oracle</id>
+	      	<properties>
+				<!-- Database validate -->
+				<database.hibernate.hbm2ddl.auto>validate</database.hibernate.hbm2ddl.auto>
+	    		<filter.profile>oracle.properties</filter.profile>
 	    	</properties>
 	    </profile>
     </profiles>

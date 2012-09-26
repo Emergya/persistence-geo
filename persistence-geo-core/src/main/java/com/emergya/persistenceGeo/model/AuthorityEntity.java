@@ -65,13 +65,13 @@ public class AuthorityEntity extends AbstractAuthorityEntity {
 	public AuthorityEntity() {
 	}
 
-	public AuthorityEntity(String authString) {
-		authority = authString;
+	public AuthorityEntity(String name) {
+		this.name = name;
 	}
 
-	@Column(name = "authority", nullable = false)
-	public String getAuthority() {
-		return authority;
+	@Column(name = "name", nullable = false)
+	public String getName() {
+		return name;
 	}
 
 	@Id

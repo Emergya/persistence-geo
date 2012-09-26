@@ -282,6 +282,14 @@
 				<filter.profile>devel.properties</filter.profile>
 			</properties>
 		</profile>
+		<profile>
+			<id>oracle</id>
+			<properties>
+				<!-- Database validate -->
+				<database.hibernate.hbm2ddl.auto>validate</database.hibernate.hbm2ddl.auto>
+				<filter.profile>oracle.properties</filter.profile>
+			</properties>
+		</profile>
 	</profiles>
 
 	<properties>

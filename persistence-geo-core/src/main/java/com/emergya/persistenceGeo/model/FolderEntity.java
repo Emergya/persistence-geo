@@ -41,10 +41,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
@@ -73,7 +71,7 @@ public class FolderEntity extends AbstractFolderEntity {
 		name = folderName;
 	}
 	
-	@Column(name = "name_folder")
+	@Column(name = "name")
 	public String getName() {
 		return name;
 	}
@@ -83,24 +81,24 @@ public class FolderEntity extends AbstractFolderEntity {
 		return enabled;
 	}
 
-	@Column(name = "canal")
-	public Boolean getEs_canal() {
-		return es_canal;
+	@Column(name = "is_channel")
+	public Boolean getIsChannel() {
+		return isChannel;
 	}
 
-	@Column(name = "instrumento_planificacion")
-	public Boolean getEs_instrumento_planificacion() {
-		return es_instrumento_planificacion;
+	@Column(name = "is_plain")
+	public Boolean getIsPlain() {
+		return isPlain;
 	}
 
-	@Column(name = "createDate")
-	public Date getFechaCreacion() {
-		return fechaCreacion;
+	@Column(name = "create_date")
+	public Date getCreateDate() {
+		return createDate;
 	}
 
-	@Column(name = "updateDate")
-	public Date getFechaActualizacion() {
-		return fechaActualizacion;
+	@Column(name = "update_date")
+	public Date getUpdateDate() {
+		return updateDate;
 	}
 	
 	@Id
@@ -109,27 +107,29 @@ public class FolderEntity extends AbstractFolderEntity {
 	public Long getId() {
 		return id;
 	}
-	
-	@OneToMany(targetEntity = FolderEntity.class,
-	cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JoinTable(name = "folder_in_folder",
-	joinColumns =
-	@JoinColumn(name = "folder_id"),
-	inverseJoinColumns =
-	@JoinColumn(name = "subfolder_id"))
-	public List<FolderEntity> getFolderList() {
-		return folderList;
-	}
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "zoneList")
 	public List<ZoneEntity> getZoneList() {
 		return zoneList;
 	}
 
-	@ManyToOne
-    @JoinColumn(name = "id", insertable = false, updatable = false)
-	public LayerEntity getLayer() {
-		return (LayerEntity) layer;
+	@ManyToOne(cascade = CascadeType.MERGE, fetch  = FetchType.LAZY)
+    @JoinColumn(name = "folder_auth_id")
+	public AuthorityEntity getAuthority() {
+		return (AuthorityEntity) authority;
+	}
+
+	@ManyToOne(cascade = CascadeType.MERGE, fetch  = FetchType.LAZY)
+    @JoinColumn(name = "folder_user_id")
+	public UserEntity getUser() {
+		return (UserEntity) user;
+	}
+
+	@ManyToOne(cascade = CascadeType.MERGE, 
+			fetch  = FetchType.LAZY)
+    @JoinColumn(name = "folder_parent_id")
+	public FolderEntity getParent() {
+		return (FolderEntity) parent;
 	}
 
 	@Override

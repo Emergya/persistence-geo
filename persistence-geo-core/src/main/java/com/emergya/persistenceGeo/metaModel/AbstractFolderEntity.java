@@ -50,14 +50,14 @@ public abstract class AbstractFolderEntity extends AbstractEntity {
 	
 	protected String name;
 	protected Boolean enabled;
-	protected Boolean es_canal;
-	protected Boolean es_instrumento_planificacion;
-	protected Date fechaCreacion;
-	protected Date fechaActualizacion;
-	
-	protected List folderList;
+	protected Boolean isChannel;
+	protected Boolean isPlain;
+	protected Date createDate;
+	protected Date updateDate;
 	protected List zoneList;
-	protected AbstractLayerEntity layer;
+	protected AbstractUserEntity user;
+	protected AbstractAuthorityEntity authority;
+	protected AbstractFolderEntity parent;
 
 	public AbstractFolderEntity(){
 		
@@ -81,33 +81,37 @@ public abstract class AbstractFolderEntity extends AbstractEntity {
 	 */
 	public abstract Boolean getEnabled();
 	/**
-	 * @return the es_canal
+	 * @return the isPlain
 	 */
-	public abstract Boolean getEs_canal();
+	public abstract Boolean getIsPlain();
 	/**
-	 * @return the es_instrumento_planificacion
+	 * @return the isChannel
 	 */
-	public abstract Boolean getEs_instrumento_planificacion();
+	public abstract Boolean getIsChannel();
 	/**
 	 * @return the fechaCreacion
 	 */
-	public abstract Date getFechaCreacion();
+	public abstract Date getCreateDate();
 	/**
 	 * @return the fechaActualizacion
 	 */
-	public abstract Date getFechaActualizacion();
-	/**
-	 * @return the folderList
-	 */
-	public abstract List getFolderList();
+	public abstract Date getUpdateDate();
 	/**
 	 * @return the zoneList
 	 */
 	public abstract List getZoneList();
 	/**
-	 * @return the layer
+	 * @return the user
 	 */
-	public abstract AbstractLayerEntity getLayer();
+	public abstract AbstractUserEntity getUser();
+	/**
+	 * @return the authority
+	 */
+	public abstract AbstractAuthorityEntity getAuthority();
+	/**
+	 * @return the parent
+	 */
+	public abstract AbstractFolderEntity getParent();
 	/**
 	 * @param id the id to set
 	 */
@@ -130,38 +134,31 @@ public abstract class AbstractFolderEntity extends AbstractEntity {
 	}
 
 	/**
-	 * @param es_canal the es_canal to set
+	 * @param isChannel the isChannel to set
 	 */
-	public void setEs_canal(Boolean es_canal) {
-		this.es_canal = es_canal;
+	public void setIsChannel(Boolean isChannel) {
+		this.isChannel = isChannel;
 	}
 
 	/**
-	 * @param es_instrumento_planificacion the es_instrumento_planificacion to set
+	 * @param isPlain the isPlain to set
 	 */
-	public void setEs_instrumento_planificacion(Boolean es_instrumento_planificacion) {
-		this.es_instrumento_planificacion = es_instrumento_planificacion;
+	public void setIsPlain(Boolean isPlain) {
+		this.isPlain = isPlain;
 	}
 
 	/**
-	 * @param fechaCreacion the fechaCreacion to set
+	 * @param fechaCreacion the createDate to set
 	 */
-	public void setFechaCreacion(Date fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 
 	/**
 	 * @param fechaActualizacion the fechaActualizacion to set
 	 */
-	public void setFechaActualizacion(Date fechaActualizacion) {
-		this.fechaActualizacion = fechaActualizacion;
-	}
-
-	/**
-	 * @param folderList the folderList to set
-	 */
-	public void setFolderList(List folderList) {
-		this.folderList = folderList;
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	/**
@@ -172,9 +169,23 @@ public abstract class AbstractFolderEntity extends AbstractEntity {
 	}
 
 	/**
-	 * @param layer the layer to set
+	 * @param user the user to set
 	 */
-	public void setLayer(AbstractLayerEntity layer) {
-		this.layer = layer;
+	public void setUser(AbstractUserEntity user) {
+		this.user = user;
+	}
+
+	/**
+	 * @param authority the authority to set
+	 */
+	public void setAuthority(AbstractAuthorityEntity authority) {
+		this.authority = authority;
+	}
+
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(AbstractFolderEntity parent) {
+		this.parent = parent;
 	}
 }

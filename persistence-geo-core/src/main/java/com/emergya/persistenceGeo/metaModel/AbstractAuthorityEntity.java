@@ -50,7 +50,7 @@ public abstract class AbstractAuthorityEntity extends AbstractEntity{
 	private static final long serialVersionUID = 2468366677563450048L;
 	
 	protected Long id;
-	protected String authority;
+	protected String name;
     
 	protected Date createDate;
 	protected Date updateDate;
@@ -64,7 +64,7 @@ public abstract class AbstractAuthorityEntity extends AbstractEntity{
 	 * Getters methods to map this entity
 	 */
     public abstract Long getId();
-    public abstract String getAuthority();
+    public abstract String getName();
     public abstract Set getPeople();
     public abstract Date getCreateDate();
     public abstract Date getUpdateDate();
@@ -76,11 +76,11 @@ public abstract class AbstractAuthorityEntity extends AbstractEntity{
     }
 
     public AbstractAuthorityEntity(String authString) {
-        authority = authString;
+        name = authString;
     }
 
-    public void setAuthority(String authority) {
-        this.authority = authority;
+    public void setName(String authority) {
+        this.name = authority;
     }
 
     public void setId(Serializable id) {

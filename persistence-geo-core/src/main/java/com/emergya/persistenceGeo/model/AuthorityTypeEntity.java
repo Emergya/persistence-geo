@@ -86,10 +86,10 @@ public class AuthorityTypeEntity extends AbstractAuthorityTypeEntity {
 	}
 
 	@Id
-    @Column(name = "auth_type_id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
 	public Long getId() {
-		return auth_type_id;
+		return id;
 	}
 	
 	@OneToMany(mappedBy = "authType")

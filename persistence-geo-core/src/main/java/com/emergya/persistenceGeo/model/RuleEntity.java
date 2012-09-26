@@ -38,7 +38,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.emergya.persistenceGeo.metaModel.AbstractRuleEntity;
@@ -72,28 +73,29 @@ public class RuleEntity extends AbstractRuleEntity {
 		return filter;
 	}
 
-	@Column(name = "fechaCreacion")
-	public Date getFechaCreacion() {
-		return fechaCreacion;
+	@Column(name = "create_date")
+	public Date getCreateDate() {
+		return createDate;
 	}
 
-	@Column(name = "fechaActualizacion")
-	public Date getFechaActualizacion() {
-		return fechaActualizacion;
+	@Column(name = "update_date")
+	public Date getUpdateDate() {
+		return updateDate;
 	}
 
 	@Id
-    @Column(name = "rule_id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
 	public Long getId() {
-		return rule_id;
+		return id;
 	}
 
 	public void setId(Serializable id) {
-		rule_id = (Long) id;
+		this.id = (Long) id;
 	}
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "rule_style_id")
 	public StyleEntity getStyle() {
 		return (StyleEntity) style;
 	}

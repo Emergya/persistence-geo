@@ -56,14 +56,14 @@ public abstract class AbstractLayerEntity extends AbstractEntity {
 
 	protected Boolean publicized;
 	protected Boolean enabled;
-	protected Boolean pertenece_a_canal;
-	protected Date fechaCreacion;
-	protected Date fechaActualizacion;
+	protected Boolean isChannel;
+	protected Date createDate;
+	protected Date updateDate;
 	
 	protected AbstractUserEntity user;
 	protected AbstractAuthorityEntity auth;
-	protected List styleList;
-	protected List folderList;
+	protected AbstractFolderEntity folder;
+	protected AbstractStyleEntity style;
 	protected List properties;
 
 	public AbstractLayerEntity(){
@@ -103,17 +103,17 @@ public abstract class AbstractLayerEntity extends AbstractEntity {
 	 */
 	public abstract Boolean getEnabled();
 	/**
-	 * @return the pertenece_a_canal
+	 * @return the isChannel
 	 */
-	public abstract Boolean getPertenece_a_canal();
+	public abstract Boolean getIsChannel();
 	/**
 	 * @return the fechaCreacion
 	 */
-	public abstract Date getFechaCreacion();
+	public abstract Date getCreateDate();
 	/**
 	 * @return the fechaActualizacion
 	 */
-	public abstract Date getFechaActualizacion();
+	public abstract Date getUpdateDate();
 	/**
 	 * @return the user
 	 */
@@ -125,11 +125,11 @@ public abstract class AbstractLayerEntity extends AbstractEntity {
 	/**
 	 * @return the styleList
 	 */
-	public abstract List getStyleList();
+	public abstract AbstractStyleEntity getStyle();
 	/**
 	 * @return the folderList
 	 */
-	public abstract List getFolderList();
+	public abstract AbstractFolderEntity getFolder();
 	
 	/**
 	 * @return the data
@@ -193,22 +193,22 @@ public abstract class AbstractLayerEntity extends AbstractEntity {
 	/**
 	 * @param pertenece_a_canal the pertenece_a_canal to set
 	 */
-	public void setPertenece_a_canal(Boolean pertenece_a_canal) {
-		this.pertenece_a_canal = pertenece_a_canal;
+	public void setIsChannel(Boolean isChannel) {
+		this.isChannel = isChannel;
 	}
 
 	/**
-	 * @param fechaCreacion the fechaCreacion to set
+	 * @param fechaCreacion the createDate to set
 	 */
-	public void setFechaCreacion(Date fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 
 	/**
 	 * @param fechaActualizacion the fechaActualizacion to set
 	 */
-	public void setFechaActualizacion(Date fechaActualizacion) {
-		this.fechaActualizacion = fechaActualizacion;
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	/**
@@ -226,17 +226,17 @@ public abstract class AbstractLayerEntity extends AbstractEntity {
 	}
 
 	/**
-	 * @param styleList the styleList to set
+	 * @param style the style to set
 	 */
-	public void setStyleList(List styleList) {
-		this.styleList = styleList;
+	public void setStyle(AbstractStyleEntity style) {
+		this.style = style;
 	}
 
 	/**
-	 * @param folderList the folderList to set
+	 * @param folder the folder to set
 	 */
-	public void setFolderList(List folderList) {
-		this.folderList = folderList;
+	public void setFolder(AbstractFolderEntity folder) {
+		this.folder = folder;
 	}
 
 	/**

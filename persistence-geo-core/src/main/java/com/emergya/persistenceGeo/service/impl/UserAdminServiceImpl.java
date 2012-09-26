@@ -239,8 +239,8 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 			dto.setAdmin(user.getAdmin());
 			dto.setApellidos(user.getApellidos());
 			dto.setEmail(user.getEmail());
-			dto.setFechaActualizacion(user.getFechaActualizacion());
-			dto.setFechaCreacion(user.getFechaCreacion());
+			dto.setFechaActualizacion(user.getUpdateDate());
+			dto.setFechaCreacion(user.getCreateDate());
 			dto.setNombreCompleto(user.getNombreCompleto());
 			dto.setPassword(user.getPassword());
 			dto.setTelefono(user.getTelefono());
@@ -249,7 +249,7 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 			// Add authority
 			AbstractAuthorityEntity authority = userDao.findByUserID((Long) user.getId());
 			if (authority != null) {
-				dto.setAuthority(authority.getAuthority());
+				dto.setAuthority(authority.getName());
 			}
 //			// Add layer
 //			List<AbstractLayerEntity> layers = user.getLayerList();
@@ -268,7 +268,7 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 		AuthorityDto dto = null;
 		if (entity != null) {
 			dto = new AuthorityDto();
-			dto.setNombre(entity.getAuthority());
+			dto.setNombre(entity.getName());
 			dto.setId(entity.getId());
 			List<String> usuarios = new LinkedList<String>();
 			if (entity.getPeople() != null) {
@@ -290,7 +290,7 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 			} else {
 				entity = instancer.createAuthority();
 			}
-			entity.setAuthority(dto.getNombre());
+			entity.setName(dto.getNombre());
 
 			// People
 			Set<AbstractUserEntity> people = new HashSet<AbstractUserEntity>();
@@ -332,12 +332,12 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 				authorityDao.clearUser(dto.getId());
 			}else{
 				entity =  userDao.createUser(dto.getUsername(), dto.getPassword());
-				entity.setFechaCreacion(now);
+				entity.setCreateDate(now);
 			}
 			entity.setAdmin(dto.getAdmin());
 			entity.setApellidos(dto.getApellidos());
 			entity.setEmail(dto.getEmail());
-			entity.setFechaActualizacion(now);
+			entity.setUpdateDate(now);
 			entity.setPassword(dto.getPassword());
 			entity.setTelefono(dto.getTelefono());
 			entity.setUsername(dto.getUsername());

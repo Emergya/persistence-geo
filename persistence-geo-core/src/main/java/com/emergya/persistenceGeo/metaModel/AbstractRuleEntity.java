@@ -45,12 +45,12 @@ public abstract class AbstractRuleEntity extends AbstractEntity {
 	 */
 	private static final long serialVersionUID = -6186512869484565458L;
 
-	protected Long rule_id;
+	protected Long id;
 	
 	protected String symbolizer;
 	protected String filter;
-	protected Date fechaCreacion;
-	protected Date fechaActualizacion;
+	protected Date createDate;
+	protected Date updateDate;
 	
 	protected AbstractStyleEntity style;
 
@@ -69,14 +69,14 @@ public abstract class AbstractRuleEntity extends AbstractEntity {
 	public abstract String getFilter();
 
 	/**
-	 * @return the fechaCreacion
+	 * @return the createDate
 	 */
-	public abstract Date getFechaCreacion();
+	public abstract Date getCreateDate();
 
 	/**
-	 * @return the fechaActualizacion
+	 * @return the updateDate
 	 */
-	public abstract Date getFechaActualizacion();
+	public abstract Date getUpdateDate();
 
 	/**
 	 * @return the style
@@ -84,10 +84,10 @@ public abstract class AbstractRuleEntity extends AbstractEntity {
 	public abstract AbstractStyleEntity getStyle();
 
 	/**
-	 * @param rule_id the rule_id to set
+	 * @param id the id to set
 	 */
-	public void setId(Serializable rule_id) {
-		this.rule_id = (Long) rule_id;
+	public void setId(Serializable id) {
+		this.id = (Long) id;
 	}
 
 	/**
@@ -105,17 +105,17 @@ public abstract class AbstractRuleEntity extends AbstractEntity {
 	}
 
 	/**
-	 * @param fechaCreacion the fechaCreacion to set
+	 * @param createDate the createDate to set
 	 */
-	public void setFechaCreacion(Date fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 
 	/**
-	 * @param fechaActualizacion the fechaActualizacion to set
+	 * @param updateDate the updateDate to set
 	 */
-	public void setFechaActualizacion(Date fechaActualizacion) {
-		this.fechaActualizacion = fechaActualizacion;
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	/**

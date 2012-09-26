@@ -47,7 +47,7 @@ public abstract class AbstractAuthorityTypeEntity extends AbstractEntity {
 	 */
 	private static final long serialVersionUID = 619189479918775474L;
 
-	protected Long auth_type_id;
+	protected Long id;
 	
 	protected String name;
 	protected Date createDate;
@@ -79,8 +79,8 @@ public abstract class AbstractAuthorityTypeEntity extends AbstractEntity {
 	/**
 	 * @param auth_type_id the auth_type_id to set
 	 */
-	public void setId(Serializable auth_type_id) {
-		this.auth_type_id = (Long) auth_type_id;
+	public void setId(Serializable id) {
+		this.id = (Long) id;
 	}
 	/**
 	 * @param name the name to set

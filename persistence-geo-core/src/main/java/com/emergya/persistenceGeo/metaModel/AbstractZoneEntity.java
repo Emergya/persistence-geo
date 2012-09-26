@@ -54,8 +54,8 @@ public abstract class AbstractZoneEntity extends AbstractEntity {
 	protected String type;
 
 	protected String extension;
-	protected Date fechaCreacion;
-	protected Date fechaActualizacion;
+	protected Date createDate;
+	protected Date updateDate;
 	protected List zoneList;
 	protected List folderList;
 	protected List authList;
@@ -86,14 +86,14 @@ public abstract class AbstractZoneEntity extends AbstractEntity {
 	public abstract String getExtension();
 
 	/**
-	 * @return the fechaCreacion
+	 * @return the createDate
 	 */
-	public abstract Date getFechaCreacion();
-
+	public abstract Date getCreateDate();
+	
 	/**
-	 * @return the fechaActualizacion
+	 * @return the updateDate
 	 */
-	public abstract Date getFechaActualizacion();
+	public abstract Date getUpdateDate();
 
 	/**
 	 * @return the zoneList
@@ -151,19 +151,17 @@ public abstract class AbstractZoneEntity extends AbstractEntity {
 	}
 
 	/**
-	 * @param fechaCreacion
-	 *            the fechaCreacion to set
+	 * @param createDate the createDate to set
 	 */
-	public void setFechaCreacion(Date fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 
 	/**
-	 * @param fechaActualizacion
-	 *            the fechaActualizacion to set
+	 * @param updateDate the updateDate to set
 	 */
-	public void setFechaActualizacion(Date fechaActualizacion) {
-		this.fechaActualizacion = fechaActualizacion;
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	/**

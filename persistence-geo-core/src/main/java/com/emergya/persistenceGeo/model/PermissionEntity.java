@@ -72,21 +72,21 @@ public class PermissionEntity extends AbstractPermissionEntity {
 		return name;
 	}
 
-	@Column(name = "fechaCreacion")
-	public Date getFechaCreacion() {
-		return fechaCreacion;
+	@Column(name = "create_date")
+	public Date getCreateDate() {
+		return createDate;
 	}
 
-	@Column(name = "fechaActualizacion")
-	public Date getFechaActualizacion() {
-		return fechaActualizacion;
+	@Column(name = "update_date")
+	public Date getUpdateDate() {
+		return updateDate;
 	}
 
 	@Id
-    @Column(name = "permission_id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
 	public Long getId() {
-		return permission_id;
+		return id;
 	}
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissionList")

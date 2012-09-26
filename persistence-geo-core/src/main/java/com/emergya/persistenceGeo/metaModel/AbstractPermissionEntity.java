@@ -47,11 +47,11 @@ public abstract class AbstractPermissionEntity extends AbstractEntity {
 	 */
 	protected static final long serialVersionUID = 8185264482816302475L;
 	
-	protected Long permission_id;
+	protected Long id;
 	
 	protected String name;
-	protected Date fechaCreacion;
-	protected Date fechaActualizacion;
+	protected Date createDate;
+	protected Date updateDate;
 	
 	protected List authTypeList;
 
@@ -68,13 +68,13 @@ public abstract class AbstractPermissionEntity extends AbstractEntity {
 	 */
 	public abstract String getName();
 	/**
-	 * @return the fechaCreacion
+	 * @return the createDate
 	 */
-	public abstract Date getFechaCreacion();
+	public abstract Date getCreateDate();
 	/**
-	 * @return the fechaActualizacion
+	 * @return the updateDate
 	 */
-	public abstract Date getFechaActualizacion();
+	public abstract Date getUpdateDate();
 	/**
 	 * @return the authTypeList
 	 */
@@ -83,8 +83,8 @@ public abstract class AbstractPermissionEntity extends AbstractEntity {
 	/**
 	 * @param permission_id the permission_id to set
 	 */
-	public void setId(Serializable permission_id) {
-		this.permission_id = (Long) permission_id;
+	public void setId(Serializable id) {
+		this.id = (Long) id;
 	}
 
 	/**
@@ -95,17 +95,17 @@ public abstract class AbstractPermissionEntity extends AbstractEntity {
 	}
 
 	/**
-	 * @param fechaCreacion the fechaCreacion to set
+	 * @param fechaCreacion the createDate to set
 	 */
-	public void setFechaCreacion(Date fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 
 	/**
-	 * @param fechaActualizacion the fechaActualizacion to set
+	 * @param fechaActualizacion the updateDate to set
 	 */
-	public void setFechaActualizacion(Date fechaActualizacion) {
-		this.fechaActualizacion = fechaActualizacion;
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	/**

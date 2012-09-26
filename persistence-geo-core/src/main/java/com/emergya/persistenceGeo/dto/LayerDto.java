@@ -32,7 +32,6 @@ package com.emergya.persistenceGeo.dto;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,9 +62,8 @@ public class LayerDto implements Serializable {
 	private Date updateDate;
 	
 	private String user;
-	private String auth;
-	private List<String> styleList;
-	private List<String> folderList;
+	private StyleDto style;
+	private Long folderId;
 	private Map<String, String> properties;
 	
 	public Long getId() {
@@ -135,23 +133,11 @@ public class LayerDto implements Serializable {
 	public void setUser(String user) {
 		this.user = user;
 	}
-	public String getAuth() {
-		return auth;
+	public StyleDto getStyle() {
+		return style;
 	}
-	public void setAuth(String auth) {
-		this.auth = auth;
-	}
-	public List<String> getStyleList() {
-		return styleList;
-	}
-	public void setStyleList(List<String> styleList) {
-		this.styleList = styleList;
-	}
-	public List<String> getFolderList() {
-		return folderList;
-	}
-	public void setFolderList(List<String> folderList) {
-		this.folderList = folderList;
+	public void setStyle(StyleDto style) {
+		this.style = style;
 	}
 	/**
 	 * @return the data
@@ -165,6 +151,19 @@ public class LayerDto implements Serializable {
 	public void setData(File data) {
 		this.data = data;
 	}
+	private Long authId;
+	/**
+	 * @return the authId
+	 */
+	public Long getAuthId() {
+		return authId;
+	}
+	/**
+	 * @param authId the authId to set
+	 */
+	public void setAuthId(Long authId) {
+		this.authId = authId;
+	}
 	
 	/**
 	 * @return the properties
@@ -177,6 +176,18 @@ public class LayerDto implements Serializable {
 	 */
 	public void setProperties(Map<String, String> properties) {
 		this.properties = properties;
+	}
+	/**
+	 * @return the folderId
+	 */
+	public Long getFolderId() {
+		return folderId;
+	}
+	/**
+	 * @param folderId the folderId to set
+	 */
+	public void setFolderId(Long folderId) {
+		this.folderId = folderId;
 	}
 
 }

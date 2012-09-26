@@ -1,17 +1,41 @@
+<!DOCTYPE html>
 <html>
-<head>
-	<title>Persistence Geo Demo</title>
-	<link href="css/ext/ext-all.css" rel="stylesheet" type="text/css" />
-	<script type="text/javascript" src="scripts/ext/adapter/ext/ext-base.js"></script>
-	<script type="text/javascript" src="scripts/ext/ext-all.js"></script>
-	<script type="text/javascript" src="scripts/ext/ux/FileUploadField.js"></script>
-	<script type="text/javascript" src="scripts/spring-mvc-forms.js"></script>
-	<style type="text/css">
-		body {
-		  	font: normal 12px helvetica,arial,verdana,tahoma,sans-serif;
-		}
-	</style>
-</head>
-<body>
-</body>
+    <head>
+        <title>Load layers map example</title>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="shortcut icon" href="./favicon.ico">
+        
+        <!-- Ext resources -->
+        <link rel="stylesheet" type="text/css" href="viewer/src/ext/resources/css/ext-all.css">
+        <link rel="stylesheet" type="text/css" href="viewer/src/ext/resources/css/xtheme-gray.css">
+        <script type="text/javascript" src="viewer/src/ext/adapter/ext/ext-base.js"></script>
+        <script type="text/javascript" src="viewer/src/ext/ext-all.js"></script>
+        <script type="text/javascript" src="viewer/lib/OpenLayers.js"></script>
+        <script type="text/javascript" src="viewer/lib/GeoExt.js"></script>
+        <script type="text/javascript" src="viewer/lib/gxp.js"></script>
+		<script type="text/javascript" src="scripts/ext/ux/FileUploadField.js"></script>
+        <script type="text/javascript" src="scripts/persistenceGeo.js"></script>
+        <script type="text/javascript" src="viewer/lib/mapbox.js"></script>
+
+        <!-- OpenLayers resources -->
+        <link rel="stylesheet" type="text/css" href="viewer/src/openlayers/theme/default/style.css">
+
+        <!-- GeoExt resources -->
+        <link rel="stylesheet" type="text/css" href="viewer/src/geoext/resources/css/popup.css">
+        <link rel="stylesheet" type="text/css" href="viewer/src/geoext/resources/css/layerlegend.css">
+        <link rel="stylesheet" type="text/css" href="viewer/src/geoext/resources/css/gxtheme-gray.css">
+
+        <!-- gxp resources -->
+        <link rel="stylesheet" type="text/css" href="viewer/src/gxp/theme/all.css">
+        
+
+        <!-- app resources -->
+        <link rel="stylesheet" type="text/css" href="viewer/theme/app/style.css">
+        <script>
+            Ext.BLANK_IMAGE_URL = "viewer/theme/app/img/blank.gif";
+            OpenLayers.ImgPath = "viewer/externals/openlayers/img/";
+        </script>
+    </head>
+    <body></body>
 </html>

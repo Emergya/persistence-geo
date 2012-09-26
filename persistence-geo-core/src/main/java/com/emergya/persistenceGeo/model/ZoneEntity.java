@@ -76,12 +76,12 @@ public class ZoneEntity extends AbstractZoneEntity {
 		return code;
 	}
 
-	@Column(name = "name_zone")
+	@Column(name = "name")
 	public String getName() {
 		return name;
 	}
 
-	@Column(name = "type_zone")
+	@Column(name = "type")
 	public String getType() {
 		return type;
 	}
@@ -91,14 +91,14 @@ public class ZoneEntity extends AbstractZoneEntity {
 		return extension;
 	}
 
-	@Column(name = "fechaCreacion")
-	public Date getFechaCreacion() {
-		return fechaCreacion;
+	@Column(name = "create_date")
+	public Date getCreateDate() {
+		return createDate;
 	}
-	
-	@Column(name = "fechaActualizacion")
-	public Date getFechaActualizacion() {
-		return fechaActualizacion;
+
+	@Column(name = "update_date")
+	public Date getUpdateDate() {
+		return updateDate;
 	}
  
 	@Id

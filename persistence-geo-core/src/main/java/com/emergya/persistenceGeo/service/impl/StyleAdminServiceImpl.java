@@ -140,11 +140,11 @@ public class StyleAdminServiceImpl extends AbstractServiceImpl<StyleDto, Abstrac
 		if(entity != null){
 			dto = new StyleDto();
 			dto.setId(entity.getId());
-			dto.setCreateDate(entity.getFechaCreacion());
+			dto.setCreateDate(entity.getCreateDate());
 			//TODO: dto.setLayerList(layerList)
 			dto.setName(entity.getName());
 			//TODO: dto.setRuleList(ruleList);
-			dto.setUpdateDate(entity.getFechaActualizacion());
+			dto.setUpdateDate(entity.getUpdateDate());
 		}
 	
 		return dto;
@@ -157,11 +157,11 @@ public class StyleAdminServiceImpl extends AbstractServiceImpl<StyleDto, Abstrac
 		if(dto != null){
 			entity = instancer.createStyle();
 			entity.setId(dto.getId());
-			entity.setFechaCreacion(dto.getCreateDate() != null ? dto.getCreateDate(): now);
+			entity.setCreateDate(dto.getCreateDate() != null ? dto.getCreateDate(): now);
 			//TODO: entity.setLayerList(layerList)
 			entity.setName(dto.getName());
 			//TODO: entity.setRuleList(ruleList);
-			entity.setFechaActualizacion(now);
+			entity.setUpdateDate(now);
 		}
 	
 		return entity;
@@ -172,11 +172,11 @@ public class StyleAdminServiceImpl extends AbstractServiceImpl<StyleDto, Abstrac
 		if(entity != null){
 			dto = new RuleDto();
 //			dto.setId(entity.getId());
-			dto.setCreateDate(entity.getFechaCreacion());
+			dto.setCreateDate(entity.getCreateDate());
 			//TODO: dto.setLayerList(layerList)
 //			dto.setName(entity.getName());
 			//TODO: dto.setRuleList(ruleList);
-			dto.setUpdateDate(entity.getFechaActualizacion());
+			dto.setUpdateDate(entity.getUpdateDate());
 		}
 	
 		return dto;
@@ -188,11 +188,11 @@ public class StyleAdminServiceImpl extends AbstractServiceImpl<StyleDto, Abstrac
 		if(dto != null){
 			entity = instancer.createRule();
 //			entity.setId(dto.getId());
-			entity.setFechaCreacion(dto.getCreateDate() != null ? dto.getCreateDate(): now);
+			entity.setCreateDate(dto.getCreateDate() != null ? dto.getCreateDate(): now);
 			//TODO: entity.setLayerList(layerList)
 //			entity.setName(dto.getName());
 			//TODO: entity.setRuleList(ruleList);
-			entity.setFechaActualizacion(now);
+			entity.setUpdateDate(now);
 		}
 	
 		return entity;

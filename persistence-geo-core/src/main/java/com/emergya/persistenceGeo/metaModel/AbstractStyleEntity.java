@@ -49,8 +49,8 @@ public abstract class AbstractStyleEntity extends AbstractEntity {
 	protected Long id;
 	
 	protected String name;
-	protected Date fechaCreacion;
-	protected Date fechaActualizacion;
+	protected Date createDate;
+	protected Date updateDate;
 	
 	protected List layerList;
 	protected List ruleList;
@@ -66,14 +66,14 @@ public abstract class AbstractStyleEntity extends AbstractEntity {
 	public abstract String getName();
 	
 	/**
-	 * @return the fechaCreacion
+	 * @return the createDate
 	 */
-	public abstract Date getFechaCreacion();
+	public abstract Date getCreateDate();
 	
 	/**
-	 * @return the fechaActualizacion
+	 * @return the updateDate
 	 */
-	public abstract Date getFechaActualizacion();
+	public abstract Date getUpdateDate();
 	
 	/**
 	 * @return the layerList
@@ -100,17 +100,17 @@ public abstract class AbstractStyleEntity extends AbstractEntity {
 	}
 
 	/**
-	 * @param fechaCreacion the fechaCreacion to set
+	 * @param createDate the createDate to set
 	 */
-	public void setFechaCreacion(Date fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 
 	/**
-	 * @param fechaActualizacion the fechaActualizacion to set
+	 * @param updateDate the updateDate to set
 	 */
-	public void setFechaActualizacion(Date fechaActualizacion) {
-		this.fechaActualizacion = fechaActualizacion;
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	/**

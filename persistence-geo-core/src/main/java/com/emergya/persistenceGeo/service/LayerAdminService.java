@@ -31,6 +31,7 @@ package com.emergya.persistenceGeo.service;
 
 import java.util.List;
 
+import com.emergya.persistenceGeo.dto.FolderDto;
 import com.emergya.persistenceGeo.dto.LayerDto;
 import com.emergya.persistenceGeo.dto.RuleDto;
 import com.emergya.persistenceGeo.dto.StyleDto;
@@ -105,15 +106,6 @@ public interface LayerAdminService extends AbstractService {
 	public List<LayerDto> getLayersByName(List<String> namesList);
 	
 	/**
-	 * Get a styles list by layer
-	 * 
-	 * @param layer
-	 * 
-	 * @return If not found, it's created
-	 */
-	public List<StyleDto> getStylesByLayer(LayerDto layer);
-	
-	/**
 	 * Get a rules list by layer style
 	 * 
 	 * @param style
@@ -180,4 +172,25 @@ public interface LayerAdminService extends AbstractService {
 	 * @return layer type properties
 	 */
 	public List<String> getAllLayerTypeProperties(String layerType);
+	
+	/**
+	 * Get root folder for a user
+	 * 
+	 * @return root folder
+	 */
+	public FolderDto getRootFolder(Long idUser);
+	
+	/**
+	 * Get root folder for a group
+	 * 
+	 * @return root folder
+	 */
+	public FolderDto getRootGroupFolder(Long idGroup);
+	
+	/**
+	 * Saves a folder
+	 * 
+	 * @return saved folder
+	 */
+	public FolderDto saveFolder(FolderDto folder);
 }
