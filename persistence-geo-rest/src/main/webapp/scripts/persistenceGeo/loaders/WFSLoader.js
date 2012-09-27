@@ -63,9 +63,10 @@ PersistenceGeoParser.loaders.WFSLoader =
 								}),
 						'renderers' : renderer
 					});
-				
-			//TODO: group
-			layer.subgroupLayers = "editables";
+			
+			//TODO: Wrap 
+			PersistenceGeoParser.AbstractLoader.postFunctionsWrapper(layerData, layer);
+			
 			return layer;
 		}
 };

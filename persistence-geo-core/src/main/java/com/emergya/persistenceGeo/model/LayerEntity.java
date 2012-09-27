@@ -41,9 +41,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
 
 import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
 
@@ -149,8 +152,9 @@ public class LayerEntity extends AbstractLayerEntity {
 		return (FolderEntity) folder;
 	}
 
-	@Column(name = "data", nullable=true, 
-			columnDefinition = "BLOB")
+	@Column(name = "data", nullable=true)
+	@Type(type="org.hibernate.type.PrimitiveByteArrayBlobType") //Needed for oracle/postgresql compatibility
+	@Lob //Needed for oracle/postgresql compatibility
 	public byte[] getData() {
 		return data;
 	}

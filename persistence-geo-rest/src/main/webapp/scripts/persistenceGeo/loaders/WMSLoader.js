@@ -42,27 +42,34 @@ Ext.namespace("PersistenceGeoParser.loaders.WMSLoader");
  * 
  */
 PersistenceGeoParser.loaders.WMSLoader =
-	{
-		load: function (layerData){
-			var layer = new OpenLayers.Layer.WMS(
-					layerData.name,
-					(OpenLayers.ProxyHost
-							.indexOf("url2") != -1 ? OpenLayers.ProxyHost
-							: "")
-							+ layerData.server_resource,
-					{
-						layers: layerData.properties.layers,
-		    			transparent: layerData.properties.transparent
-					},
-					{
-						format: layerData.properties.format,
-		    			isBaseLayer: layerData.properties.isBaseLayer,
-		    			visibility: layerData.properties.visibility,
-		     			opacity: layerData.properties.opacity,
-		    			buffer : layerData.properties.buffer
-					});
-			//TODO: group
-			layer.subgroupLayers = "overlays";
-			return layer;
-		}
+{
+
+	load: function (layerData){
+		var visibility = PersistenceGeoParser.AbstractLoader.toBoolean(layerData.properties.visibility);
+		var transparent = PersistenceGeoParser.AbstractLoader.toBoolean(layerData.properties.transparent);
+		var isBaseLayer = PersistenceGeoParser.AbstractLoader.toBoolean(layerData.properties.isBaseLayer);
+		var opacity = PersistenceGeoParser.AbstractLoader.toNumber(layerData.properties.opacity);
+		var buffer = PersistenceGeoParser.AbstractLoader.toNumber(layerData.properties.buffer);
+		
+		
+		var layer = new OpenLayers.Layer.WMS(
+				layerData.name,
+				layerData.server_resource,
+				{
+					layers: layerData.properties.layers,
+	    			transparent: transparent
+				},
+				{
+					format: layerData.properties.format,
+	    			isBaseLayer: isBaseLayer,
+	    			visibility: visibility,
+	     			opacity: opacity,
+	    			buffer : buffer
+				});
+		
+		//TODO: Wrap 
+		PersistenceGeoParser.AbstractLoader.postFunctionsWrapper(layerData, layer);
+		
+		return layer;
+	}
 };

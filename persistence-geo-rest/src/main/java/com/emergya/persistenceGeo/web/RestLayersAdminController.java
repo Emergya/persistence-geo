@@ -60,6 +60,7 @@ import com.emergya.persistenceGeo.dto.SimplePropertyDto;
 import com.emergya.persistenceGeo.dto.UserDto;
 import com.emergya.persistenceGeo.service.LayerAdminService;
 import com.emergya.persistenceGeo.service.UserAdminService;
+import com.emergya.persistenceGeo.utils.FoldersUtils;
 
 /**
  * Rest controller to admin and load layer and layers context
@@ -656,7 +657,7 @@ public class RestLayersAdminController implements Serializable{
 				folders = new LinkedList<FolderDto>();
 				UserDto user = userAdminService.obtenerUsuario(username);
 				FolderDto rootFolder = layerAdminService.getRootFolder(user.getId());
-				getFolderTree(rootFolder, folders, new Integer(0));
+				FoldersUtils.getFolderTree(rootFolder, folders, new String());
 			}
 		}catch (Exception e){
 			e.printStackTrace();
@@ -691,7 +692,7 @@ public class RestLayersAdminController implements Serializable{
 			if(idGroup != null){
 				folders = new LinkedList<FolderDto>();
 				FolderDto rootFolder = layerAdminService.getRootGroupFolder(Long.decode(idGroup));
-				getFolderTree(rootFolder, folders, new Integer(0));
+				FoldersUtils.getFolderTree(rootFolder, folders, new String(""));
 			}
 		}catch (Exception e){
 			e.printStackTrace();
@@ -700,45 +701,6 @@ public class RestLayersAdminController implements Serializable{
 		result.put(RESULTS, folders != null ? folders.size(): 0);
 		result.put(ROOT, folders);
 
-		return result;
-	}
-	
-	/**
-	 * Recursive tree build
-	 * 
-	 * @param folder parent at tree
-	 * @param tree building
-	 * @param level level on tree
-	 */
-	private void getFolderTree(FolderDto folder, List<FolderDto> tree, Integer level){
-		if(folder != null){
-			folder.setName(getFolderName(folder.getName(), level));
-			tree.add(folder);
-			if(folder.getFolderList() != null){
-				level++;
-				for(FolderDto subFolder: folder.getFolderList()){
-					getFolderTree(subFolder, tree, level);
-				}
-				level--;
-			}
-		}
-	}
-	
-	private static final String TREE_LEVEL = "-";
-
-	/**
-	 * Build folder name on tree
-	 * 
-	 * @param name default name on tree
-	 * @param level on tree
-	 * 
-	 * @return '-' repeated level times + name 
-	 */
-	private String getFolderName(String name, Integer level) {
-		String result = name;
-		for(int i = 0; i< level; i++){
-			result = TREE_LEVEL + result;
-		}
 		return result;
 	}
 
