@@ -7,8 +7,6 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.springframework.transaction.annotation.Transactional;
 
 import com.emergya.persistenceGeo.dao.GenericDAO;
@@ -20,16 +18,16 @@ import com.emergya.persistenceGeo.service.AbstractService;
  */
 @Transactional
 public abstract class AbstractServiceImpl<DTO extends Serializable, ENTITY extends Serializable> implements AbstractService {
-	
-	@Resource(name="userEntityDao")
-	private GenericDAO<ENTITY, Long> dao; 
+	 
 
+	protected abstract GenericDAO<ENTITY, Long> getDao();
+	
 	/* (non-Javadoc)
 	 * @see com.emergya.persistenceGeo.service.AbstractService#getAll()
 	 */
 	@Override
 	public List<? extends Serializable> getAll() {
-		List<ENTITY> entities = dao.findAll();
+		List<ENTITY> entities = getDao().findAll();
 		return entitiesToDtos(entities);
 	}
 
@@ -38,7 +36,7 @@ public abstract class AbstractServiceImpl<DTO extends Serializable, ENTITY exten
 	 */
 	@Override
 	public List<? extends Serializable> getFromTo(Integer first, Integer last) {
-		List<ENTITY> entities = dao.findAllFromTo(first, last);
+		List<ENTITY> entities = getDao().findAllFromTo(first, last);
 		return entitiesToDtos(entities);
 	}
 
@@ -47,7 +45,7 @@ public abstract class AbstractServiceImpl<DTO extends Serializable, ENTITY exten
 	 */
 	@Override
 	public Long getResults() {
-		return dao.getResults();
+		return getDao().getResults();
 	}
 	
 	protected List<? extends Serializable> entitiesToDtos(List<ENTITY> entities) {
@@ -60,17 +58,17 @@ public abstract class AbstractServiceImpl<DTO extends Serializable, ENTITY exten
 	
 	@SuppressWarnings("unchecked")
 	public Serializable create(Serializable dto){
-		return entityToDto(dao.makePersistent(dtoToEntity((DTO) dto)));
+		return entityToDto(getDao().makePersistent(dtoToEntity((DTO) dto)));
 	}
 	
 	@SuppressWarnings("unchecked")
 	public Serializable update(Serializable dto){
-		return entityToDto(dao.makePersistent(dtoToEntity((DTO) dto)));
+		return entityToDto(getDao().makePersistent(dtoToEntity((DTO) dto)));
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void delete(Serializable dto){
-		dao.makeTransient((dtoToEntity((DTO) dto)));
+		getDao().makeTransient((dtoToEntity((DTO) dto)));
 	}
 	
 	protected abstract DTO entityToDto(ENTITY entity);

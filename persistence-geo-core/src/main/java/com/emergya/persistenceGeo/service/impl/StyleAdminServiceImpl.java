@@ -38,6 +38,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.emergya.persistenceGeo.dao.GenericDAO;
 import com.emergya.persistenceGeo.dao.RuleEntityDao;
 import com.emergya.persistenceGeo.dao.StyleEntityDao;
 import com.emergya.persistenceGeo.dto.RuleDto;
@@ -196,6 +197,11 @@ public class StyleAdminServiceImpl extends AbstractServiceImpl<StyleDto, Abstrac
 		}
 	
 		return entity;
+	}
+
+	@Override
+	protected GenericDAO<AbstractStyleEntity, Long> getDao() {
+		return styleDao;
 	}
 
 }

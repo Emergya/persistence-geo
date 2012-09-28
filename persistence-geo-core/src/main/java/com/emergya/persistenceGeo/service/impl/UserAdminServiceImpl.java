@@ -42,6 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.emergya.persistenceGeo.dao.AbstractGenericDao;
 import com.emergya.persistenceGeo.dao.AuthorityEntityDao;
+import com.emergya.persistenceGeo.dao.GenericDAO;
 import com.emergya.persistenceGeo.dao.UserEntityDao;
 import com.emergya.persistenceGeo.dao.ZoneEntityDao;
 import com.emergya.persistenceGeo.dto.AuthorityDto;
@@ -355,5 +356,9 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 		}
 		
 		return entity;
+	}
+
+	protected GenericDAO<AbstractUserEntity, Long> getDao() {
+		return userDao;
 	}
 }

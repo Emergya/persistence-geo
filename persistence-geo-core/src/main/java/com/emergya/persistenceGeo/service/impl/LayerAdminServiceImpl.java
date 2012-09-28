@@ -46,6 +46,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.emergya.persistenceGeo.dao.AbstractGenericDao;
 import com.emergya.persistenceGeo.dao.AuthorityEntityDao;
 import com.emergya.persistenceGeo.dao.FolderEntityDao;
+import com.emergya.persistenceGeo.dao.GenericDAO;
 import com.emergya.persistenceGeo.dao.LayerEntityDao;
 import com.emergya.persistenceGeo.dao.LayerTypeEntityDao;
 import com.emergya.persistenceGeo.dao.RuleEntityDao;
@@ -588,5 +589,10 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			//TODO: entity.setRuleList(ruleList);
 		}
 		return entity;
+	}
+
+	@Override
+	protected GenericDAO<AbstractLayerEntity, Long> getDao() {
+		return layerDao;
 	}
 }
