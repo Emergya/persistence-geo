@@ -150,4 +150,17 @@ public class UserEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstract
 		}
 		return auth;
 	}
+	
+	/**
+	 * Get user list by a auth id
+	 * 
+	 * @param authId
+	 * 
+	 * @return users of the group
+	 */
+	public List<AbstractUserEntity> findByAuthID(Long authId){
+		return getSession().createCriteria(persistentClass)
+				.createAlias("authority", "authority")
+				.add(Restrictions.eq("authority.id", authId)).list();
+	}
 }

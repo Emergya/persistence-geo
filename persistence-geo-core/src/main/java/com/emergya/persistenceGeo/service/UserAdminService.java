@@ -124,4 +124,13 @@ public interface UserAdminService extends AbstractService{
 	 */
 	public void modificarGrupoUsuarios(AuthorityDto dto);
 	
+	/**
+	 * Get all users by group
+	 * 
+	 * @param idGroup
+	 * 
+	 * @return users of a group
+	 */
+	public List<UserDto> getUsersByGroup(Long idGroup); 
+	
 }

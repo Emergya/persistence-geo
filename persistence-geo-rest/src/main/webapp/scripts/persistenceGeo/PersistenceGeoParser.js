@@ -104,6 +104,10 @@ PersistenceGeoParser =
 						return this.getRestBaseUrl()+ "/persistenceGeo/loadFoldersByGroup/";
 					},
 					
+					LOAD_USERS_BY_GROUP_BAE_URL: function(){
+						return this.getRestBaseUrl()+ "/persistenceGeo/getUsersByGroup/";
+					},
+					
 					LOADED_FOLDERS:{},
 					
 					LOADED_FOLDERS_NAMES:{},

@@ -229,6 +229,17 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 		//authorityDao.save(dtoToEntity(dto));
 		authorityDao.makePersistent(dtoToEntity(dto));
 	}
+	
+	/**
+	 * Get all users by group
+	 * 
+	 * @param idGroup
+	 * 
+	 * @return users of a group
+	 */
+	public List<UserDto> getUsersByGroup(Long idGroup){
+		return (List<UserDto>) entitiesToDtos(userDao.findByAuthID(idGroup));
+	}
 
 	protected UserDto entityToDto(AbstractUserEntity user) {
 		UserDto dto = null;

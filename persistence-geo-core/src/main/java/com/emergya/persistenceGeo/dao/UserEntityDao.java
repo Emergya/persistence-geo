@@ -88,5 +88,14 @@ public interface UserEntityDao extends GenericDAO<AbstractUserEntity, Long>{
 	 * @return Entity associated with the user identifier or null if not found
 	 */
 	public AbstractAuthorityEntity findByUserID(Long user_id);
+	
+	/**
+	 * Get user list by a auth id
+	 * 
+	 * @param authId
+	 * 
+	 * @return users of the group
+	 */
+	public List<AbstractUserEntity> findByAuthID(Long authId);
 
 }

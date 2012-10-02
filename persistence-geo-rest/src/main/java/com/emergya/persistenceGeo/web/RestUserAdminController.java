@@ -38,6 +38,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.collections.ListUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -115,6 +116,25 @@ public class RestUserAdminController implements Serializable{
 		Map<String, Object> result = new HashMap<String, Object>();
 		//TODO: get user by authority group of user logged
 		List<UserDto> users = (List<UserDto>) userAdminService.getAll();
+		
+		result.put(RESULTS, users != null ? users.size() : 0);
+		result.put(ROOT, users != null ? users : ListUtils.EMPTY_LIST);
+		
+		return result;
+	}
+	
+	@RequestMapping(value = "/persistenceGeo/getUsersByGroup/{idGroup}", method = RequestMethod.GET)
+	public @ResponseBody
+	Map<String, Object> getUsersByGroup(@PathVariable String idGroup) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<UserDto> users = null;
+		
+		try{
+			//TODO: get user by authority group of user logged
+			users = (List<UserDto>) userAdminService.getUsersByGroup(Long.decode(idGroup));
+		}catch(Exception e){
+			//Nothing
+		}
 		
 		result.put(RESULTS, users != null ? users.size() : 0);
 		result.put(ROOT, users != null ? users : ListUtils.EMPTY_LIST);
