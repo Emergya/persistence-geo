@@ -63,6 +63,6 @@ This software is an alpha snapshot:
 We're working in the next features:
 
 * Load WFS, KML, GML layers.
-* Save and resque map configuration by admin.
+* Save and rescue map configuration by admin.
 * Save and load layers by group.
 * Save and load folders.
