@@ -595,4 +595,11 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 	protected GenericDAO<AbstractLayerEntity, Long> getDao() {
 		return layerDao;
 	}
+
+	@Override
+	public void deleteLayerById(Long layerId) {
+		// Delete the layer properties
+		
+		layerDao.delete(layerId);
+	}
 }

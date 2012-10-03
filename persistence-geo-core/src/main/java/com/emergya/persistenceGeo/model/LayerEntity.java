@@ -148,7 +148,7 @@ public class LayerEntity extends AbstractLayerEntity {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, 
-			cascade = CascadeType.ALL)
+			cascade = CascadeType.MERGE)
 	@JoinColumn(name="layer_folder_id")
 	public FolderEntity getFolder() {
 		return (FolderEntity) folder;

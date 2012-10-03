@@ -95,6 +95,10 @@
 			<id>spring-repo</id>
 			<url>http://maven.springframework.org</url>
 		</repository>
+		<repository>
+			<id>nexus</id>
+			<url>http://nexus.emergya.es/nexus/content/groups/public</url>
+		</repository>
 	</repositories>
 
     <dependencies>

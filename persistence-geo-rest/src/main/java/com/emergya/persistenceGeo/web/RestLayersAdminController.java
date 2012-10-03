@@ -758,5 +758,21 @@ public class RestLayersAdminController implements Serializable{
 
 		return result;
 	}
+	
+	@RequestMapping(value = "/persistenceGeo/deleteLayerByLayerId/{layerId}", method = RequestMethod.POST)
+	public @ResponseBody
+	void DeleteLayerByLayerId(@PathVariable String layerId){
+		try{
+			/*
+			//TODO: Secure with logged user
+			String username = ((UserDetails) SecurityContextHolder.getContext()
+					.getAuthentication().getPrincipal()).getUsername(); 
+			 */
+			Long idLayer = Long.decode(layerId);
+			layerAdminService.deleteLayerById(idLayer);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }

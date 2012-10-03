@@ -193,4 +193,9 @@ public interface LayerAdminService extends AbstractService {
 	 * @return saved folder
 	 */
 	public FolderDto saveFolder(FolderDto folder);
+	
+	/**
+	 * Delete a layer
+	 */
+	public void deleteLayerById(Long layerId);
 }
