@@ -374,7 +374,7 @@ public class RestLayersAdminController implements Serializable{
 			result.put(SUCCESS, true);
 			Long id = RANDOM.nextLong();
 			result.put(RESULTS, 1);
-			result.put(ROOT, id);
+			result.put(ROOT, id.toString());
 			loadFiles.put(id, uploadfile);
 		}else{
 			result.put(SUCCESS, false);
