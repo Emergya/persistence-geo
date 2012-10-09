@@ -54,11 +54,8 @@ PersistenceGeoParser =
 					LOADERS_CLASSES: {
 						"WMS":PersistenceGeoParser.loaders.WMSLoader,
 						"WFS":PersistenceGeoParser.loaders.WFSLoader,
-						"KML":PersistenceGeoParser.loaders.KMLLoader
-						//,
-//						"GML":PersistenceGeoParser.GMLLoader,
-//						"TEXT":PersistenceGeoParser.TextLoader,
-//						,"WMST":PersistenceGeoParser.WMSTLoader
+						"KML":PersistenceGeoParser.loaders.KMLLoader,
+						"GML":PersistenceGeoParser.loaders.GMLLoader
 					},
 					
 					REST_COMPONENT_URL: "rest",
