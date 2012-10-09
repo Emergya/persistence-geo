@@ -53,6 +53,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.emergya.persistenceGeo.dto.AuthorityDto;
 import com.emergya.persistenceGeo.dto.FolderDto;
@@ -83,7 +84,7 @@ public class RestLayersAdminController implements Serializable{
 	private LayerAdminService layerAdminService;
 	
 	private Map<Long, File> loadedLayers = new HashMap<Long, File>();
-	private Map<Long, MultipartFile> loadFiles = new HashMap<Long, MultipartFile>();
+	private Map<Long, File> loadFiles = new HashMap<Long, File>();
 	
 	protected final String RESULTS= "results";
 	protected final String ROOT= "data";
@@ -366,22 +367,31 @@ public class RestLayersAdminController implements Serializable{
 	 * 
 	 * @param uploadfile
 	 */
-	@RequestMapping(value = "/persistenceGeo/uploadFile", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody 
-	Map<String, Object> uploadFile(@RequestParam(value="uploadfile", required=false) MultipartFile uploadfile){
-		Map<String, Object> result = new HashMap<String, Object>();
+	@RequestMapping(value = "/persistenceGeo/uploadFile", method = RequestMethod.POST)
+	public ModelAndView uploadFile(
+			@RequestParam(value="uploadfile") MultipartFile uploadfile){
+		ModelAndView model = new ModelAndView();
+		String result = null;
 		if(uploadfile != null){
-			result.put(SUCCESS, true);
 			Long id = RANDOM.nextLong();
-			result.put(RESULTS, 1);
-			result.put(ROOT, id.toString());
-			loadFiles.put(id, uploadfile);
+			result = "{\"results\": 1, \"data\": \""+ id +"\", \"success\": true}";
+			byte[] data;
+			try {
+				data = IOUtils.toByteArray(uploadfile.getInputStream());
+				File temp = com.emergya.persistenceGeo.utils.FileUtils
+						.createFileTemp("tmp", "xml");
+				org.apache.commons.io.FileUtils.writeByteArrayToFile(temp, data);
+				loadFiles.put(id, temp);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}else{
-			result.put(SUCCESS, false);
-			result.put(RESULTS, 0);
-			result.put(ROOT, "");
+			result = "{\"results\": 0, \"data\": \"\", \"success\": false}";
 		}
-		return result;
+		model.addObject("resultado", result);
+		model.setViewName("resultToJSON");
+		return model;
 	}
 
 	/**
@@ -497,7 +507,6 @@ public class RestLayersAdminController implements Serializable{
 				.toLowerCase().equals("true") : false);
 		layer.setPublicized(publicized != null ? publicized.toLowerCase()
 				.equals("true") : false);
-		layer.setServer_resource(server_resource);
 		//Folder id
 		if(!StringUtils.isEmpty(folderId) 
 				&& StringUtils.isNumeric(folderId)){
@@ -509,19 +518,22 @@ public class RestLayersAdminController implements Serializable{
 			layer.setProperties(getMapFromString(properties));
 		}
 		
-		MultipartFile uploadfile = loadFiles.get(Double.parseDouble(idFile));
-
+		File temp = loadFiles.get(Long.decode(idFile));
 		// Layer data
-		if (uploadfile != null) {
-			byte[] data = IOUtils.toByteArray((uploadfile).getInputStream());
-			File temp = com.emergya.persistenceGeo.utils.FileUtils
-					.createFileTemp(layer.getName(), layer.getType());
-			org.apache.commons.io.FileUtils.writeByteArrayToFile(temp, data);
+		if (temp != null) {
 			layer.setData(temp);
 		}
 
 		// Save the layer
 		layer = (LayerDto) layerAdminService.create(layer);
+		
+		if(layer.getId() != null && layer.getData() != null){
+			loadedLayers.put(layer.getId(), layer.getData());
+			layer.setData(null);
+			layer.setServer_resource("rest/persistenceGeo/getLayerResource/"+layer.getId());
+		}
+		
+		loadFiles.remove(idFile);
 		
 		return layer;
 	}

@@ -53,9 +53,9 @@ PersistenceGeoParser =
 					
 					LOADERS_CLASSES: {
 						"WMS":PersistenceGeoParser.loaders.WMSLoader,
-						"WFS":PersistenceGeoParser.loaders.WFSLoader
-//						,
-//						"KML":PersistenceGeoParser.KMLLoader,
+						"WFS":PersistenceGeoParser.loaders.WFSLoader,
+						"KML":PersistenceGeoParser.loaders.KMLLoader
+						//,
 //						"GML":PersistenceGeoParser.GMLLoader,
 //						"TEXT":PersistenceGeoParser.TextLoader,
 //						,"WMST":PersistenceGeoParser.WMSTLoader
@@ -569,6 +569,7 @@ PersistenceGeoParser.AbstractLoader =
 			}
 			// Adds to layerTree
 			if (!!group_label
+					&& !!layerTree
 					&& !layerTree.containsKey(group_label)) {
 				//console.log("Creating '"+group_label+"'");
 				layerTree.add(group_label,

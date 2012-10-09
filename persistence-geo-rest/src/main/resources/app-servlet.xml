@@ -1,67 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
             http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
        		http://www.springframework.org/schema/util 
        		http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
-	
-    <context:annotation-config/>
-    <context:component-scan base-package="com.emergya.persistenceGeo.web"/>
-    
-    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 
-	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-	    <property name="mediaTypes">
-	        <map>
-	            <entry key="html" value="text/html" />
-	            <entry key="json" value="application/json" />
-	        </map>
-	    </property>
-	    <property name="viewResolvers">
-	        <list>
-	            <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-			        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-			        <property name="prefix" value="/WEB-INF/jsp/"/>
-			        <property name="suffix" value=".jsp"/>
-			
-			        <property name="alwaysInclude" value="true"/>
-			        <property name="contentType" value="text/html; charset=UTF-8"/>
-			        <property name="exposedContextBeanNames">
-			            <list>
-			                <value>properties</value>
-			            </list>
-			        </property>
-	            </bean>
-	        </list>
-	    </property>
-	    <property name="defaultViews">
-	        <list>
-	            <bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
-	            	<property name="prefixJson" value="false" />
-	            </bean>
-	        </list>
-	    </property>
+	<context:annotation-config />
+	<context:component-scan base-package="com.emergya.persistenceGeo.web" />
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+
+	<bean
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="mediaTypes">
+			<map>
+				<entry key="html" value="text/html" />
+				<entry key="json" value="application/json" />
+			</map>
+		</property>
+		<property name="viewResolvers">
+			<list>
+				<bean
+					class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+					<property name="viewClass"
+						value="org.springframework.web.servlet.view.JstlView" />
+					<property name="prefix" value="/WEB-INF/jsp/" />
+					<property name="suffix" value=".jsp" />
+
+					<property name="alwaysInclude" value="true" />
+					<property name="contentType" value="text/html; charset=UTF-8" />
+					<property name="exposedContextBeanNames">
+						<list>
+							<value>properties</value>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<bean
+					class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+					<property name="prefixJson" value="false" />
+				</bean>
+			</list>
+		</property>
 	</bean>
-	
-	<!-- JSON Converter -->
-	<bean id="jacksonMessageConverter" 
-		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
 
-	<!-- Required for REST services in order to bind the return value to the ResponseBody. -->
-	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
-	    <property name="messageConverters">
-	        <util:list id="beanList">
-	            <!-- <ref bean="marshallingHttpMessageConverter"/> -->
-	            <ref bean="jacksonMessageConverter"/>
-	        </util:list>
-	    </property>
+	<!-- JSON Converter -->
+	<bean id="jacksonMessageConverter"
+		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<array>
+				<value>text/html</value>
+				<value>application/json</value>
+			</array>
+		</property>
+	</bean>
+
+	<!-- Required for REST services in order to bind the return value to the 
+		ResponseBody. -->
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<util:list id="beanList">
+				<!-- <ref bean="marshallingHttpMessageConverter"/> -->
+				<ref bean="jacksonMessageConverter" />
+			</util:list>
+		</property>
 	</bean>
 
 </beans>
