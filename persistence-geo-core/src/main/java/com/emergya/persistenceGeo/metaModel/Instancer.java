@@ -90,4 +90,7 @@ public interface Instancer {
 	 * @return new zone entity
 	 */
 	public AbstractZoneEntity createZone();
+	
+	
+	public AbstractMapConfigurationEntity createMapConfiguration();
 }
