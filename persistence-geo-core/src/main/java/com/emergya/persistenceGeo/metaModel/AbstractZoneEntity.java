@@ -29,6 +29,7 @@
  */
 package com.emergya.persistenceGeo.metaModel;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -114,8 +115,9 @@ public abstract class AbstractZoneEntity extends AbstractEntity {
 	 * @param id
 	 *            the id to set
 	 */
-	public void setId(Long id) {
-		this.id = id;
+
+	public void setId(Serializable id) {
+		this.id = (Long) id;
 	}
 
 	/**

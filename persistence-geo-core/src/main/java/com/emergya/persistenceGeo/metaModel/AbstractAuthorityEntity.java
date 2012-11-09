@@ -91,7 +91,7 @@ public abstract class AbstractAuthorityEntity extends AbstractEntity{
         this.people = people;
     }
 
-	public void setcreateDate(Date createDate) {
+	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}
 
