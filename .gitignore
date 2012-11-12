@@ -13,4 +13,4 @@
 .metadata
 .log
 target/
-
+.springBeans
