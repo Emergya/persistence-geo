@@ -41,10 +41,11 @@ import java.util.List;
 @SuppressWarnings("rawtypes")
 public abstract class AbstractLayerEntity extends AbstractEntity {
 
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8436623536431960541L;
+	private static final long serialVersionUID = 5351127306343028162L;
 
 	protected Long id;
 	

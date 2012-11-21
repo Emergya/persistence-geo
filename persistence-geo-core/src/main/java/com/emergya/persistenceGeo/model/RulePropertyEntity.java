@@ -51,10 +51,11 @@ import com.emergya.persistenceGeo.metaModel.AbstractRulePropertyEntity;
 @Table(name = "gis_rule_property")
 public class RulePropertyEntity extends AbstractRulePropertyEntity {
 
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6555360095146423311L;
+	private static final long serialVersionUID = 7725969089527639996L;
 
 	@Id
     @Column(name = "id")

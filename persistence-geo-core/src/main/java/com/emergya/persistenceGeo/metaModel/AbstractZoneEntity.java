@@ -43,10 +43,11 @@ import java.util.List;
 @SuppressWarnings("rawtypes")
 public abstract class AbstractZoneEntity extends AbstractEntity {
 
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7702334870312919540L;
+	private static final long serialVersionUID = -3009093539153702850L;
 
 	protected Long id;
 

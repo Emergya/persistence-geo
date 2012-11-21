@@ -76,9 +76,9 @@
 
     <!-- Environment Information -->
     <scm>
-        <connection>scm:git:git@github.com:Emergya/persistence-geo.git</connection>
-        <url>scm:git:git@github.com:Emergya/persistence-geo.git</url>
+          <connection>scm:git:git@github.com:Emergya/persistence-geo.git</connection>
         <developerConnection>scm:git:git@github.com:Emergya/persistence-geo.git</developerConnection>
+        <url>scm:git:git@github.com:Emergya/persistence-geo.git</url>
     </scm>
 
 
@@ -184,8 +184,6 @@
             <artifactId>commons-beanutils-core</artifactId>
             <version>1.8.3</version>
         </dependency>
-
-
     </dependencies>
 
     <build>
@@ -225,6 +223,14 @@
                 <configuration>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
+            </plugin>
+			 <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
@@ -271,5 +277,5 @@
             </properties>
         </profile>
     </profiles>
-
 </project>
+

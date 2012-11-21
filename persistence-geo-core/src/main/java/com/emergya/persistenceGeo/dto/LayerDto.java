@@ -46,8 +46,8 @@ public class LayerDto implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -488299965208355171L;
-	
+	private static final long serialVersionUID = -3733098369106415376L;
+
 	private Long id;
 	
 	private String name;

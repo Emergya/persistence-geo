@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="com.emergya.persistenceGeo.dbutils"/>
+
+
+    
+    <!-- ============================== -->
+    <!-- ==========  DAO layer ======== -->
+    <!-- ============================== -->
+
+	<!-- Persistence geo instancer -->
+    <bean id="instancer" class="com.emergya.persistenceGeo.model.InstancerImpl" />
+	
+    <!-- Hibernate -->
+    <tx:annotation-driven/>
+    <bean id="dataSourceHibernate" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<property name="url" value="jdbc:postgresql://postgresql-apps:5433/persistence_geo_db" />
+		<property name="username" value="persistence_geo" />
+		<property name="password" value="persistence_geo" />
+		<property name="removeAbandonedTimeout" value="1" />
+		<property name="removeAbandoned" value="true" />
+	</bean>
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource" ref="dataSourceHibernate"/>
+        <property name="packagesToScan">
+        	<list>
+                <value>com.emergya.persistenceGeo.model</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+            	<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">validate</prop>
+				<!-- <prop key="hibernate.default_schema">${database.schema}</prop> -->
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.connection.characterEncoding">UTF-8</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>

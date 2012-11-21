@@ -54,8 +54,7 @@ public class LayerPropertyEntity extends AbstractLayerPropertyEntity {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6555360095146423311L;
-	
+	private static final long serialVersionUID = -2122513452152385685L;
 
 	@Id
     @Column(name = "id")

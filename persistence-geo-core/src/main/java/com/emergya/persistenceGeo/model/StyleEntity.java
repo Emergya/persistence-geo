@@ -57,10 +57,11 @@ import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
 @Table(name = "gis_style")
 public class StyleEntity extends AbstractStyleEntity {
 	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8414310574032934037L;
+	private static final long serialVersionUID = 4655276582758532780L;
 
 	public StyleEntity(){
 		

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>com.emergya</groupId>
 		<artifactId>persistence-geo</artifactId>
-		<version>1.2-SNAPSHOT</version>
+        <version>1.2-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>persistence-geo-rest</artifactId>
@@ -55,9 +56,9 @@
 
 	<!-- Environment Information -->
 	<scm>
-		<connection>scm:svn:http://svn.emergya.es/svn/sirdelgore/tags/persistence-geo-1.1/sirdelgore</connection>
-		<developerConnection>scm:svn:http://svn.emergya.es/svn/sirdelgore/tags/persistence-geo-1.1/sirdelgore</developerConnection>
-		<url>http://svn.emergya.es/svn/sirdelgore/tags/persistence-geo-1.1/sirdelgore</url>
+        <connection>scm:git:git@github.com:Emergya/persistence-geo.git</connection>
+        <developerConnection>scm:git:git@github.com:Emergya/persistence-geo.git</developerConnection>
+        <url>scm:git:git@github.com:Emergya/persistence-geo.git</url>
 	</scm>
 
 	<dependencies>
@@ -239,6 +240,15 @@
 					</systemProperties>
 					<contextPath>${project.artifactId}</contextPath>
 				</configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
 			</plugin>
 
 

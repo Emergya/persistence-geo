@@ -38,11 +38,11 @@ import java.io.Serializable;
  */
 public class SimplePropertyDto implements Serializable {
 
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4990614638056184873L;
-
+	private static final long serialVersionUID = -8540816585050140159L;
 	protected String name;
 	
 	/**

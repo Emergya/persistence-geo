@@ -62,8 +62,8 @@ public class ZoneEntity extends AbstractZoneEntity {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7702334870312919540L;
-	
+	private static final long serialVersionUID = -2343822232321013323L;
+
 	public ZoneEntity(){
 		
 	}

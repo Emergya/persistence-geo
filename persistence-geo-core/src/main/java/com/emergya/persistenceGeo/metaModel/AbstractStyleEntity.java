@@ -44,8 +44,8 @@ public abstract class AbstractStyleEntity extends AbstractEntity {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8414310574032934037L;
-	
+	private static final long serialVersionUID = 8012156300743165997L;
+
 	protected Long id;
 	
 	protected String name;

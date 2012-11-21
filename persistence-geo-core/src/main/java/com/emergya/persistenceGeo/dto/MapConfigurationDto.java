@@ -43,8 +43,8 @@ public class MapConfigurationDto implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -488299965208355171L;
-	
+	private static final long serialVersionUID = 5261757178438858384L;
+
 	private Long id;
 	
 	protected String PDFServer;

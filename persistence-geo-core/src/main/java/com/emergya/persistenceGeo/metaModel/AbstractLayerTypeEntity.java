@@ -43,7 +43,7 @@ public abstract class AbstractLayerTypeEntity extends AbstractEntity {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8436623536431960541L;
+	private static final long serialVersionUID = 3669710571210130214L;
 
 	protected Long id;
 	

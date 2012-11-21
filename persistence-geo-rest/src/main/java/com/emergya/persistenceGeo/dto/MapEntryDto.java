@@ -41,8 +41,7 @@ public class MapEntryDto implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4990614638056184873L;
-
+	private static final long serialVersionUID = -6213567758241837740L;
 	protected String name;
 	protected String value;
 	
