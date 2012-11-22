@@ -418,4 +418,47 @@ public class RestFoldersAdminController implements Serializable{
 		return result;
 	}
 
+	/**
+	 * Clone user context
+	 * 
+	 * @param originUser
+	 * @param targetUser
+	 * @param merge
+	 *            indicates if actual user context must be deleted or merged
+	 * 
+	 * @return JSON file with success
+	 */
+	@RequestMapping(value = "/persistenceGeo/cloneUserContext", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public @ResponseBody
+	Map<String, Object> cloneUserContext(
+			@RequestParam("originUser") String originUser,
+			@RequestParam("targetUser") String targetUser,
+			@RequestParam(value = "merge", required = false) String merge) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		FolderDto folder = null;
+		try {
+			/*
+			 * //TODO: Secure with logged user String username = ((UserDetails)
+			 * SecurityContextHolder.getContext()
+			 * .getAuthentication().getPrincipal()).getUsername();
+			 */
+			Long originUserId = userAdminService.obtenerUsuario(originUser)
+					.getId();
+			Long targetUserId = userAdminService.obtenerUsuario(targetUser)
+					.getId();
+			folder = (FolderDto) foldersAdminService.copyUserContext(
+					originUserId, targetUserId, merge != null ? new Boolean(
+							merge) : false);
+			result.put(SUCCESS, true);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.put(SUCCESS, false);
+		}
+
+		result.put(RESULTS, folder != null ? 1 : 0);
+		result.put(ROOT, folder);
+
+		return result;
+	}
+
 }

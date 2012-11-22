@@ -165,4 +165,13 @@ public interface LayerAdminService extends AbstractService {
 	 * Delete a layer
 	 */
 	public void deleteLayerById(Long layerId);
+
+	/**
+	 * Get layers by folder
+	 * 
+	 * @param folderId to be loaded
+	 * 
+	 * @return all layers in the folder
+	 */
+	public List<LayerDto> getLayersByFolder(Long folderId);
 }

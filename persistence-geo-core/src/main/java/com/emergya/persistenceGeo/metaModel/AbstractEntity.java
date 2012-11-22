@@ -35,7 +35,7 @@ import java.io.Serializable;
  * @author <a href="mailto:adiaz@emergya.es">adiaz</a>
  */
 @SuppressWarnings("serial")
-public abstract class AbstractEntity implements Serializable {
+public abstract class AbstractEntity implements Serializable{
 
 	/**
 	 * @return the id

@@ -29,7 +29,9 @@
  */
 package com.emergya.persistenceGeo.metaModel;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -39,7 +41,7 @@ import java.util.List;
  *
  */
 @SuppressWarnings("rawtypes")
-public abstract class AbstractLayerEntity extends AbstractEntity {
+public abstract class AbstractLayerEntity extends AbstractEntity implements Cloneable {
 
 
 	/**
@@ -253,4 +255,65 @@ public abstract class AbstractLayerEntity extends AbstractEntity {
 	public void setStyleList(List styleList) {
 		this.styleList = styleList;
 	}
+
+	/* (non-Javadoc)
+	 * @see com.emergya.persistenceGeo.metaModel.AbstractEntity#setId(java.io.Serializable)
+	 */
+	@Override
+	public void setId(Serializable id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/** 
+	 * @see java.lang.Object#clone()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		AbstractLayerEntity layer =  (AbstractLayerEntity) super.clone();
+		
+		layer.name = this.getName() != null ? new String(this.name) : null;
+		layer.order = this.getOrder() != null ? new String(this.order) : null;
+		layer.server_resource = this.getServer_resource() != null ? new String(this.server_resource) : null;
+		layer.data = this.getData() != null ? data.clone() : null;
+
+		layer.publicized = this.getPublicized() != null ? new Boolean(this.publicized) : null;
+		layer.enabled = this.getEnabled() != null ? new Boolean(this.enabled) : null;
+		layer.isChannel = this.getIsChannel() != null ? new Boolean(this.isChannel) : null;
+		
+		layer.createDate = (Date) (this.getCreateDate() != null ? createDate.clone() : null);
+		layer.updateDate = (Date) (this.getUpdateDate() != null ? updateDate.clone() : null);
+
+		// type not cloned
+		layer.type = this.type;
+
+		// this entities are nulled
+		layer.user = null;
+		layer.auth = null;
+		layer.folder = null;
+		
+		// styleList clone
+		if(this.getStyleList() != null){
+			layer.styleList = new LinkedList();
+			for(Object obj: this.styleList){
+				AbstractStyleEntity style = (AbstractStyleEntity) obj;
+				layer.styleList.add(style.clone());
+			}
+		}
+		
+		// properties clone
+		if(this.properties != null){
+			layer.properties = new LinkedList();
+			for(Object obj: this.properties){
+				AbstractLayerPropertyEntity property = (AbstractLayerPropertyEntity) obj;
+				layer.properties.add(property.clone());
+			}
+		}
+
+		
+		return layer;
+	}
+	
+	
 }

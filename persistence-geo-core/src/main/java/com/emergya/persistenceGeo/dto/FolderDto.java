@@ -31,6 +31,7 @@ package com.emergya.persistenceGeo.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -39,7 +40,7 @@ import java.util.List;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
-public class FolderDto implements Serializable{
+public class FolderDto implements Serializable, Cloneable{
 
 	/**
 	 * 
@@ -218,4 +219,53 @@ public class FolderDto implements Serializable{
 	public void setOrder(Integer order) {
 		this.order = order;
 	}
+	
+	/** 
+	 * Clone folder (id is always nulled)
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		FolderDto result = (FolderDto) super.clone();
+		
+		result.id = null; // not clone id 
+		//result.id = this.id != null ? new Long(this.id) : null; // clone id
+		result.name = this.name != null ? new String(this.name) : null;
+		result.enabled = this.enabled != null ? new Boolean(this.enabled)
+				: null;
+		result.isChannel = this.isChannel != null ? new Boolean(this.isChannel)
+				: null;
+		result.isPlain = this.isChannel != null ? new Boolean(this.isChannel)
+				: null;
+		result.createDate = this.createDate != null ? (Date) this.createDate
+				.clone() : null;
+		result.updateDate = this.updateDate != null ? (Date) this.updateDate
+				.clone() : null;
+		result.idParent = this.idParent != null ? new Long(this.idParent)
+				: null;
+		result.idAuth = this.idAuth != null ? new Long(this.idAuth) : null;
+		result.idUser = this.idUser != null ? new Long(this.idUser) : null;
+		result.order = this.order != null ? new Integer(this.order) : null;
+		
+		// clone folder list
+		if(this.folderList != null){
+			result.folderList = new LinkedList<FolderDto>();
+			for(FolderDto child: this.folderList){
+				result.folderList.add((FolderDto) child.clone());
+			}
+		}
+
+		// clone zones
+		if(this.zoneList != null){
+			result.zoneList = new LinkedList<String>();
+			for(String zone: this.zoneList){
+				result.zoneList.add(new String(zone));
+			}
+		}
+		
+		return result;
+	}
+	
+	
 }

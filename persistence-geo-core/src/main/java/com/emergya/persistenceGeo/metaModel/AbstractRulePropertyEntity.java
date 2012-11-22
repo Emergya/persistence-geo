@@ -29,13 +29,14 @@
  */
 package com.emergya.persistenceGeo.metaModel;
 
+
 /**
  * Rule property entity
  * 
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
-public abstract class AbstractRulePropertyEntity extends AbstractEntity {
+public abstract class AbstractRulePropertyEntity extends AbstractEntity implements Cloneable {
 	
 	/**
 	 * 
@@ -67,6 +68,21 @@ public abstract class AbstractRulePropertyEntity extends AbstractEntity {
 	 */
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	/** 
+	 * Clone an entity. Reset id
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	public Object clone() throws CloneNotSupportedException {
+		AbstractRulePropertyEntity result = (AbstractRulePropertyEntity) super.clone();
+		
+		result.id = null; // id null
+		result.name = this.getName() != null ? new String(this.name) : null;
+		result.value = this.getValue() != null ? new String(this.value) : null;	
+				
+		return result;
 	}
 
 }

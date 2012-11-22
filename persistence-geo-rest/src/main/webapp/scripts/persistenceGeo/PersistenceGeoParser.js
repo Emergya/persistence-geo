@@ -151,6 +151,10 @@ PersistenceGeo = Ext.extend(Ext.Component,
 						return this.getRestBaseUrl() + "/persistenceGeo/renameFolder";
 					},
 					
+					CLONE_USER_CONTEXT_URL: function(){
+						return this.getRestBaseUrl() + "/persistenceGeo/cloneUserContext";
+					},
+					
 					LOADED_FOLDERS:{},
 					
 					LOADED_FOLDERS_OBJECTS:{},
@@ -213,6 +217,41 @@ PersistenceGeo = Ext.extend(Ext.Component,
 						if(!!userZone){
 							params.userZone = userZone;
 						}
+						
+						this.sendFormPostData(url, params, "POST", onsuccess, onfailure);
+					},
+					
+					/**
+					 * Function: cloneUserContext
+					 * 
+					 * Clone user context 
+					 */
+					cloneUserContext: function(originUser, targetUser, onsuccess, onfailure){
+						
+						var url = this.CLONE_USER_CONTEXT_URL();
+						
+						var params = {
+								originUser: originUser,
+								targetUser: targetUser
+						};
+						
+						this.sendFormPostData(url, params, "POST", onsuccess, onfailure);
+					},
+					
+					/**
+					 * Function: cloneUserContextMerged
+					 * 
+					 * Clone user context maintaining actual folders
+					 */
+					cloneUserContextMerged: function(originUser, targetUser, onsuccess, onfailure){
+						
+						var url = this.CLONE_USER_CONTEXT_URL();
+						
+						var params = {
+								originUser: originUser,
+								targetUser: targetUser,
+								merged: true
+						};
 						
 						this.sendFormPostData(url, params, "POST", onsuccess, onfailure);
 					},

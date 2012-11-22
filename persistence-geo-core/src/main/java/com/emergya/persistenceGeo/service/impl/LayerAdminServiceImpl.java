@@ -234,6 +234,17 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 		entity.setFolder(folder);
 		layerDao.save(entity);
 	}
+	
+	/**
+	 * Get layers by folder
+	 * 
+	 * @param folderId to be loaded
+	 * 
+	 * @return all layers in the folder
+	 */
+	public List<LayerDto> getLayersByFolder(Long folderId){
+		return (List<LayerDto>) entitiesToDtos(layerDao.getLayersByFolder(folderId));
+	}
 
 	protected LayerDto entityToDto(AbstractLayerEntity entity) {
 		LayerDto dto = null;

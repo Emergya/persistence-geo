@@ -29,7 +29,9 @@
  */
 package com.emergya.persistenceGeo.metaModel;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -39,7 +41,7 @@ import java.util.List;
  *
  */
 @SuppressWarnings("rawtypes")
-public abstract class AbstractStyleEntity extends AbstractEntity {
+public abstract class AbstractStyleEntity extends AbstractEntity implements Cloneable{
 	
 	/**
 	 * 
@@ -112,5 +114,42 @@ public abstract class AbstractStyleEntity extends AbstractEntity {
 	public void setRuleList(List ruleList) {
 		this.ruleList = ruleList;
 	}
+
+	/* (non-Javadoc)
+	 * @see com.emergya.persistenceGeo.metaModel.AbstractEntity#setId(java.io.Serializable)
+	 */
+	@Override
+	public void setId(Serializable id) {
+		this.id = (Long) id;
+	}
+
+	/**
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		AbstractStyleEntity result = (AbstractStyleEntity) super.clone();
+		result.id = null; // id null
+		result.name = this.getName() != null ? new String(this.name) : null;
+		result.createDate = this.getCreateDate() != null ? (Date) this.createDate
+				.clone() : null;
+		result.updateDate = this.getUpdateDate() != null ? (Date) this.updateDate
+				.clone() : null;
+				
+		// styleList clone
+		if(this.getRuleList() != null){
+			result.ruleList = new LinkedList();
+			for(Object obj: this.ruleList){
+				AbstractRuleEntity rule = (AbstractRuleEntity) obj;
+				result.ruleList.add(rule.clone());
+			}
+		}		
+				
+		return result;
+	}
+	
+	
 
 }

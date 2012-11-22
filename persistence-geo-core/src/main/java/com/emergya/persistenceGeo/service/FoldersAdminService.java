@@ -59,4 +59,33 @@ public interface FoldersAdminService extends AbstractService{
 	 * @return saved folder
 	 */
 	public FolderDto saveFolder(FolderDto folder);
+	
+	/**
+	 * Delete all user folders and layers 
+	 * 
+	 * @param userId user's <code>id</code>
+	 */
+	public void deleteUserContext(Long userId);
+	
+	/**
+	 * Copy user folders and layers 
+	 * from an user <code>origin</code> to a user <code>target</code>
+	 * 
+	 * @param originUserId origin user's <code>id</code>
+	 * @param targetUserId target user's <code>id</code>
+	 * @param merge indicate if target user folders must be maintained
+	 * 
+	 * @return folder copied
+	 */
+	public FolderDto copyUserContext(Long originUserId, Long targetUserId, boolean merge);
+	
+	/**
+	 * Copy folder to an user
+	 * 
+	 * @param targetUserId
+	 * @param originFolder
+	 * 
+	 * @return copied
+	 */
+	public FolderDto copyFolder(Long targetUserId, FolderDto originFolder);
 }
