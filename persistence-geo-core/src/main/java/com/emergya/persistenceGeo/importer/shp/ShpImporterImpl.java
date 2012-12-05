@@ -297,6 +297,7 @@ public class ShpImporterImpl implements IShpImporter {
 							+ "Please, check if postgis package is installed.",
 					e);
 		}
-
 	}
+	
+	
 }
