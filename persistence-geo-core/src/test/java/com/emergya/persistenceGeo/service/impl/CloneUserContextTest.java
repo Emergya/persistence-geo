@@ -146,9 +146,6 @@ public class CloneUserContextTest{
 		Assert.assertNotNull(folderCloned);
 		Assert.assertNotNull(folderCloned.getId());
 		Assert.assertFalse(folderCloned.getId().equals(originFolder.getId()));
-		Assert.assertNotNull(folderCloned.getFolderList());
-		Assert.assertNotNull(originFolder.getFolderList());
-		Assert.assertEquals(folderCloned.getFolderList().size(), originFolder.getFolderList().size());
 		
 		// layers
 		List<LayerDto> layers = layerAdminService.getLayersByFolder(originFolder.getId());
@@ -160,9 +157,17 @@ public class CloneUserContextTest{
 			}
 		}
 		
-		// children
-		for(FolderDto child: originFolder.getFolderList()){
-			AssertClonedInChild(child, folderCloned);
+		// has children?
+		if(folderCloned.getFolderList() != null){
+			Assert.assertNotNull(originFolder.getFolderList());
+			Assert.assertEquals(folderCloned.getFolderList().size(), originFolder.getFolderList().size());
+			// children
+			for(FolderDto child: originFolder.getFolderList()){
+				AssertClonedInChild(child, folderCloned);
+			}
+		}else{
+			// without children
+			Assert.assertNull(originFolder.getFolderList());
 		}
 	}
 

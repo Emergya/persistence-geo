@@ -5,7 +5,6 @@ package com.emergya.persistenceGeo.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -46,6 +45,7 @@ public class FileUtils {
 					: getDocumentExtension(fileName);
 			name = type != null ? fileName : getDocumentName(fileName);
 		} catch (Exception e) {
+			LOG.error(e);
 			return null;
 		}
 		return File.createTempFile(name, extension);
@@ -62,6 +62,7 @@ public class FileUtils {
 		try {
 			extension = path.substring(path.lastIndexOf(PUNTO) + 1);
 		} catch (Exception e) {
+			LOG.error(e);
 			return null;
 		}
 		return extension;
@@ -78,6 +79,7 @@ public class FileUtils {
 		try {
 			name = path.substring(0, path.lastIndexOf(PUNTO));
 		} catch (Exception e) {
+			LOG.error(e);
 			return null;
 		}
 		return name;

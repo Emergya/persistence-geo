@@ -7,9 +7,31 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
     <context:annotation-config/>
-    <context:component-scan base-package="com.emergya.persistenceGeo.dbutils"/>
+    <context:component-scan base-package="com.emergya"/>
+        
+    <bean class="java.lang.Boolean" id="checkForCommandLine">
+    	<constructor-arg value="false" />
+    </bean>
+    
+    <bean class="java.lang.String" id="chareacterEncoding">
+    	<constructor-arg type="String" value="${source.encoding}" />
+    </bean>
 
+    <bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:application.properties</value>
+            </list>
+        </property>
+    </bean>
 
+    <bean id="testProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:test.properties</value>
+            </list>
+        </property>
+    </bean>
     
     <!-- ============================== -->
     <!-- ==========  DAO layer ======== -->
@@ -41,11 +63,11 @@
         </property>
         <property name="hibernateProperties">
             <props>
-            	<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
-				<prop key="hibernate.hbm2ddl.auto">validate</prop>
+            	<prop key="hibernate.dialect">${database.hibernate.dialect}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${database.hibernate.hbm2ddl.auto}</prop>
 				<!-- <prop key="hibernate.default_schema">${database.schema}</prop> -->
-				<prop key="hibernate.show_sql">true</prop>
-				<prop key="hibernate.connection.characterEncoding">UTF-8</prop>
+				<prop key="hibernate.show_sql">${database.showsql}</prop>
+				<prop key="hibernate.connection.characterEncoding">${database.characterEncoding}</prop>
             </props>
         </property>
     </bean>

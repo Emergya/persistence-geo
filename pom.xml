@@ -130,7 +130,8 @@
 
     <modules>
         <module>persistence-geo-core</module>
-        <module>persistence-geo-admin</module>
+        <module>persistence-geo-geoserver</module>
+	<module>persistence-geo-admin</module>
         <module>persistence-geo-rest</module>
     </modules>
     <build>

@@ -9,7 +9,7 @@
         <version>1.3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>persistence-geo-core</artifactId>
+    <artifactId>persistence-geo-geoserver</artifactId>
     <packaging>jar</packaging>
     <!-- Project Information -->
     <licenses>
@@ -19,9 +19,9 @@
         </license>
     </licenses>
 
-    <name>Core del proyecto</name>
+    <name>persistence-geo-geoserver</name>
     <url>http://www.emergya.es</url>
-    <description>Core del ejemplo del proyecto persistence-geo</description>
+    <description>Geoserver module for persistence-geo</description>
 
     <organization>
         <name>Emergya</name>
@@ -99,95 +99,25 @@
     </repositories>
 
     <dependencies>
+		<!-- Internal dependencies -->
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>persistence-geo-core</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
         <!-- SPRING DEPENDENCIES -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
-
         <!--Misc dependencies -->
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.1</version>
             <scope>test</scope>
-        </dependency>
-
-        <!-- HIBERNATE DEPENDENCIES -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>${hsqldb.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>${commons-dbcp.version}</version>
-        </dependency>
-
-        <!-- PostgreSQL -->
-        <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
-        </dependency>
-
-        <!-- Oracle -->
-        <dependency>
-            <groupId>${ojdbc.groupId}</groupId>
-            <artifactId>${ojdbc.artifactId}</artifactId>
-            <version>${ojdbc.version}</version>
-        </dependency>
-
-        <!-- LOGGING DEPENDENCIES - LOG4J -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j-log4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>1.3.2</version>
-        </dependency>
-        <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>geoserver-manager</artifactId>
-            <version>${geoserver.manager.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils-core</artifactId>
-            <version>1.8.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
         </dependency>
     </dependencies>
 
@@ -206,7 +136,7 @@
             <resource>
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
-                <targetPath>../test-classes</targetPath>
+                <targetPath>test-classes</targetPath>
             </resource>
         </resources>
 
