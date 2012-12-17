@@ -58,5 +58,13 @@ public enum FolderStyle {
 	 *  <li>parent-another child-2nd level 2</li>
 	 * </ul>
 	 */
-	STRING
+	STRING, 
+	/**
+	 * String parse as in only one level:
+	 * <ul>
+	 * 	<li>child</li>
+	 *  <li>another child</li>
+	 * </ul>
+	 */
+	NORMAL
 }

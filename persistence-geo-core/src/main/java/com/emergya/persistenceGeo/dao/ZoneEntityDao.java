@@ -58,7 +58,16 @@ public interface ZoneEntityDao extends GenericDAO<AbstractZoneEntity, Long> {
 	 * @return Entities list associated with the zone name or null if not found 
 	 */
 	public List<AbstractZoneEntity> getZones(String zoneName);
-	
+
+	/**
+	 * Get a zones list by its type
+	 *
+	 * @param <code>zoneType</code>
+	 *
+	 * @return Entities list associated with the zone type or null if not found
+	 */
+	public List<AbstractZoneEntity> findByType(String zoneType);
+
 	/**
 	 * Delete a zone by the zone identifier 
 	 * 
@@ -66,4 +75,41 @@ public interface ZoneEntityDao extends GenericDAO<AbstractZoneEntity, Long> {
 	 * 
 	 */
 	public void deleteZone(Long zoneID);
+	
+	/**
+	 * Find zone by id
+	 * 
+	 * @param idParent
+	 * @param isEnabled
+	 * 
+	 * @return zones
+	 */
+	public List<AbstractZoneEntity> findByParent(Long idParent, Boolean isEnabled);
+	
+	/**
+	 * Get all zones enabled
+	 * 
+	 * @return Entities 
+	 */
+	public List<AbstractZoneEntity> findAllEnabled();
+
+	/**
+	 * Get a zones list by its type
+	 *
+	 * @param <code>zoneType</code>
+	 * @param isEnabled
+	 *
+	 * @return Entities list associated with the zone type or null if not found
+	 */
+	public List<AbstractZoneEntity> findByType(String zoneType, Boolean isEnabled);
+	
+	/**
+	 * Get a zones list by the zone name 
+	 * 
+	 * @param <code>zoneName</code>
+	 * @param isEnabled
+	 * 
+	 * @return Entities list associated with the zone name or null if not found 
+	 */
+	public List<AbstractZoneEntity> getZones(String zoneName, Boolean isEnabled);
 }

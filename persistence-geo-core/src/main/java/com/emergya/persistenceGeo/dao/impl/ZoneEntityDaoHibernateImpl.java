@@ -33,7 +33,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -87,8 +89,19 @@ public class ZoneEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstract
 	}
 
 	/**
-	 * Delete a zone by the zone identifier 
-	 * 
+	 * Get a zones list by its type
+	 *
+	 * @param <code>zoneType</code>
+	 *
+	 * @return Entities list associated with the zone type or null if not found
+	 */
+	public List<AbstractZoneEntity> findByType(String zoneType) {
+		return findByCriteria(Restrictions.eq("type", zoneType));
+	}
+
+	/**
+	 * Delete a zone by the zone identifier
+	 *
 	 * @param <code>zoneID</code>
 	 * 
 	 */
@@ -97,6 +110,96 @@ public class ZoneEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstract
 		if(zoneEntity != null){
 			getHibernateTemplate().delete(zoneEntity);
 		}
+	}
+	
+	/**
+	 * Get a zones list by the zone name 
+	 * 
+	 * @param <code>zoneName</code>
+	 * @param isEnabled
+	 * 
+	 * @return Entities list associated with the zone name or null if not found 
+	 */
+	public List<AbstractZoneEntity> getZones(String zoneName, Boolean isEnabled){
+
+		Criteria criteria = getSession().createCriteria(persistentClass)
+				.add(Restrictions.eq("name", zoneName));
+		
+		if(isEnabled == null){
+			criteria.add(Restrictions.isNull("enabled"));
+		}else if(isEnabled){
+			criteria.add(Restrictions.eq("enabled", isEnabled));
+		}else{
+			Disjunction dis = Restrictions.disjunction();
+			dis.add(Restrictions.isNull("enabled"));
+			dis.add(Restrictions.eq("enabled", isEnabled));
+			criteria.add(dis);
+		}
+		
+		return criteria.list();
+	}
+
+	/**
+	 * Get a zones list by its type
+	 *
+	 * @param <code>zoneType</code>
+	 * @param isEnabled
+	 *
+	 * @return Entities list associated with the zone type or null if not found
+	 */
+	public List<AbstractZoneEntity> findByType(String zoneType, Boolean isEnabled){
+
+		Criteria criteria = getSession().createCriteria(persistentClass)
+				.add(Restrictions.eq("type", zoneType));
+		
+		if(isEnabled == null){
+			criteria.add(Restrictions.isNull("enabled"));
+		}else if(isEnabled){
+			criteria.add(Restrictions.eq("enabled", isEnabled));
+		}else{
+			Disjunction dis = Restrictions.disjunction();
+			dis.add(Restrictions.isNull("enabled"));
+			dis.add(Restrictions.eq("enabled", isEnabled));
+			criteria.add(dis);
+		}
+		
+		return criteria.list();
+	}
+	
+	/**
+	 * Get all zones enabled
+	 * 
+	 * @return Entities 
+	 */
+	public List<AbstractZoneEntity> findAllEnabled(){
+		return findByCriteria(Restrictions.eq("enabled", Boolean.TRUE));
+	}
+	
+	/**
+	 * Find zone by id
+	 * 
+	 * @param idParent
+	 * @param isEnabled
+	 * 
+	 * @return zones
+	 */
+	public List<AbstractZoneEntity> findByParent(Long idParent, Boolean isEnabled){
+		Criteria criteria = getSession().createCriteria(persistentClass)
+				.add(Restrictions.eq("id", idParent))
+				.createAlias("zoneList", "child");
+		
+		if(isEnabled == null){
+			criteria.add(Restrictions.isNull("enabled"));
+		}else if(isEnabled){
+			criteria.add(Restrictions.eq("enabled", isEnabled));
+		}else{
+			Disjunction dis = Restrictions.disjunction();
+			dis.add(Restrictions.isNull("enabled"));
+			dis.add(Restrictions.eq("enabled", isEnabled));
+			criteria.add(dis);
+		}
+		
+		return criteria.list();
 	}
 
 }

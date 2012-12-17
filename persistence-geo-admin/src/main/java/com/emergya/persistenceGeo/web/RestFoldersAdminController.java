@@ -37,6 +37,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -47,8 +48,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.emergya.persistenceGeo.dto.FolderDto;
+import com.emergya.persistenceGeo.dto.LayerDto;
+import com.emergya.persistenceGeo.dto.TreeFolderDto;
+import com.emergya.persistenceGeo.dto.TreeNode;
+import com.emergya.persistenceGeo.dto.Treeable;
 import com.emergya.persistenceGeo.dto.UserDto;
 import com.emergya.persistenceGeo.service.FoldersAdminService;
+import com.emergya.persistenceGeo.service.LayerAdminService;
 import com.emergya.persistenceGeo.service.UserAdminService;
 import com.emergya.persistenceGeo.utils.FolderStyle;
 import com.emergya.persistenceGeo.utils.FoldersUtils;
@@ -70,6 +76,8 @@ public class RestFoldersAdminController implements Serializable{
 	private UserAdminService userAdminService;
 	@Resource
 	private FoldersAdminService foldersAdminService;
+	@Resource
+	private LayerAdminService layerAdminService;
 	
 	protected final String RESULTS= "results";
 	protected final String ROOT= "data";
@@ -79,6 +87,26 @@ public class RestFoldersAdminController implements Serializable{
 	public static final String LOAD_FOLDERS_BY_GROUP = "group";
 	public static final String LOAD_FOLDERS_STYLE_TREE = "tree";
 	public static final String LOAD_FOLDERS_STYLE_STRING = "string";
+	
+	/**
+	 * Filter to show zone channels in {@link RestFoldersAdminController#loadChannels(String)}
+	 */
+	public static final String ALL_CHANNEL_IN_ZONES = "ALL_CHANNEL_IN_ZONES";
+	
+	/**
+	 * Filter to show  only channel layers in {@link RestFoldersAdminController#loadFoldersById(String, String)}
+	 */
+	public static final String ONLY_CHANNEL_MARK = "ONLY_CHANNEL_MARK";
+	
+	/**
+	 * Filter to show  only not channel layers in {@link RestFoldersAdminController#loadFoldersById(String, String)}
+	 */
+	public static final String ONLY_NOT_CHANNEL_MARK = "ONLY_NOT_CHANNEL_MARK";
+
+	/**
+	 * Filter to show layers in channel tree {@link RestFoldersAdminController#loadChannels(String)}
+	 */
+	public static final String SHOW_FOLDER_LAYERS = "SHOW_FOLDER_LAYERS";
 
 	/**
 	 * This method loads layers.json related with a folder
@@ -461,4 +489,148 @@ public class RestFoldersAdminController implements Serializable{
 		return result;
 	}
 
+
+	/**
+	 * This method loads all folders or layers in a folder
+	 * 
+	 * @param idFolder
+	 * 
+	 * @return JSON file with folders
+	 */
+	@RequestMapping(value = "/persistenceGeo/loadFoldersById/{idFolder}", 
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	public @ResponseBody
+	Map<String, Object> loadFoldersById(@PathVariable String idFolder,
+			@RequestParam(value="filter", required=false) String filter){
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<Treeable> tree = null;
+		try{
+			if(idFolder != null){
+				Long folderId = new Long(idFolder);
+				tree = new LinkedList<Treeable>();
+				
+				// add folders
+				List<FolderDto> previusFolders = foldersAdminService.findByZone(null, folderId, Boolean.TRUE);
+				if(previusFolders != null 
+						&& !previusFolders.isEmpty()){ 
+					for(FolderDto subRes: previusFolders){
+						tree.add((Treeable) FoldersUtils.getFolderDecorator().applyStyle(subRes, FolderStyle.NORMAL));
+					}
+				}
+
+				// add layers
+				Boolean isChannel = null;
+				if(ONLY_CHANNEL_MARK.equals(filter)){
+					isChannel = Boolean.TRUE;
+				}else if(ONLY_NOT_CHANNEL_MARK.equals(filter)){
+					isChannel = Boolean.FALSE;
+				}
+				List<LayerDto> previusLayers = layerAdminService.getLayersByFolder(folderId, isChannel, Boolean.TRUE);
+				for(LayerDto subRes: previusLayers){
+					tree.add(new TreeNode(subRes, true));
+				}
+			}
+			result.put(SUCCESS, true);
+		}catch (Exception e){
+			e.printStackTrace();
+			result.put(SUCCESS, false);
+		}
+		
+		result.put(RESULTS, tree != null ? tree.size(): 0);
+		result.put(ROOT, tree);
+
+		return result;
+	} 
+
+	/**
+	 * This method loads all channel folders in a zone
+	 * 
+	 * @param filter can be null {@link RestFoldersAdminController#ALL_CHANNEL_IN_ZONES} or id zone to filter 
+	 * 
+	 * @return JSON file with folders
+	 */
+	@RequestMapping(value = "/persistenceGeo/loadChannels", 
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	public @ResponseBody
+	Map<String, Object> loadChannels(@RequestParam(value="filter", required = false) String filter){
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<FolderDto> folders = null;
+		List<FolderDto> previusFolders = null;
+		try{
+			if(filter != null){
+				if(filter.contains(ALL_CHANNEL_IN_ZONES)){
+					previusFolders = foldersAdminService.getChannelFolders(Boolean.TRUE, null, Boolean.TRUE);
+				}else{
+					Long zoneId = null;
+					try{
+						zoneId = Long.decode(filter);
+						previusFolders = foldersAdminService.getChannelFolders(null, zoneId, Boolean.TRUE);
+					}catch(Exception e){
+						previusFolders = foldersAdminService.getChannelFolders(Boolean.FALSE, null, Boolean.TRUE);	
+					}
+				}
+			}else{
+				previusFolders = foldersAdminService.getChannelFolders(Boolean.FALSE, null, Boolean.TRUE);	
+			} 
+			folders = new LinkedList<FolderDto>();
+			
+			for(FolderDto subRes: previusFolders){
+				TreeFolderDto folder = (TreeFolderDto) FoldersUtils.getFolderDecorator().applyStyle(subRes, FolderStyle.NORMAL);
+				if(filter != null 
+						&& filter.contains(SHOW_FOLDER_LAYERS)){
+					folder.setLeaf(false);
+				}else{
+					folder.setLeaf(true);
+				}
+				folders.add(folder);
+			}
+			result.put(SUCCESS, true);
+		}catch (Exception e){
+			e.printStackTrace();
+			result.put(SUCCESS, false);
+		}
+		
+		result.put(RESULTS, folders != null ? folders.size(): 0);
+		result.put(ROOT, folders);
+
+		return result;
+	}
+
+
+	/**
+	 * Returns all the folders of a specific zone and optionaly with
+     * a specific parent folder.
+	 *
+	 * @param zone Zone the folder belongs to
+     * @param parent Folder parent id
+	 *
+	 * @return JSON file with success
+	 */
+	@RequestMapping(value = "/persistenceGeo/loadFoldersByZone",
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	public @ResponseBody
+	Map<String, Object> loadFoldersByZone(@RequestParam(value="zone", required=true) String zoneId,
+            @RequestParam(value="parent", required=false) String parentId) {
+
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<FolderDto> folders = null;
+
+		try {
+
+            if (parentId == null) {
+                folders = (List<FolderDto>) foldersAdminService.findByZone(new Long(zoneId), Boolean.TRUE);
+            } else {
+                folders = (List<FolderDto>) foldersAdminService.findByZone(new Long(zoneId), new Long(parentId), Boolean.TRUE);
+            }
+			result.put(SUCCESS, true);
+
+		} catch (Exception e) {
+			result.put(SUCCESS, false);
+		}
+
+		result.put(RESULTS, folders != null ? folders.size() : 0);
+		result.put(ROOT, folders != null ? folders : ListUtils.EMPTY_LIST);
+
+		return result;
+    }
 }

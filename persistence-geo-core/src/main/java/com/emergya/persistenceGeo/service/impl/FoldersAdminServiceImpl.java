@@ -45,12 +45,14 @@ import com.emergya.persistenceGeo.dao.FolderEntityDao;
 import com.emergya.persistenceGeo.dao.GenericDAO;
 import com.emergya.persistenceGeo.dao.LayerEntityDao;
 import com.emergya.persistenceGeo.dao.UserEntityDao;
+import com.emergya.persistenceGeo.dao.ZoneEntityDao;
 import com.emergya.persistenceGeo.dto.FolderDto;
 import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
 import com.emergya.persistenceGeo.service.FoldersAdminService;
+import com.emergya.persistenceGeo.service.LayerAdminService;
 
 /**
  * FoldersAdminService transactional implementation based on daos uses
@@ -74,7 +76,12 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
 	private UserEntityDao userDao;
 	@Resource
 	private AuthorityEntityDao authDao;
+	@Resource
+	private ZoneEntityDao zoneDao;
 	
+	@Resource
+	private LayerAdminService layerAdminService;
+
 	public FoldersAdminServiceImpl(){
 		super();
 	}
@@ -222,6 +229,99 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
 		}
 	}
 
+	/**
+	 * Get all channel folders filterd
+	 * 
+	 * @param inZone indicates if obtain channel folders with a zone. If this parameter is null only obtain not zoned channels
+	 * @param idZone filter by zone. Obtain only channels of the zone identified by <code>idZone</code>
+	 * 
+	 * @return folder list
+	 */
+	@SuppressWarnings("unchecked")
+	public List<FolderDto> getChannelFolders(Boolean inZone, Long idZone){
+		return (List<FolderDto>) entitiesToDtos(folderDao.getChannelFolders(inZone, idZone));
+	}
+
+    /**
+     * Get a folders list by zones. If zoneId is NULL returns all the
+     * folder not associated to any zone.
+     *
+     * @params <code>zoneId</code>
+     *
+     * @return Entities list associated with the zoneId or null if not found
+     */
+    public List<FolderDto> findByZone(Long zoneId) {
+        List<FolderDto> foldersDto = new LinkedList<FolderDto>();
+        List<AbstractFolderEntity> folders = folderDao.findByZone(zoneId);
+        for (AbstractFolderEntity folderEntity: folders) {
+            foldersDto.add(entityToDto(folderEntity));
+        }
+        return foldersDto;
+    }
+
+    /**
+     * Get a folders list by zones with an specific parent. If zoneId is NULL
+     * returns all the folder not associated to any zone. If parentId is NULL
+     * the returned folders are root folders.
+     *
+     * @params <code>zoneId</code>
+     * @params <code>parentId</code>
+     *
+     * @return Entities list associated with the zoneId or null if not found
+     */
+    public List<FolderDto> findByZone(Long zoneId, Long parentId) {
+        List<FolderDto> foldersDto = new LinkedList<FolderDto>();
+        List<AbstractFolderEntity> folders = folderDao.findByZone(zoneId, parentId);
+        for (AbstractFolderEntity folderEntity: folders) {
+            foldersDto.add(entityToDto(folderEntity));
+        }
+        return foldersDto;
+    }
+	
+	/**
+	 * Get all channel folders filtered
+	 * 
+	 * @param inZone indicates if obtain channel folders with a zone. If this parameter is null only obtain not zoned channels
+	 * @param idZone filter by zone. Obtain only channels of the zone identified by <code>idZone</code>
+	 * @param isEnabled
+	 * 
+	 * @return folder list
+	 */
+	@SuppressWarnings("unchecked")
+	public List<FolderDto> getChannelFolders(Boolean inZone, Long idZone, Boolean isEnabled){
+		return (List<FolderDto>) entitiesToDtos(folderDao.getChannelFolders(inZone, idZone, isEnabled));
+	}
+
+    /**
+     * Get a folders list by zones. If zoneId is NULL returns all the
+     * folder not associated to any zone.
+     *
+     * @param <code>zoneId</code>
+	 * @param isEnabled
+     *
+     * @return Entities list associated with the zoneId or null if not found
+     */
+	@SuppressWarnings("unchecked")
+    public List<FolderDto> findByZone(Long zoneId, Boolean isEnabled){
+		return (List<FolderDto>) entitiesToDtos(folderDao.findByZone(zoneId, isEnabled));
+    }
+
+    /**
+     * Get a folders list by zones with an specific parent. If zoneId is NULL
+     * returns all the folder not associated to any zone. If parentId is NULL
+     * the returned folders are root folders.
+     *
+     * @param <code>zoneId</code>
+     * @param <code>parentId</code>
+	 * @param isEnabled
+     *
+     * @return Entities list associated with the zoneId or null if not found
+     */
+	@SuppressWarnings("unchecked")
+    public List<FolderDto> findByZone(Long zoneId, Long parentId, Boolean isEnabled){
+		return (List<FolderDto>) entitiesToDtos(folderDao.findByZone(zoneId, parentId, isEnabled));
+    }
+
 	protected FolderDto entityToDto(AbstractFolderEntity entity) {
 		FolderDto dto = null;
 		if(entity != null){
@@ -233,7 +333,6 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
 			dto.setId(entity.getId());
 			dto.setName(entity.getName());
 			dto.setOrder(entity.getFolderOrder());
-			
 			
 			//Children
 			List<AbstractFolderEntity> children = folderDao.getFolders(entity.getId());
@@ -253,7 +352,12 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
 						&& !layers.isEmpty()){
 					dto.setIsChannel(true);
 				}else{
-					dto.setIsChannel(false);
+					if(entity.getIsChannel() != null 
+							&& entity.getIsChannel()){
+						dto.setIsChannel(entity.getIsChannel());
+					}else{
+						dto.setIsChannel(false);
+					}
 				}
 			}
 			
@@ -274,8 +378,12 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
 					&& entity.getUser().getId() != null){
 				dto.setIdUser((Long) entity.getUser().getId());
 			}
-			
-			//TODO: entity.setZoneList(zoneList);
+
+			// Zone
+            if (entity.getZone() != null
+                    && entity.getZone().getId() != null) {
+                dto.setZoneId((Long) entity.getZone().getId());
+            }
 		}
 		return dto;
 	}
@@ -310,8 +418,11 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
 			if(dto.getIdUser() != null){
 				entity.setUser(userDao.findById(dto.getIdUser(), false));
 			}
-			
-			//TODO: entity.setZoneList(zoneList);
+
+			// Zone
+            if (dto.getZoneId() != null) {
+                entity.setZone(zoneDao.findById(dto.getZoneId(), false));
+            }
 		}
 		return entity;
 	}

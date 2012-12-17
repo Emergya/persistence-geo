@@ -1,5 +1,5 @@
 /*
- * ZoneAdminService.java
+ * Treeable.java
  * 
  * Copyright (C) 2012
  * 
@@ -27,26 +27,36 @@
  * 
  * Authors:: Alejandro Díaz Torres (mailto:adiaz@emergya.com)
  */
-package com.emergya.persistenceGeo.service;
+package com.emergya.persistenceGeo.dto;
 
-import java.util.List;
-
-import com.emergya.persistenceGeo.dto.ZoneDto;
-
+import java.io.Serializable;
 
 /**
- * Interfaz de administracion de usuarios y grupos de usuarios 
+ * Interface to be implemented by DTOs that are able to build a DTO's tree
  * 
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
-public interface ZoneAdminService extends AbstractService{
+public interface Treeable extends Serializable{
+	/**
+	 * @return Id of DTO
+	 */
+	public Long getId();
+	/**
+	 * @return Text to show in tree
+	 */
+	public String getText();
+	/**
+	 * @return indicates if DTO is a leaf
+	 */
+	public boolean getLeaf();
+	/**
+	 * @return The original class/type of the node
+	 */
+	public String getType();
+	/**
+	 * @return The original data of the node
+	 */
+	public Object getData();
 
-    public List<ZoneDto> findByType(String type);
-
-    public List<ZoneDto> findByType(String type, Boolean isEnabled);
-    
-    public List<ZoneDto> findAllEnabled();
-    
-    public List<ZoneDto> findByParent(Long idParent, Boolean isEnabled);
 }

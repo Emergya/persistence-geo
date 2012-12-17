@@ -51,6 +51,13 @@ public interface LayerEntityDao extends GenericDAO<AbstractLayerEntity, Long> {
 	 */
 	public AbstractLayerEntity createLayer(String layerName);
 	
+	/**
+	 * Get layers by folder
+	 * 
+	 * @param folderId
+	 * 
+	 * @return all layers in a folder
+	 */
 	public List<AbstractLayerEntity> getLayersByFolder(Long folderId);
 	
 	/**
@@ -116,6 +123,28 @@ public interface LayerEntityDao extends GenericDAO<AbstractLayerEntity, Long> {
 	 * @return Entities list associated with the identifier or null if not found 
 	 */
 	public List<AbstractLayerEntity> findByAuthorityId(Long id,
+			Boolean isChannel);
+	
+	/**
+	 * Get layers by folder
+	 * 
+	 * @param folderId
+	 * @param isChannel
+	 * @param isEnabled
+	 * 
+	 * @return all layers in a folder mark as channel
+	 */
+	public List<AbstractLayerEntity> getLayersByFolder(Long folderId, Boolean isChannel, Boolean isEnabled);
+	
+	/**
+	 * Get a layers list by authority
+	 * 
+	 * @param <code>id</code>
+	 * @param <code>isChannel</code> compare with entity property and filter by this. False value get null values too
+	 * 
+	 * @return Entities list associated with the identifier or null if not found 
+	 */
+	public List<AbstractLayerEntity> getLayersByFolder(Long folderId,
 			Boolean isChannel);
 	
 }

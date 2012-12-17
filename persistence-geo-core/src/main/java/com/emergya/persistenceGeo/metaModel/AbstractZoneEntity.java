@@ -61,6 +61,7 @@ public abstract class AbstractZoneEntity extends AbstractEntity {
 	protected List zoneList;
 	protected List folderList;
 	protected List authList;
+	protected Boolean enabled;
 
 	/**
 	 * @return the id
@@ -103,9 +104,9 @@ public abstract class AbstractZoneEntity extends AbstractEntity {
 	public abstract List getZoneList();
 
 	/**
-	 * @return the folderList
+	 * @return the enabled attribute
 	 */
-	public abstract List getFolderList();
+	public abstract Boolean getEnabled();
 
 	/**
 	 * @return the authList
@@ -190,5 +191,12 @@ public abstract class AbstractZoneEntity extends AbstractEntity {
 	public void setAuthList(List authList) {
 		this.authList = authList;
 	}
+
+	/**
+	 * @param enabled
+	 */
+	public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
 
 }

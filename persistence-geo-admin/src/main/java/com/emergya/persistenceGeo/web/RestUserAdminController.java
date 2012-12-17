@@ -51,11 +51,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.emergya.persistenceGeo.dto.AuthorityDto;
 import com.emergya.persistenceGeo.dto.FolderDto;
 import com.emergya.persistenceGeo.dto.UserDto;
-import com.emergya.persistenceGeo.dto.ZoneDto;
 import com.emergya.persistenceGeo.service.FoldersAdminService;
 import com.emergya.persistenceGeo.service.LayerAdminService;
 import com.emergya.persistenceGeo.service.UserAdminService;
-import com.emergya.persistenceGeo.service.ZoneAdminService;
 
 /**
  * Simple REST controller for user admin
@@ -75,9 +73,6 @@ public class RestUserAdminController implements Serializable{
 	
 	@Resource
 	private LayerAdminService layerAdminService;
-	
-	@Resource
-	private ZoneAdminService zoneAdminService;
 	
 	@Resource
 	private FoldersAdminService foldersAdminService;
@@ -252,19 +247,6 @@ public class RestUserAdminController implements Serializable{
 		
 		result.put(RESULTS, groups != null ? groups.size() : 0);
 		result.put(ROOT, groups != null ? groups : ListUtils.EMPTY_LIST);
-		
-		return result;
-	}
-	
-	@RequestMapping(value = "/persistenceGeo/getAllZones", method = RequestMethod.GET)
-	public @ResponseBody
-	Map<String, Object> getAllZones() {
-		Map<String, Object> result = new HashMap<String, Object>();
-		@SuppressWarnings("unchecked")
-		List<ZoneDto> zones = (List<ZoneDto>) zoneAdminService.getAll();
-		
-		result.put(RESULTS, zones != null ? zones.size() : 0);
-		result.put(ROOT, zones != null ? zones : ListUtils.EMPTY_LIST);
 		
 		return result;
 	}

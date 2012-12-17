@@ -31,7 +31,6 @@ package com.emergya.persistenceGeo.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -41,7 +40,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -54,7 +52,6 @@ import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-@SuppressWarnings("unchecked")
 @Entity
 @Table(name = "gis_folder")
 public class FolderEntity extends AbstractFolderEntity {
@@ -115,9 +112,11 @@ public class FolderEntity extends AbstractFolderEntity {
 		return id;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "zoneList")
-	public List<ZoneEntity> getZoneList() {
-		return zoneList;
+	@ManyToOne(fetch = FetchType.LAZY,
+			cascade = CascadeType.MERGE)
+	@JoinColumn(name="folder_zone_id")
+	public ZoneEntity getZone() {
+		return (ZoneEntity) zone;
 	}
 
 	@ManyToOne(cascade = CascadeType.MERGE, fetch  = FetchType.LAZY)

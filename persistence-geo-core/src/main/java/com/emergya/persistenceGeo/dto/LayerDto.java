@@ -34,6 +34,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
+import com.emergya.persistenceGeo.dto.AbstractDto;
+
 /**
  * Layer Data Transfer Object 
  * 
@@ -41,30 +43,31 @@ import java.util.Map;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public class LayerDto implements Serializable {
+public class LayerDto extends AbstractDto implements Serializable, Cloneable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3733098369106415376L;
 
-	private Long id;
+	protected Long id;
 	
-	private String name;
-	private String order;
-	private String type;
-	private String server_resource;
-	private File data;
-	private Boolean published;
-	private Boolean enabled;
-	private Boolean pertenece_a_canal;
-	private Date createDate;
-	private Date updateDate;
+	protected String name;
+	protected String order;
+	protected String type;
+	protected String server_resource;
+	protected File data;
+	protected Boolean published;
+	protected Boolean enabled;
+	protected Boolean pertenece_a_canal;
+	protected Date createDate;
+	protected Date updateDate;
 	
-	private String user;
-	private Map<StyleDto, Map<RuleDto, Map<String, String>>> styles;
-	private Long folderId;
-	private Map<String, String> properties;
+	protected String user;
+	protected Map<StyleDto, Map<RuleDto, Map<String, String>>> styles;
+	protected Long folderId;
+	protected Map<String, String> properties;
+	protected Long authId;
 	
 	public Long getId() {
 		return id;
@@ -145,7 +148,6 @@ public class LayerDto implements Serializable {
 	public void setData(File data) {
 		this.data = data;
 	}
-	private Long authId;
 	/**
 	 * @return the authId
 	 */
@@ -207,5 +209,44 @@ public class LayerDto implements Serializable {
 	public void setStyles(Map<StyleDto, Map<RuleDto, Map<String, String>>> styles) {
 		this.styles = styles;
 	}
+	
+	/**
+	 * Clone layer DTO
+	 */
+	public Object clone() throws CloneNotSupportedException {
+		LayerDto cloned = (LayerDto) super.clone();
+		LayerDto origin = this;
+		
+		cloned.id = null; // not clone id
+		//cloned.id = origin.id != null ? new Long(origin.id) : null; // clone id
+		cloned.name = origin.name != null ? new String(origin.name) : null;
+		cloned.enabled = origin.enabled != null ? new Boolean(origin.enabled)
+				: null;
+		cloned.createDate = origin.createDate != null ? (Date) origin.createDate
+				.clone() : null;
+		cloned.updateDate = origin.updateDate != null ? (Date) origin.updateDate
+				.clone() : null;
+		cloned.order = origin.order != null ? new String(origin.order) : null;
+		cloned.type = origin.type != null ? new String(origin.type) : null;
+		cloned.server_resource = origin.server_resource != null ? new String(
+				origin.server_resource) : null;
+		cloned.user = origin.user != null ? new String(origin.user) : null;
+		cloned.published = origin.published ? new Boolean(origin.published)
+				: null;
+		cloned.enabled = origin.enabled ? new Boolean(enabled) : null;
+		cloned.pertenece_a_canal = origin.pertenece_a_canal ? new Boolean(
+				pertenece_a_canal) : null;
+		cloned.folderId = origin.folderId != null ? new Long(origin.folderId)
+				: null;
+		cloned.authId = origin.authId != null ? new Long(origin.authId) : null;
+
+		cloned.data = origin.data; // FIXME: clone data
+		cloned.styles = origin.styles; // FIXME: clone styles
+		cloned.properties = origin.properties; // FIXME: clone properties
+		
+		return cloned;
+	}
+	
+	
 
 }

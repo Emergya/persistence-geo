@@ -181,5 +181,68 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 
 		return criteria.list();
 	}
+	
+	/**
+	 * Get a layers list by authority
+	 * 
+	 * @param <code>id</code>
+	 * @param <code>isChannel</code> compare with entity property and filter by this. False value get null values too
+	 * 
+	 * @return Entities list associated with the identifier or null if not found 
+	 */
+	public List<AbstractLayerEntity> getLayersByFolder(Long folderId,
+			Boolean isChannel) {
+		Criteria criteria = getSession().createCriteria(persistentClass)
+				.createAlias("folder", "folder")
+				.add(Restrictions.eq("folder.id", folderId));
+		if(isChannel == null){
+			criteria.add(Restrictions.isNull("isChannel"));
+		}else if(isChannel){
+			criteria.add(Restrictions.eq("isChannel", isChannel));
+		}else{
+			Disjunction dis = Restrictions.disjunction();
+			dis.add(Restrictions.isNull("isChannel"));
+			dis.add(Restrictions.eq("isChannel", isChannel));
+			criteria.add(dis);
+		}
+		return criteria.list();
+	}
+	
+	/**
+	 * Get layers by folder
+	 * 
+	 * @param folderId
+	 * @param isChannel
+	 * @param isEnabled
+	 * 
+	 * @return all layers in a folder mark as channel
+	 */
+	public List<AbstractLayerEntity> getLayersByFolder(Long folderId, Boolean isChannel, Boolean isEnabled){
+		Criteria criteria = getSession().createCriteria(persistentClass)
+				.createAlias("folder", "folder")
+				.add(Restrictions.eq("folder.id", folderId));
+		if(isChannel != null){
+			if(isChannel){
+				criteria.add(Restrictions.eq("isChannel", isChannel));
+			}else{
+				Disjunction dis = Restrictions.disjunction();
+				dis.add(Restrictions.isNull("isChannel"));
+				dis.add(Restrictions.eq("isChannel", isChannel));
+				criteria.add(dis);
+			}
+		}
+		if(isEnabled == null){
+			criteria.add(Restrictions.isNull("enabled"));
+		}else if(isEnabled){
+			criteria.add(Restrictions.eq("enabled", isEnabled));
+		}else{
+			Disjunction dis = Restrictions.disjunction();
+			dis.add(Restrictions.isNull("enabled"));
+			dis.add(Restrictions.eq("enabled", isEnabled));
+			criteria.add(dis);
+		}
+		
+		return criteria.list();
+	}
 
 }

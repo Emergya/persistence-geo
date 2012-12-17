@@ -28,13 +28,15 @@ package com.emergya.persistenceGeo.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.emergya.persistenceGeo.dto.AbstractDto;
+
 /**
  * Zone data transfer object
  * 
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
-public class ZoneDto implements Serializable {
+public class ZoneDto extends AbstractDto implements Serializable {
 
 	/**
 	 * 
@@ -50,6 +52,7 @@ public class ZoneDto implements Serializable {
 	protected String extension;
 	protected Date createDate;
 	protected Date updateDate;
+	protected Boolean enabled;
 
 	/**
 	 * @return the id
@@ -101,6 +104,13 @@ public class ZoneDto implements Serializable {
 	}
 
 	/**
+	 * @return the enabled
+	 */
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	/**
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
@@ -149,4 +159,10 @@ public class ZoneDto implements Serializable {
 		this.updateDate = updateDate;
 	}
 
+	/**
+	 * @param enabled the enabled to set
+	 */
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
 }

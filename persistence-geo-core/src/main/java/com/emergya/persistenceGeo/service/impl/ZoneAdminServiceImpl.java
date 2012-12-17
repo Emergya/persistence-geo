@@ -30,6 +30,7 @@
 package com.emergya.persistenceGeo.service.impl;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -71,12 +72,63 @@ public class ZoneAdminServiceImpl extends AbstractServiceImpl<ZoneDto, AbstractZ
 	/* (non-Javadoc)
 	 * @see com.emergya.persistenceGeo.service.impl.AbstractServiceImpl#getAll()
 	 */
-	@Override
 	@Cacheable("persistenceGeo")
 	public List<? extends Serializable> getAll() {
 		// TODO Auto-generated method stub
 		return super.getAll();
 	}
+
+	/**
+	 * Find zone by id
+	 * 
+	 * @param type
+	 * @param isEnabled
+	 * 
+	 * @return zones
+	 */
+    public List<ZoneDto> findByType(String type, Boolean isEnabled){
+    	List<ZoneDto> zonesDto = new LinkedList<ZoneDto>();
+        List<AbstractZoneEntity> zones = zoneDao.findByType(type);
+        for (AbstractZoneEntity zoneEntity: zones) {
+            zonesDto.add(entityToDto(zoneEntity));
+        }
+        return zonesDto;
+    }
+
+
+	/**
+	 * Find zone by id
+	 * 
+	 * @param type
+	 * 
+	 * @return zones
+	 */
+    public List<ZoneDto> findByType(String type) {
+        return findByType(type, null);
+    }
+
+	/**
+	 * Find all enabled
+	 * 
+	 * @return zones enabled
+	 */
+    @SuppressWarnings("unchecked")
+	public List<ZoneDto> findAllEnabled(){
+    	return (List<ZoneDto>) entitiesToDtos(zoneDao.findAllEnabled());
+    }
+
+	/**
+	 * Find zone by id
+	 * 
+	 * @param idParent
+	 * @param isEnabled
+	 * 
+	 * @return zones
+	 */
+    @SuppressWarnings("unchecked")
+    public List<ZoneDto> findByParent(Long idZone, Boolean isEnabled){
+    	return (List<ZoneDto>) entitiesToDtos(zoneDao.findByParent(idZone, isEnabled));	
+    }
 
 	@Override
 	protected ZoneDto entityToDto(AbstractZoneEntity entity) {
@@ -90,6 +142,7 @@ public class ZoneAdminServiceImpl extends AbstractServiceImpl<ZoneDto, AbstractZ
 			dto.setName(entity.getName());
 			dto.setType(entity.getType());
 			dto.setUpdateDate(entity.getUpdateDate());
+            dto.setEnabled(entity.getEnabled());
 		}
 		return dto;
 	}
@@ -110,8 +163,9 @@ public class ZoneAdminServiceImpl extends AbstractServiceImpl<ZoneDto, AbstractZ
 			entity.setName(dto.getName());
 			entity.setType(dto.getType());
 			entity.setUpdateDate(dto.getUpdateDate());
+            entity.setEnabled(dto.getEnabled());
 		}
 		return entity;
 	}
-	
+
 }

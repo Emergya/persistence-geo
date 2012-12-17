@@ -41,7 +41,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -101,7 +100,12 @@ public class ZoneEntity extends AbstractZoneEntity {
 	public Date getUpdateDate() {
 		return updateDate;
 	}
- 
+
+	@Column(name = "enabled")
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
 	@Id
     @Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "gis_zone_seq")
@@ -123,17 +127,6 @@ public class ZoneEntity extends AbstractZoneEntity {
 	@JoinColumn(name = "subzone_id"))
 	public List<ZoneEntity> getZoneList() {
 		return zoneList;
-	}
-	
-	@ManyToMany(targetEntity = FolderEntity.class,
-	cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JoinTable(name = "gis_folder_in_zone",
-	joinColumns =
-	@JoinColumn(name = "folder_id"),
-	inverseJoinColumns =
-	@JoinColumn(name = "zone_id"))
-	public List<FolderEntity> getFolderList() {
-		return folderList;
 	}
 
 	@OneToMany(mappedBy = "zone")
