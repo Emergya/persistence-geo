@@ -71,13 +71,13 @@ public class FolderStyleDecorator implements IFolderDecorator {
 				result = new TreeFolderDto(toApply);
 			}else{
 				result = (FolderDto) toApply.clone();
-				result.setId(toApply.getId());
 				if(FolderStyle.STRING.equals(style)){
 					result.setName(getFolderNameString(toApply.getName(), parent));
 				}else {
 					result.setName(getFolderNameTree(toApply.getName(), parent, level));
 				}
 			}
+			result.setId(toApply.getId());
 		} catch (CloneNotSupportedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -140,7 +140,7 @@ public class FolderStyleDecorator implements IFolderDecorator {
 					String previus = parent;
 					parent = folderMod.getName();
 					level++;
-					for(FolderDto subFolder: folderMod.getFolderList()){
+					for(FolderDto subFolder: folder.getFolderList()){
 						this.applyStyle(subFolder, tree, parent, style, level);
 					}
 					level--;

@@ -25,42 +25,53 @@
  */
 
 /** api: (define)
- *  module = PersistenceGeoParser
+ *  module = PersistenceGeo
  */
-Ext.namespace("PersistenceGeoParser.loaders");
+Ext.namespace("PersistenceGeo.loaders");
 
 /** api: (define)
- *  module = PersistenceGeoParser.loaders
+ *  module = PersistenceGeo.loaders
  *  class = WMSLoader
  */
-Ext.namespace("PersistenceGeoParser.loaders.WMSLoader");
+Ext.namespace("PersistenceGeo.loaders.WMSLoader");
 
 /**
- * Class: PersistenceGeoParser.WMSLoader
+ * Class: PersistenceGeo.WMSLoader
  * 
  * Loader for WMS Layers
  * 
  */
-PersistenceGeoParser.loaders.WMSLoader =
-{
+PersistenceGeo.loaders.WMSLoader 
+	= Ext.extend(PersistenceGeo.loaders.AbstractLoader,{
 
 	load: function (layerData, layerTree){
-		var visibility = PersistenceGeoParser.AbstractLoader.toBoolean(layerData.properties.visibility) || false;
-		var transparent = PersistenceGeoParser.AbstractLoader.toBoolean(layerData.properties.transparent) || true;
-		var isBaseLayer = PersistenceGeoParser.AbstractLoader.toBoolean(layerData.properties.isBaseLayer) || false;
-		var opacity = PersistenceGeoParser.AbstractLoader.toNumber(layerData.properties.opacity) || 0.5;
-		var buffer = PersistenceGeoParser.AbstractLoader.toNumber(layerData.properties.buffer) || 0;
+		var visibility = false;
+		var transparent = true;
+		var isBaseLayer = false;
+		var opacity = 0.5;
+		var buffer = 0;
+		var format = 'image/png';
+		var layers = layerData.name;
 		
+		if(!!layerData.properties){
+			visibility = this.toBoolean(layerData.properties.visibility) || false;
+			transparent = this.toBoolean(layerData.properties.transparent) || true;
+			isBaseLayer = this.toBoolean(layerData.properties.isBaseLayer) || false;
+			opacity = this.toNumber(layerData.properties.opacity) || 0.5;
+			buffer = this.toNumber(layerData.properties.buffer) || 0;	
+			format = layerData.properties.format;
+			layers = layerData.properties.layers;
+		}
 		
 		var layer = new OpenLayers.Layer.WMS(
 				layerData.name,
 				layerData.server_resource,
 				{
-					layers: layerData.properties.layers,
+					layers: layers,
 	    			transparent: transparent
 				},
 				{
-					format: layerData.properties.format,
+					format: format,
 	    			isBaseLayer: isBaseLayer,
 	    			visibility: visibility,
 	     			opacity: opacity,
@@ -68,8 +79,8 @@ PersistenceGeoParser.loaders.WMSLoader =
 				});
 		
 		//TODO: Wrap 
-		PersistenceGeoParser.AbstractLoader.postFunctionsWrapper(layerData, layer, layerTree);
+		this.postFunctionsWrapper(layerData, layer, layerTree);
 		
 		return layer;
 	}
-};
+});

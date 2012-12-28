@@ -1,10 +1,12 @@
 (function() {
 
     var jsfiles = new Array(
+        "persistenceGeo/loaders/AbstractLoader.js",
         "persistenceGeo/loaders/WMSLoader.js",
         "persistenceGeo/loaders/WFSLoader.js",
         "persistenceGeo/loaders/KMLLoader.js",
         "persistenceGeo/loaders/GMLLoader.js",
+        "persistenceGeo/Parser.js",
         "persistenceGeo/PersistenceGeoParser.js"
     );
     

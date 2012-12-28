@@ -26,12 +26,12 @@
 /**
  * api: (define) module = PersistenceGeoParser
  */
-Ext.namespace("PersistenceGeoParser.loaders");
+Ext.namespace("PersistenceGeo.loaders");
 
 /**
  * api: (define) module = PersistenceGeoParser.loaders class = GMLLoader
  */
-Ext.namespace("PersistenceGeoParser.loaders.GMLLoader");
+Ext.namespace("PersistenceGeo.loaders.GMLLoader");
 
 /**
  * Class: PersistenceGeoParser.KMLLoader
@@ -39,7 +39,8 @@ Ext.namespace("PersistenceGeoParser.loaders.GMLLoader");
  * Loader for GML Layers
  * 
  */
-PersistenceGeoParser.loaders.GMLLoader = {
+PersistenceGeo.loaders.GMLLoader 
+	= Ext.extend(PersistenceGeo.loaders.AbstractLoader,{
 
 	/**
      * Constant: TYPE_GML_V2
@@ -57,11 +58,11 @@ PersistenceGeoParser.loaders.GMLLoader = {
 	 * Type format of the layer to Load (KML)
 	 */
 	formatType : function(externalProjectionText, type) {
-		var targetProj = map.projection;
+		var targetProj = this.map.projection;
 		if(!!externalProjection){
 			targetProj = externalProjection;
 		}
-		var internalProjection = new OpenLayers.Projection(map.projection);
+		var internalProjection = new OpenLayers.Projection(this.map.projection);
 		var externalProjection = new OpenLayers.Projection(targetProj);
 
 		var formatType;
@@ -96,14 +97,13 @@ PersistenceGeoParser.loaders.GMLLoader = {
 				url : layerData.server_resource,
 				format : this
 						.formatType(layerData.properties ? layerData.properties.externalProjection : null),
-				srsName : map.projection
+				srsName : this.map.projection
 			})
 		});
 
-		// TODO: Wrap
-		PersistenceGeoParser.AbstractLoader.postFunctionsWrapper(layerData,
+		this.postFunctionsWrapper(layerData,
 				layer, layerTree);
 
 		return layer;
 	}
-};
+});

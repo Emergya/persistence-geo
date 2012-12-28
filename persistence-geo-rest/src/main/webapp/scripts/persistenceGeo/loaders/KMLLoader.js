@@ -24,14 +24,14 @@
  * Authors: Moisés Arcos Santiago (mailto:marcos@emergya.com)
  */
 /**
- * api: (define) module = PersistenceGeoParser
+ * api: (define) module = PersistenceGeo
  */
-Ext.namespace("PersistenceGeoParser.loaders");
+Ext.namespace("PersistenceGeo.loaders");
 
 /**
- * api: (define) module = PersistenceGeoParser.loaders class = WMSLoader
+ * api: (define) module = PersistenceGeo.loaders class = KMLLoader
  */
-Ext.namespace("PersistenceGeoParser.loaders.KMLLoader");
+Ext.namespace("PersistenceGeo.loaders.KMLLoader");
 
 /**
  * Class: PersistenceGeoParser.KMLLoader
@@ -39,41 +39,47 @@ Ext.namespace("PersistenceGeoParser.loaders.KMLLoader");
  * Loader for KML Layers
  * 
  */
-PersistenceGeoParser.loaders.KMLLoader = {
-	/*
-	 * Method: formatType
-	 * 
-	 * Type format of the layer to Load (KML)
-	 */
-	formatType : function(externalProjection) {
-		var targetProj = map.projection;
-		if(!!externalProjection){
-			targetProj = externalProjection;
+PersistenceGeo.loaders.KMLLoader 
+	= Ext.extend(PersistenceGeo.loaders.AbstractLoader,{
+
+		/*
+		 * Method: formatType
+		 * 
+		 * Type format of the layer to Load (KML)
+		 */
+		formatType : function(externalProjection) {
+			var targetProj = this.map.projection;
+			if(!!externalProjection){
+				targetProj = externalProjection;
+			}
+			return new OpenLayers.Format.KML({
+				internalProjection : new OpenLayers.Projection(this.map.projection),
+				externalProjection : new OpenLayers.Projection(targetProj),
+				extractStyles : true,
+				extractAttributes : true,
+				maxDepth : 2
+			});
+		},
+
+		/**
+		 * Method to be called for generate OpenLayers layer
+		 * 
+		 * @return OpenLayers.Layer
+		 */
+		load : function(layerData, layerTree) {
+
+			var layer = new OpenLayers.Layer.Vector(layerData.name, {
+				strategies : [ new OpenLayers.Strategy.Fixed() ],
+				protocol : new OpenLayers.Protocol.HTTP({
+					url : layerData.server_resource.replace(this.defaultRestBaseUrl, this.restBaseUrl),
+					format : this.formatType(layerData.properties ? layerData.properties.externalProjection : null),
+					srsName : this.map.projection
+				})
+			});
+
+			this.postFunctionsWrapper(layerData,
+					layer, layerTree);
+
+			return layer;
 		}
-		return new OpenLayers.Format.KML({
-			internalProjection : new OpenLayers.Projection(map.projection),
-			externalProjection : new OpenLayers.Projection(targetProj),
-			extractStyles : true,
-			extractAttributes : true,
-			maxDepth : 2
-		});
-	},
-
-	load : function(layerData, layerTree) {
-//		
-		var layer = new OpenLayers.Layer.Vector(layerData.name, {
-			strategies : [ new OpenLayers.Strategy.Fixed() ],
-			protocol : new OpenLayers.Protocol.HTTP({
-				url : layerData.server_resource,
-				format : this.formatType(layerData.properties ? layerData.properties.externalProjection : null),
-				srsName : map.projection
-			})
-		});
-
-		// TODO: Wrap
-		PersistenceGeoParser.AbstractLoader.postFunctionsWrapper(layerData,
-				layer, layerTree);
-
-		return layer;
-	}
-};
+});

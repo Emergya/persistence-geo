@@ -25,23 +25,23 @@
  */
 
 /** api: (define)
- *  module = PersistenceGeoParser
+ *  module = PersistenceGeo
  */
-Ext.namespace("PersistenceGeoParser.loaders");
+Ext.namespace("PersistenceGeo.loaders");
 
 /** api: (define)
- *  module = PersistenceGeoParser.loaders
+ *  module = PersistenceGeo.loaders
  *  class = WSLoader
  */
-Ext.namespace("PersistenceGeoParser.loaders.WFSLoader");
+Ext.namespace("PersistenceGeo.loaders.WFSLoader");
 
 /**
  * Class: PersistenceGeoParser.laoders.WFSLoader
  * 
  * Loader for WFS Layers
  */ 
-PersistenceGeoParser.loaders.WFSLoader =
-	{
+PersistenceGeo.loaders.WFSLoader 
+	= Ext.extend(PersistenceGeo.loaders.AbstractLoader,{
 		load: function (layerData, layerTree){
 
 			var _strategies = [
@@ -50,32 +50,36 @@ PersistenceGeoParser.loaders.WFSLoader =
 						interval : 5000
 					}) ];
 
-			var maxFeatures = PersistenceGeoParser.AbstractLoader.toNumber(layerData['properties']['maxFeatures']);
-			var visibility = PersistenceGeoParser.AbstractLoader.toBoolean(layerData['visibility']);
+			var maxFeatures = this.toNumber(layerData['properties']['maxFeatures']);
+			var visibility = this.toBoolean(layerData['visibility']);
 			
 			var renderer = OpenLayers.Util
 				.getParameters(window.location.href).renderer;
+
+			var options = {
+				url : OpenLayers.ProxyHost + (layerData['properties']['url'] ? 
+						layerData['properties']['url'] : layerData.server_resource), 
+	            maxFeatures: maxFeatures,
+	            featureType: layerData['properties']['featureType'],
+	            featureNS: layerData['properties']['featureNS'],
+	            featurePrefix: layerData['properties']['featurePrefix'],
+	            geometryName: layerData['properties']['geometryName'],
+	            schema: layerData['properties']['schema']
+			};
+
+			this.copyAllPosibleProperties(layerData['properties'], options);
 			var layer = new OpenLayers.Layer.Vector(
 					layerData['name'],
 					{
 						'groupLayers' : layerData['groupLayers'],
 						'visibility' : visibility,
 						'strategies' : _strategies,
-						'protocol' : new OpenLayers.Protocol.WFS(
-								{
-									url : OpenLayers.ProxyHost + layerData['properties']['url'], 
-						            maxFeatures: maxFeatures,
-						            featureType: layerData['properties']['featureType'],
-						            featureNS: layerData['properties']['featureNS'],
-						            featurePrefix: layerData['properties']['featurePrefix'],
-						            geometryName: layerData['properties']['geometryName'],
-						            schema: layerData['properties']['schema']
-								}),
-						'renderers' : renderer
+						'protocol' : new OpenLayers.Protocol.WFS(options)
+						// ,
+						// 'renderers' : renderer
 					});
 			
-			//TODO: Wrap 
-			PersistenceGeoParser.AbstractLoader.postFunctionsWrapper(layerData, layer, layerTree);
+			this.postFunctionsWrapper(layerData, layer, layerTree);
 			
 			if(true){ //TODO from group
 				layer.groupLayers = "editables";
@@ -84,4 +88,4 @@ PersistenceGeoParser.loaders.WFSLoader =
 			
 			return layer;
 		}
-};
+});
