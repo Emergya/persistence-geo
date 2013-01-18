@@ -71,6 +71,8 @@ public class FolderStyleDecorator implements IFolderDecorator {
 				result = new TreeFolderDto(toApply);
 			}else{
 				result = (FolderDto) toApply.clone();
+				result.setId(toApply.getId());
+				result.setFolderList(toApply.getFolderList());
 				if(FolderStyle.STRING.equals(style)){
 					result.setName(getFolderNameString(toApply.getName(), parent));
 				}else {
