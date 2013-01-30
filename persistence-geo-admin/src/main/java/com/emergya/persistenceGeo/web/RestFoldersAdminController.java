@@ -510,10 +510,10 @@ public class RestFoldersAdminController implements Serializable{
 				tree = new LinkedList<Treeable>();
 				
 				// add folders
-				List<FolderDto> previusFolders = foldersAdminService.findByZone(null, folderId, Boolean.TRUE);
-				if(previusFolders != null 
-						&& !previusFolders.isEmpty()){ 
-					for(FolderDto subRes: previusFolders){
+				List<FolderDto> childrenFolders = foldersAdminService.findByZone(null, folderId, Boolean.TRUE);
+				if(childrenFolders != null 
+						&& !childrenFolders.isEmpty()){ 
+					for(FolderDto subRes: childrenFolders){
 						tree.add((Treeable) FoldersUtils.getFolderDecorator().applyStyle(subRes, FolderStyle.NORMAL));
 					}
 				}

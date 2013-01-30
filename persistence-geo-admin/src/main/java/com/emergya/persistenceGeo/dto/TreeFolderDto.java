@@ -30,7 +30,6 @@
 package com.emergya.persistenceGeo.dto;
 
 import java.util.Date;
-import java.util.LinkedList;
 
 /**
  * Folder DTO for show in folder tree
@@ -48,14 +47,14 @@ public class TreeFolderDto extends FolderDto implements Treeable {
 	/**
 	 * Default is true
 	 */
-	private boolean leaf = true;
-	
+	private boolean leaf = false;
+
 	private FolderDto origin;
 
 	public TreeFolderDto(FolderDto origin) {
 
 		super();
-		
+
 		this.origin = origin;
 
 		this.id = origin.id != null ? new Long(origin.id) : null; // clone id
@@ -77,12 +76,12 @@ public class TreeFolderDto extends FolderDto implements Treeable {
 		this.order = origin.order != null ? new Integer(origin.order) : null;
 
 		// clone folder list
-		if (origin.folderList != null) {
-			this.folderList = new LinkedList<FolderDto>();
-			if (origin.folderList.size() > 0) {
-				this.leaf = false;
-			}
-		}
+		// if (origin.folderList != null) {
+		// this.folderList = new LinkedList<FolderDto>();
+		// if (origin.folderList.size() > 0) {
+		// this.leaf = false;
+		// }
+		// }
 
 		// clone zone
 		this.zoneId = origin.zoneId != null ? new Long(origin.zoneId) : null;
