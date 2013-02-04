@@ -37,6 +37,7 @@ import javax.annotation.Resource;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -139,7 +140,9 @@ public class FolderEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstra
 	public List<AbstractFolderEntity> getFolders(Long parentFolder) {
 		return getSession().createCriteria(persistentClass)
 				.createAlias("parent", "parent")
-				.add(Restrictions.eq("parent.id", parentFolder)).list();
+				.add(Restrictions.eq("parent.id", parentFolder))
+				.addOrder(Order.asc("name"))
+				.list();
 	}
 	
 	private static String ZONE = "zone";
@@ -252,6 +255,7 @@ public class FolderEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstra
 		}
 		// only parent folders
 		criteria.add(Restrictions.isNull(PARENT));
+		criteria.addOrder(Order.asc("name"));
 		
 		return criteria.list();
 		
