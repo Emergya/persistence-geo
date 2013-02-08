@@ -55,6 +55,34 @@ public class GeoserverServiceImpl implements GeoserverService {
 
 	@Resource
 	private GeoserverDao gsDao;
+	/**
+	 * @return the gsDao
+	 */
+	public GeoserverDao getGsDao() {
+		return gsDao;
+	}
+
+	/**
+	 * @param gsDao the gsDao to set
+	 */
+	public void setGsDao(GeoserverDao gsDao) {
+		this.gsDao = gsDao;
+	}
+
+	/**
+	 * @return the namespaceBaseUrl
+	 */
+	public String getNamespaceBaseUrl() {
+		return namespaceBaseUrl;
+	}
+
+	/**
+	 * @param namespaceBaseUrl the namespaceBaseUrl to set
+	 */
+	public void setNamespaceBaseUrl(String namespaceBaseUrl) {
+		this.namespaceBaseUrl = namespaceBaseUrl;
+	}
+
 	@Resource
 	private String namespaceBaseUrl;
 
@@ -91,7 +119,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 				return result;
 			}
 			String datastoreName = workspaceName + DATASTORE_SUFFIX;
-			result = gsDao.createDatastore(workspaceName, datastoreName);
+			result = gsDao.createDatastoreJndi(workspaceName, datastoreName);
 			if (!result) {
 				// Can't create Datastore. Try to delete workspace.
 				if (LOG.isInfoEnabled()) {
@@ -144,20 +172,25 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 */
 	@Override
 	public boolean publishGsDbLayer(String workspaceName, String tableName,
-			String title, BoundingBox nativeBoundingBox, GeometryType geomType) {
+			String layerName, String title,  BoundingBox nativeBoundingBox, GeometryType geomType) {
 		if (LOG.isInfoEnabled()) {
 			LOG.info("Publising geoserver database layer [workspaceName="
-					+ workspaceName + ", tableName=" + tableName + ", title="
-					+ title + ", geometryType=" + geomType + "]");
+					+ workspaceName + ", tableName=" + tableName + ", layerName="
+					+ layerName + ", geometryType=" + geomType + "]");
 		}
 		boolean result = false;
 		GsFeatureDescriptor fd = new GsFeatureDescriptor();
-		fd.setName(tableName);
+		fd.setNativeName(tableName);
 		fd.setTitle(title);
+		fd.setName(layerName);
 		if (nativeBoundingBox != null) {
 			fd.setNativeBoundingBox(nativeBoundingBox);
+			fd.setLatLonBoundingBox(nativeBoundingBox);
 		}
+		
 		GsLayerDescriptor ld = new GsLayerDescriptor();
+		
+		
 		ld.setType(geomType);
 		String datastoreName = workspaceName + DATASTORE_SUFFIX;
 		result = gsDao
@@ -184,5 +217,24 @@ public class GeoserverServiceImpl implements GeoserverService {
 				+ DATASTORE_SUFFIX, layerName);
 		return result;
 	}
+
+	/* (non-Javadoc)
+	 * @see com.emergya.persistenceGeo.service.GeoserverService#existsLayerInWorkspace(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public boolean existsLayerInWorkspace(String layerName, String workspaceName) {	
+		return gsDao.existsLayerInWorkspace(layerName, workspaceName);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.emergya.persistenceGeo.service.GeoserverService#createDatastoreJndi(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public boolean createDatastoreJndi(String workspaceName,
+			String datastoreName) {
+		return gsDao.createDatastoreJndi(workspaceName, datastoreName);
+	}
+	
+	
 
 }

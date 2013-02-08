@@ -42,6 +42,53 @@ public class GsRestApiConfigurationImpl implements GsRestApiConfiguration {
 	private String dbSchema;
 	private String dbUser;
 	private String dbPassword;
+	private String dbType;
+	private String jndiReferenceName;
+	private String datasourceType;
+
+	/**
+	 * @return the datasourceType
+	 */
+	public String getDatasourceType() {
+		return datasourceType;
+	}
+
+	/**
+	 * @param datasourceType the datasourceType to set
+	 */
+	public void setDatasourceType(String datasourceType) {
+		this.datasourceType = datasourceType;
+	}
+
+	/**
+	 * @return the dbType
+	 */
+	public String getDbType() {
+		return dbType;
+	}
+
+	/**
+	 * @param dbType
+	 *            the dbType to set
+	 */
+	public void setDbType(String dbType) {
+		this.dbType = dbType;
+	}
+
+	/**
+	 * @return the jndiReferenceName
+	 */
+	public String getJndiReferenceName() {
+		return jndiReferenceName;
+	}
+
+	/**
+	 * @param jndiReferenceName
+	 *            the jndiReferenceName to set
+	 */
+	public void setJndiReferenceName(String jndiReferenceName) {
+		this.jndiReferenceName = jndiReferenceName;
+	}
 
 	/**
 	 * @param serverUrl

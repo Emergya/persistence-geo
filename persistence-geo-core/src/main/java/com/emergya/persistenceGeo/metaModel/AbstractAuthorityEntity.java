@@ -51,6 +51,7 @@ public abstract class AbstractAuthorityEntity extends AbstractEntity{
 	
 	protected Long id;
 	protected String name;
+	protected String workspaceName;
     
 	protected Date createDate;
 	protected Date updateDate;
@@ -66,7 +67,14 @@ public abstract class AbstractAuthorityEntity extends AbstractEntity{
 	 */
     public abstract Long getId();
     public abstract String getName();
-    public abstract Set getPeople();
+    public abstract String getWorkspaceName();
+    /**
+	 * @param workspaceName the workspaceName to set
+	 */
+	public void setWorkspaceName(String workspaceName) {
+		this.workspaceName = workspaceName;
+	}
+	public abstract Set getPeople();
     public abstract Date getCreateDate();
     public abstract Date getUpdateDate();
 	public abstract AbstractAuthorityTypeEntity getAuthType();

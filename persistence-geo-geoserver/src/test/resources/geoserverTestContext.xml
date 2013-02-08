@@ -17,6 +17,8 @@
         <property name="dbName" value="${geoserver.db.name}" />
         <property name="dbUser" value="${geoserver.db.user}" />
         <property name="dbPassword" value="${geoserver.db.password}" />
+        <property name="jndiReferenceName" value="${geoserver.db.jndiReferenceName}"/>
+        <property name="datasourceType" value="${geoserver.db.datasourceType}" />
     </bean>
 
     <bean

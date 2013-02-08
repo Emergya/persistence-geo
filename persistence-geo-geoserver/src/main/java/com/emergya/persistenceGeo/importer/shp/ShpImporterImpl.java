@@ -40,6 +40,8 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.emergya.persistenceGeo.exceptions.ShpImporterException;
@@ -57,21 +59,21 @@ public class ShpImporterImpl implements IShpImporter {
 	private static final String BASH_COMMAND = "bash";
 	private static final String BASH_COMMAND_FIRST_ARGUMENT = "-c";
 	private static final String DROP_TABLE_OPTION = "-d";
-	private static final String SHP2PGSQL_COMMAND = "shp2pgsql {0} -s {1}{2} -g geom -k -i -I {3} "
+	private static final String SHP2PGSQL_COMMAND = "shp2pgsql -W LATIN1 {0} -s {1}{2} -g geom -k -i -I {3} "
 			+ "{4}.{5} | psql -h {6} -p {7} -d {8} -U {9}";
 	private static final String GUESS_PROJECTION_COMMAND = "guessEPSG.py";
-	
+
 	@Resource
-	private Boolean checkForCommandLine; 
+	private Boolean checkForCommandLine;
 
 	public ShpImporterImpl() {
-		if(checkForCommandLine != null
-				&& checkForCommandLine){
+		if (checkForCommandLine != null && checkForCommandLine) {
 			checkForCommandLineUtils();
 		}
 	}
 
 	@Autowired(required = false)
+	@Qualifier("dataSourceHibernate")
 	private DataSource dataSource;
 
 	@Autowired(required = false)
@@ -298,6 +300,5 @@ public class ShpImporterImpl implements IShpImporter {
 					e);
 		}
 	}
-	
-	
+
 }

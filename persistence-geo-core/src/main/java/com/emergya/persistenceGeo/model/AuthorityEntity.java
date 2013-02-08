@@ -78,11 +78,11 @@ public class AuthorityEntity extends AbstractAuthorityEntity {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "gis_authority_seq")
-    @SequenceGenerator(name="gis_authority_seq", sequenceName = "gis_authority_seq", initialValue=100)
+	@SequenceGenerator(name = "gis_authority_seq", sequenceName = "gis_authority_seq", initialValue = 100)
 	public Long getId() {
 		return id;
 	}
-	
+
 	@OneToMany(mappedBy = "authority")
 	public Set<UserEntity> getPeople() {
 		return (Set<UserEntity>) people;
@@ -103,7 +103,7 @@ public class AuthorityEntity extends AbstractAuthorityEntity {
 	public AuthorityTypeEntity getAuthType() {
 		return (AuthorityTypeEntity) authType;
 	}
-	
+
 	@OneToMany
 	public List<LayerEntity> getLayerList() {
 		return (List<LayerEntity>) layerList;
@@ -119,6 +119,19 @@ public class AuthorityEntity extends AbstractAuthorityEntity {
 	@JoinColumn(name = "auth_parent_id")
 	public AuthorityEntity getParent() {
 		return (AuthorityEntity) parent;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity#getWorkspaceName
+	 * ()
+	 */
+	@Override
+	@Column(name = "workspace_name", length = 255)
+	public String getWorkspaceName() {
+		return workspaceName;
 	}
 
 }

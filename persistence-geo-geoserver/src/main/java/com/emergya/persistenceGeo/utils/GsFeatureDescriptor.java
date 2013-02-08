@@ -49,6 +49,7 @@ public class GsFeatureDescriptor {
 	private String nativeCRS;
 	private BoundingBox latLonBoundingBox;
 	private BoundingBox nativeBoundingBox;
+	private String nativeName;
 
 	public GsFeatureDescriptor() {
 		this.keywords = new HashSet<String>();
@@ -174,6 +175,20 @@ public class GsFeatureDescriptor {
 
 	public BoundingBox getNativeBoundingBox() {
 		return this.nativeBoundingBox;
+	}
+
+	/**
+	 * @return the nativeName
+	 */
+	public String getNativeName() {
+		return nativeName;
+	}
+
+	/**
+	 * @param nativeName the nativeName to set
+	 */
+	public void setNativeName(String nativeName) {
+		this.nativeName = nativeName;
 	}
 
 }

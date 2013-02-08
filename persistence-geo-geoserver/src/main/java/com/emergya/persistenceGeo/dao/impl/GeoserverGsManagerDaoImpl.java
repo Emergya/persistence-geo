@@ -34,8 +34,7 @@ import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
 import it.geosolutions.geoserver.rest.encoder.datastore.GSPostGISDatastoreEncoder;
-import it.geosolutions.geoserver.rest.encoder.feature.GSFeatureTypeEncoder;
-import it.geosolutions.geoserver.rest.manager.GeoServerRESTDatastoreManager;
+import it.geosolutions.geoserver.rest.manager.GeoServerRESTStoreManager;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
@@ -50,6 +49,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.emergya.persistenceGeo.dao.GeoserverDao;
 import com.emergya.persistenceGeo.exceptions.GeoserverException;
 import com.emergya.persistenceGeo.utils.BoundingBox;
+import com.emergya.persistenceGeo.utils.GSFeatureTypeNativeNameEncoder;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
 import com.emergya.persistenceGeo.utils.GsRestApiConfiguration;
@@ -68,6 +68,21 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 
 	@Autowired
 	private GsRestApiConfiguration gsConfiguration;
+
+	/**
+	 * @return the gsConfiguration
+	 */
+	public GsRestApiConfiguration getGsConfiguration() {
+		return gsConfiguration;
+	}
+
+	/**
+	 * @param gsConfiguration
+	 *            the gsConfiguration to set
+	 */
+	public void setGsConfiguration(GsRestApiConfiguration gsConfiguration) {
+		this.gsConfiguration = gsConfiguration;
+	}
 
 	/**
 	 * @return
@@ -97,16 +112,16 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		return reader;
 	}
 
-	private GeoServerRESTDatastoreManager getDatastoreManager()
+	private GeoServerRESTStoreManager getDatastoreManager()
 			throws MalformedURLException {
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("Creating GeoServerRestDatastoreManager.");
+			LOG.trace("Creating GeoServerRESTStoreManager.");
 		}
 		GeoServerRESTManager manager = new GeoServerRESTManager(new URL(
 				gsConfiguration.getServerUrl()),
 				gsConfiguration.getAdminUsername(),
 				gsConfiguration.getAdminPassword());
-		GeoServerRESTDatastoreManager dsManager = manager.getDatastoreManager();
+		GeoServerRESTStoreManager dsManager = manager.getStoreManager();
 		return dsManager;
 	}
 
@@ -117,9 +132,9 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	 * @param descriptor
 	 * @return
 	 */
-	private GSFeatureTypeEncoder tranformToGSFeatureTypeEncoder(
+	private GSFeatureTypeNativeNameEncoder tranformToGSFeatureTypeEncoder(
 			GsFeatureDescriptor descriptor) {
-		GSFeatureTypeEncoder encoder = new GSFeatureTypeEncoder();
+		GSFeatureTypeNativeNameEncoder encoder = new GSFeatureTypeNativeNameEncoder();
 		try {
 			BeanUtils.copyProperties(encoder, descriptor);
 		} catch (IllegalAccessException e) {
@@ -253,7 +268,7 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		}
 
 		boolean result = false;
-		GeoServerRESTDatastoreManager dsManager;
+		GeoServerRESTStoreManager dsManager;
 		try {
 			dsManager = getDatastoreManager();
 			GSPostGISDatastoreEncoder properties = new GSPostGISDatastoreEncoder(
@@ -267,6 +282,39 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			}
 			properties.setUser(gsConfiguration.getDbUser());
 			properties.setPassword(gsConfiguration.getDbPassword());
+
+			result = dsManager.create(workspaceName, properties);
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
+
+		return result;
+	}
+
+	public boolean createDatastoreJndi(String workspaceName,
+			String datastoreName) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Creating Datastore JNDI [workspace=" + workspaceName
+					+ ", datastoreName=" + datastoreName + "]");
+		}
+
+		boolean result = false;
+		GeoServerRESTStoreManager dsManager;
+		try {
+			dsManager = getDatastoreManager();
+			GSPostGISDatastoreEncoder properties = new GSPostGISDatastoreEncoder(
+					datastoreName);
+
+			properties.setDatabaseType(gsConfiguration.getDbType());
+			if (gsConfiguration.getDbSchema() != null
+					&& !gsConfiguration.getDbSchema().isEmpty()) {
+				properties.setSchema(gsConfiguration.getDbSchema());
+			}
+			properties.setType(gsConfiguration.getDatasourceType());
+			properties.setJndiReferenceName(gsConfiguration
+					.getJndiReferenceName());
+			properties.setPreparedStatements(true);
 
 			result = dsManager.create(workspaceName, properties);
 		} catch (MalformedURLException e) {
@@ -304,15 +352,17 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Publishing Postgis Layer [workspace=" + workspace
 					+ ", storeName=" + storename + ", tableName="
-					+ featureDescriptor.getName() + "]");
+					+ featureDescriptor.getNativeName() + "]");
 		}
 		boolean result = false;
 		GeoServerRESTPublisher gsPublisher;
 
 		try {
 			gsPublisher = getPublisher();
-			GSFeatureTypeEncoder fte = this
+			GSFeatureTypeNativeNameEncoder fte = this
 					.tranformToGSFeatureTypeEncoder(featureDescriptor);
+			
+
 			GSLayerEncoder layerEncoder = this
 					.tranformToGSLayerEncoder(layerDescriptor);
 
@@ -358,4 +408,33 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.emergya.persistenceGeo.dao.GeoserverDao#existsLayerInWorkspace(java
+	 * .lang.String, java.lang.String)
+	 */
+	@Override
+	public boolean existsLayerInWorkspace(String layerName, String workspaceName) {
+		boolean result = false;
+		try {
+			GeoServerRESTManager manager = new GeoServerRESTManager(new URL(
+					gsConfiguration.getServerUrl()),
+					gsConfiguration.getAdminUsername(),
+					gsConfiguration.getAdminPassword());
+			result = manager.getReader().getLayer(workspaceName + ":" + layerName) != null;
+
+		} catch (IllegalArgumentException e) {
+			LOG.error(
+					"URL de geoserver incorrecta: "
+							+ gsConfiguration.getServerUrl(), e);
+		} catch (MalformedURLException e) {
+			LOG.error(
+					"URL de geoserver incorrecta: "
+							+ gsConfiguration.getServerUrl(), e);
+		}
+
+		return result;
+	}
 }

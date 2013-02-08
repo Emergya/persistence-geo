@@ -33,13 +33,17 @@ package com.emergya.persistenceGeo.utils;
  *
  */
 public interface GsRestApiConfiguration {
-	String getServerUrl();
-	String getAdminUsername();
-	String getAdminPassword();
-	String getDbHost();
-	int getDbPort();
-	String getDbName();
-	String getDbSchema();
-	String getDbUser();
-	String getDbPassword();
+	public String getServerUrl();
+	public String getAdminUsername();
+	public String getAdminPassword();
+	public String getDbHost();
+	public int getDbPort();
+	public String getDbName();
+	public String getDbSchema();
+	public String getDbUser();
+	public String getDbPassword();
+
+	public String getDbType();
+	public String getJndiReferenceName();
+	public String getDatasourceType();
 }
