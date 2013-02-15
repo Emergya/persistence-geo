@@ -36,6 +36,8 @@ import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
 import it.geosolutions.geoserver.rest.encoder.datastore.GSPostGISDatastoreEncoder;
 import it.geosolutions.geoserver.rest.manager.GeoServerRESTStoreManager;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -361,7 +363,6 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			gsPublisher = getPublisher();
 			GSFeatureTypeNativeNameEncoder fte = this
 					.tranformToGSFeatureTypeEncoder(featureDescriptor);
-			
 
 			GSLayerEncoder layerEncoder = this
 					.tranformToGSLayerEncoder(layerDescriptor);
@@ -423,7 +424,8 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 					gsConfiguration.getServerUrl()),
 					gsConfiguration.getAdminUsername(),
 					gsConfiguration.getAdminPassword());
-			result = manager.getReader().getLayer(workspaceName + ":" + layerName) != null;
+			result = manager.getReader().getLayer(
+					workspaceName + ":" + layerName) != null;
 
 		} catch (IllegalArgumentException e) {
 			LOG.error(
@@ -435,6 +437,24 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 							+ gsConfiguration.getServerUrl(), e);
 		}
 
+		return result;
+	}
+
+	@Override
+	public boolean publishGeoTIFF(String workspace, String storeName,
+			File geotiff) {
+		GeoServerRESTPublisher gsPublisher;
+		boolean result = false;
+		try {
+			gsPublisher = getPublisher();
+			result = gsPublisher.publishGeoTIFF(workspace, storeName, geotiff);
+		} catch (FileNotFoundException e) {
+			LOG.error("File not found", e);
+			throw new GeoserverException("File not found", e);
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
 		return result;
 	}
 }

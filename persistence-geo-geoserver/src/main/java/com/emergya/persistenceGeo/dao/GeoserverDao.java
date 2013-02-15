@@ -28,6 +28,7 @@
  */
 package com.emergya.persistenceGeo.dao;
 
+import java.io.File;
 import java.net.URI;
 
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
@@ -142,5 +143,17 @@ public interface GeoserverDao {
 	 */
 	public boolean createDatastoreJndi(String workspaceName,
 			String datastoreName);
+	
+	/**
+	 * Upload and publish a GeoTIFF image.
+	 * @param workspace 
+	 * 			workspace to use
+	 * @param storeName 
+	 * 			the store name to be used or created.
+	 * @parama geotiff 
+	 * 			the GeoTIFF file.
+	 * @return <code>true</code> if success.
+	 */
+	public boolean publishGeoTIFF(String workspace, String storeName, File geotiff);
 
 }

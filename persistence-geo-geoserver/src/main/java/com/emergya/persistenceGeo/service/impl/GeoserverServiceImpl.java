@@ -28,6 +28,7 @@
  */
 package com.emergya.persistenceGeo.service.impl;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -233,6 +234,12 @@ public class GeoserverServiceImpl implements GeoserverService {
 	public boolean createDatastoreJndi(String workspaceName,
 			String datastoreName) {
 		return gsDao.createDatastoreJndi(workspaceName, datastoreName);
+	}
+
+	@Override
+	public boolean publishGeoTIFF(String workspace, String storeName,
+			File geotiff) {
+		return gsDao.publishGeoTIFF(workspace, storeName, geotiff);
 	}
 	
 	

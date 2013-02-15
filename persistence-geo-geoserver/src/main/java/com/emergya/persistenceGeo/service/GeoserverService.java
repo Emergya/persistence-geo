@@ -28,6 +28,8 @@
  */
 package com.emergya.persistenceGeo.service;
 
+import java.io.File;
+
 import com.emergya.persistenceGeo.utils.BoundingBox;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor.GeometryType;
 
@@ -69,4 +71,16 @@ public interface GeoserverService {
 	 */
 	public boolean createDatastoreJndi(String workspaceName,
 			String datastoreName);
+	
+	/**
+	 * Upload and publish a GeoTIFF image.
+	 * @param workspace 
+	 * 			workspace to use
+	 * @param storeName 
+	 * 			the store name to be used or created.
+	 * @parama geotiff 
+	 * 			the GeoTIFF file.
+	 * @return <code>true</code> if success.
+	 */
+	public boolean publishGeoTIFF(String workspace, String storeName, File geotiff);
 }
