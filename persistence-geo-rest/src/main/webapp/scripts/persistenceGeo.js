@@ -1,13 +1,13 @@
 (function() {
 
     var jsfiles = new Array(
-        "persistenceGeo/loaders/AbstractLoader.js",
-        "persistenceGeo/loaders/WMSLoader.js",
-        "persistenceGeo/loaders/WFSLoader.js",
-        "persistenceGeo/loaders/KMLLoader.js",
-        "persistenceGeo/loaders/GMLLoader.js",
-        "persistenceGeo/Parser.js",
-        "persistenceGeo/PersistenceGeoParser.js"
+        "persistenceGeo/lib/loaders/AbstractLoader.js",
+        "persistenceGeo/lib/loaders/WMSLoader.js",
+        "persistenceGeo/lib/loaders/WFSLoader.js",
+        "persistenceGeo/lib/loaders/KMLLoader.js",
+        "persistenceGeo/lib/loaders/GMLLoader.js",
+        "persistenceGeo/lib/Parser.js",
+        "persistenceGeo/lib/PersistenceGeoParser.js"
     );
     
     var scripts = document.getElementsByTagName("script");
@@ -24,4 +24,3 @@
     document.write(pieces.join(""));
 
 })();
-
