@@ -79,7 +79,7 @@ public class UpdateLayerTest{
 	protected static final String PR_2_STYLE_NAME = "testStyle";
 	protected static final String PR_2_STYLE_PROPERTY_NAME = "testName";
 	protected static final String PR_2_STYLE_PROPERTY_VALUE = "valueTest";
-	protected static final String PR_2_LAYER_DATA = "target/classes/test-classes/ficheros/barcelona_city_drive_4326.kml";
+	protected static final String PR_2_LAYER_DATA = "target/test-classes/ficheros/barcelona_city_drive_4326.kml";
 	
 	@Test
 	public void testUpdateLayer() {
