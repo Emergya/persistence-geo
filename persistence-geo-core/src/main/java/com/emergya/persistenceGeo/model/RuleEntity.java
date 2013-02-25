@@ -104,7 +104,7 @@ public class RuleEntity extends AbstractRuleEntity {
 	@OneToMany(targetEntity=RulePropertyEntity.class,
 			cascade = {CascadeType.ALL},
 			fetch = FetchType.LAZY)
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @Cascade({org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
 	public List<RulePropertyEntity> getProperties() {
 		return this.properties;
 	}
