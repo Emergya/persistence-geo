@@ -145,7 +145,7 @@ public class LayerEntity extends AbstractLayerEntity {
 	@OneToMany(targetEntity=StyleEntity.class, 
 			cascade = {CascadeType.ALL},
 			fetch = FetchType.LAZY)
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @Cascade({org.hibernate.annotations.CascadeType.ALL})
 	public List<StyleEntity> getStyleList() {
 		return this.styleList;
 	}
@@ -172,7 +172,7 @@ public class LayerEntity extends AbstractLayerEntity {
 	@OneToMany(targetEntity=LayerPropertyEntity.class,
 			cascade = {CascadeType.ALL},
 			fetch = FetchType.LAZY)
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
 	public List<LayerPropertyEntity> getProperties() {
 		return this.properties;
 	}

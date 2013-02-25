@@ -103,7 +103,7 @@ public class StyleEntity extends AbstractStyleEntity {
 	@OneToMany(targetEntity=RuleEntity.class,
 			cascade = {CascadeType.ALL},
 			fetch = FetchType.LAZY)
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @Cascade({org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
 	public List<RuleEntity> getRuleList() {
 		return ruleList;
 	}
