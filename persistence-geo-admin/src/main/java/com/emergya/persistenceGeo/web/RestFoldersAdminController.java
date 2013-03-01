@@ -109,6 +109,11 @@ public class RestFoldersAdminController implements Serializable{
 	public static final String SHOW_FOLDER_LAYERS = "SHOW_FOLDER_LAYERS";
 
 	/**
+	 * Filter to hide IPT layers {@link RestFoldersAdminController#loadChannels(String)}
+	 */
+	public static final String HIDE_IPT_CHANNELS = "HIDE_IPT_CHANNELS";
+
+	/**
 	 * This method loads layers.json related with a folder
 	 * 
 	 * @param username
@@ -569,6 +574,15 @@ public class RestFoldersAdminController implements Serializable{
 						previusFolders = foldersAdminService.getChannelFolders(Boolean.FALSE, null, Boolean.TRUE);	
 					}
 				}
+
+                if (filter.contains(HIDE_IPT_CHANNELS)) {
+                    for (FolderDto folder: previusFolders) {
+                        if (folder.getIsPlain() != null) {
+                            previusFolders.remove(folder);
+                        }
+                    }
+                }
+
 			}else{
 				previusFolders = foldersAdminService.getChannelFolders(Boolean.FALSE, null, Boolean.TRUE);	
 			} 
