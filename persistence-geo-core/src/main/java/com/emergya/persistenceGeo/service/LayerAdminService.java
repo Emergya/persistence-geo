@@ -30,6 +30,7 @@
 package com.emergya.persistenceGeo.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.emergya.persistenceGeo.dto.LayerDto;
 
@@ -205,4 +206,15 @@ public interface LayerAdminService extends AbstractService {
 	 * @return all layers in the folder
 	 */
 	public List<LayerDto> getLayersByFolder(Long folderId, Boolean isChannel, Boolean isEnabled);
+	
+	/**
+	 * Update layer properties
+	 * 
+	 * @param idLayer
+	 * @param mapProperties
+	 * @param name 
+	 * 
+	 * @return layer modified
+	 */
+	public LayerDto updateLayerProperties(Long idLayer, String name, Map<String, String> mapProperties);
 }

@@ -1,0 +1,3 @@
+[submodule "persistence-geo-rest/src/main/webapp/scripts/persistenceGeo"]
+	path = persistence-geo-rest/src/main/webapp/scripts/persistenceGeo
+	url = git@github.com:Emergya/persistenceGeo.git

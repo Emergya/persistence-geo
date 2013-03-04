@@ -465,26 +465,15 @@ public class RestLayersAdminController extends RestPersistenceGeoController
 					.getAuthentication().getPrincipal()).getUsername(); 
 			 */
 			Long idLayer = Long.decode(layerId);
-			layer = (LayerDto) layerAdminService.getById(idLayer);
-			
-			// override name
-			if(name != null){
-				layer.setName(name);
-			}
 			
 			// override properties
+			Map<String, String> propertyMap = null;
 			if(properties != null){
-				Map<String, String> propertyMap = getMapFromString(properties);
-				Map<String, String> layerProperties = layer.getProperties() != null ? layer
-						.getProperties() : new HashMap<String, String>();
-				for(String key: propertyMap.keySet()){
-					layerProperties.put(key, propertyMap.get(key));
-				}
-				layer.setProperties(layerProperties);
+				propertyMap = getMapFromString(properties);
 			}
 			
-			//layer update
-			layer = (LayerDto) layerAdminService.update(layer);
+			// save all
+			layer = layerAdminService.updateLayerProperties(idLayer, name,  propertyMap);
 			
 			//Must already loaded in RestLayerAdminController
 			if(layer.getId() != null && layer.getData() != null){

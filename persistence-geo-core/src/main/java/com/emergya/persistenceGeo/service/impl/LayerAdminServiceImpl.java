@@ -258,6 +258,24 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 	public List<LayerDto> getLayersByFolder(Long folderId, Boolean isChannel, Boolean isEnabled){
 		return (List<LayerDto>) entitiesToDtos(layerDao.getLayersByFolder(folderId, isChannel, isEnabled));
 	}
+	
+	/**
+	 * Update layer properties
+	 * 
+	 * @param idLayer
+	 * @param mapProperties
+	 * @param name
+	 * 
+	 * @return layerModified
+	 */
+	public LayerDto updateLayerProperties(Long idLayer, String name, Map<String, String> mapProperties){
+		AbstractLayerEntity entity = (AbstractLayerEntity) layerDao.findById(idLayer, false);
+		this.mergeLayerProperties(entity, mapProperties);
+		if(name != null){
+			entity.setName(name);
+		}
+		return this.entityToDto(layerDao.makePersistent(entity));
+	}
 
 	protected LayerDto entityToDto(AbstractLayerEntity entity) {
 		LayerDto dto = null;
@@ -337,17 +355,8 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 				entity.setCreateDate(now);
 			}
 			
-			// Properties
-			if(dto.getProperties() != null && dto.getProperties().size()>0){
-				List<AbstractLayerPropertyEntity> propertiesList = new LinkedList<AbstractLayerPropertyEntity>();
-				for(String name: dto.getProperties().keySet()){
-					AbstractLayerPropertyEntity property = instancer.createLayerProperty();
-					property.setName(name);
-					property.setValue(dto.getProperties().get(name));
-					propertiesList.add(property);
-				}
-				entity.setProperties(propertiesList);
-			}
+			// Layer properties
+			entity.setProperties(this.mergeLayerProperties(entity,dto.getProperties()));
 			
 			// Add own parameters
 			//entity.setId(dto.getId());
@@ -401,6 +410,52 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			}
 		}
 		return entity;
+	}
+	
+	/**
+	 * Merge layer properties
+	 * 
+	 * @param layer
+	 * @param nameValues
+	 * @return
+	 */
+	private List<AbstractLayerPropertyEntity> mergeLayerProperties(AbstractLayerEntity layer, Map<String, String> nameValues){
+		// Properties
+		List<AbstractLayerPropertyEntity> propertiesList = layer.getProperties() != null ? 
+				layer.getProperties() : new LinkedList<AbstractLayerPropertyEntity>();
+		if(nameValues != null && nameValues.size()>0){
+			for(String name: nameValues.keySet()){
+				this.searchAndSetValue(propertiesList, name, nameValues.get(name));
+			}
+		}
+		return propertiesList;
+	}
+
+	/**
+	 * Set a simple property value in a list
+	 * 
+	 * @param propertiesList
+	 * @param name
+	 * @param value
+	 */
+	private void searchAndSetValue(
+			List<AbstractLayerPropertyEntity> propertiesList, String name,
+			String value) {
+		boolean found = false;
+		for(AbstractLayerPropertyEntity property: propertiesList){
+			if(name.equals(property.getName())){
+				//already exists
+				property.setValue(value);
+				found = true;
+			}
+		}
+		if(!found){
+			// Not found 
+			AbstractLayerPropertyEntity property = instancer.createLayerProperty();
+			property.setName(name);
+			property.setValue(value);
+			propertiesList.add(property);
+		}
 	}
 
 	private StyleDto entityStyleToDto(AbstractStyleEntity entity){
