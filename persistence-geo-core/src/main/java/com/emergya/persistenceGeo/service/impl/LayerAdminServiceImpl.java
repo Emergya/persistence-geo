@@ -441,18 +441,21 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 	private void searchAndSetValue(
 			List<AbstractLayerPropertyEntity> propertiesList, String name,
 			String value) {
+		boolean found = false;
 		for(AbstractLayerPropertyEntity property: propertiesList){
 			if(name.equals(property.getName())){
 				//already exists
 				property.setValue(value);
-				break;
+				found = true;
 			}
 		}
-		// Not found 
-		AbstractLayerPropertyEntity property = instancer.createLayerProperty();
-		property.setName(name);
-		property.setValue(value);
-		propertiesList.add(property);
+		if(!found){
+			// Not found 
+			AbstractLayerPropertyEntity property = instancer.createLayerProperty();
+			property.setName(name);
+			property.setValue(value);
+			propertiesList.add(property);
+		}
 	}
 
 	private StyleDto entityStyleToDto(AbstractStyleEntity entity){
