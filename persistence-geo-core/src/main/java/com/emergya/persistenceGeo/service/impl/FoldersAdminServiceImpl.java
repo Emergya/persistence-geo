@@ -328,6 +328,7 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
 			dto = new FolderDto();
 			dto.setEnabled(entity.getEnabled());
 			dto.setIsChannel(entity.getIsChannel());
+			dto.setIsPlain(entity.getIsPlain());
 			dto.setUpdateDate(entity.getUpdateDate());
 			dto.setCreateDate(entity.getCreateDate());
 			dto.setId(entity.getId());
@@ -402,6 +403,7 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
 			entity.setCreateDate(dto.getCreateDate());
 			entity.setName(dto.getName());
 			entity.setFolderOrder(dto.getOrder());
+			entity.setIsPlain(dto.getIsPlain());
 			
 			//TODO: Children if is necesary
 			

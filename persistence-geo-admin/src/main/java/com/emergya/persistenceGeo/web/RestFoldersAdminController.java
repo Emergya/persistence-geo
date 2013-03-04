@@ -30,6 +30,7 @@
 package com.emergya.persistenceGeo.web;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,51 +66,56 @@ import com.emergya.persistenceGeo.utils.FoldersUtils;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  */
 @Controller
-public class RestFoldersAdminController implements Serializable{
-	
+public class RestFoldersAdminController implements Serializable {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -422396545892957323L;
-	
+
 	@Resource
 	private UserAdminService userAdminService;
 	@Resource
 	private FoldersAdminService foldersAdminService;
 	@Resource
 	private LayerAdminService layerAdminService;
-	
-	protected final String RESULTS= "results";
-	protected final String ROOT= "data";
-	protected final String SUCCESS= "success";
+
+	protected final String RESULTS = "results";
+	protected final String ROOT = "data";
+	protected final String SUCCESS = "success";
 
 	public static final String LOAD_FOLDERS_BY_USER = "user";
 	public static final String LOAD_FOLDERS_BY_GROUP = "group";
 	public static final String LOAD_FOLDERS_STYLE_TREE = "tree";
 	public static final String LOAD_FOLDERS_STYLE_STRING = "string";
-	
+
 	/**
-	 * Filter to show zone channels in {@link RestFoldersAdminController#loadChannels(String)}
+	 * Filter to show zone channels in
+	 * {@link RestFoldersAdminController#loadChannels(String)}
 	 */
 	public static final String ALL_CHANNEL_IN_ZONES = "ALL_CHANNEL_IN_ZONES";
-	
+
 	/**
-	 * Filter to show  only channel layers in {@link RestFoldersAdminController#loadFoldersById(String, String)}
+	 * Filter to show only channel layers in
+	 * {@link RestFoldersAdminController#loadFoldersById(String, String)}
 	 */
 	public static final String ONLY_CHANNEL_MARK = "ONLY_CHANNEL_MARK";
-	
+
 	/**
-	 * Filter to show  only not channel layers in {@link RestFoldersAdminController#loadFoldersById(String, String)}
+	 * Filter to show only not channel layers in
+	 * {@link RestFoldersAdminController#loadFoldersById(String, String)}
 	 */
 	public static final String ONLY_NOT_CHANNEL_MARK = "ONLY_NOT_CHANNEL_MARK";
 
 	/**
-	 * Filter to show layers in channel tree {@link RestFoldersAdminController#loadChannels(String)}
+	 * Filter to show layers in channel tree
+	 * {@link RestFoldersAdminController#loadChannels(String)}
 	 */
 	public static final String SHOW_FOLDER_LAYERS = "SHOW_FOLDER_LAYERS";
 
 	/**
-	 * Filter to hide IPT layers {@link RestFoldersAdminController#loadChannels(String)}
+	 * Filter to hide IPT layers
+	 * {@link RestFoldersAdminController#loadChannels(String)}
 	 */
 	public static final String HIDE_IPT_CHANNELS = "HIDE_IPT_CHANNELS";
 
@@ -120,35 +126,34 @@ public class RestFoldersAdminController implements Serializable{
 	 * 
 	 * @return JSON file with layers
 	 */
-	@RequestMapping(value = "/persistenceGeo/moveFolderTo", method = RequestMethod.POST, 
-			produces = {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(value = "/persistenceGeo/moveFolderTo", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public @ResponseBody
 	Map<String, Object> moveFolderTo(@RequestParam("folderId") String folderId,
 			@RequestParam("toFolder") String toFolder,
-			@RequestParam(value="toOrder",required=false) String toOrder){
+			@RequestParam(value = "toOrder", required = false) String toOrder) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		FolderDto folder = null;
-		try{
+		try {
 			/*
-			//TODO: Secure with logged user
-			String username = ((UserDetails) SecurityContextHolder.getContext()
-					.getAuthentication().getPrincipal()).getUsername(); 
+			 * //TODO: Secure with logged user String username = ((UserDetails)
+			 * SecurityContextHolder.getContext()
+			 * .getAuthentication().getPrincipal()).getUsername();
 			 */
 			Long idFolder = Long.decode(folderId);
 			folder = (FolderDto) foldersAdminService.getById(idFolder);
 			folder.setIdParent(Long.decode(toFolder));
-			if(toOrder != null){
+			if (toOrder != null) {
 				folder.setOrder(Integer.decode(toOrder));
 			}
 			folder = (FolderDto) foldersAdminService.update(folder);
-			
+
 			result.put(SUCCESS, true);
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			result.put(SUCCESS, false);
 		}
-		
-		result.put(RESULTS, folder != null ? 1: 0);
+
+		result.put(RESULTS, folder != null ? 1 : 0);
 		result.put(ROOT, folder);
 
 		return result;
@@ -160,28 +165,33 @@ public class RestFoldersAdminController implements Serializable{
 	 * @param group
 	 */
 	@RequestMapping(value = "/persistenceGeo/saveFolderByGroup/{groupId}", method = RequestMethod.POST)
-	public @ResponseBody 
-	FolderDto saveFolderByGroup(@PathVariable String groupId,
+	public @ResponseBody
+	FolderDto saveFolderByGroup(
+			@PathVariable String groupId,
 			@RequestParam("name") String name,
 			@RequestParam("enabled") String enabled,
 			@RequestParam("isChannel") String isChannel,
 			@RequestParam("isPlain") String isPlain,
-			@RequestParam(value = "parentFolder", required = false) String parentFolder){
-		try{
+			@RequestParam(value = "parentFolder", required = false) String parentFolder) {
+		try {
 			/*
-			//TODO: Secure with logged user
-			String username = ((UserDetails) SecurityContextHolder.getContext()
-					.getAuthentication().getPrincipal()).getUsername(); 
+			 * //TODO: Secure with logged user String username = ((UserDetails)
+			 * SecurityContextHolder.getContext()
+			 * .getAuthentication().getPrincipal()).getUsername();
 			 */
 			Long idGroup = Long.decode(groupId);
-			FolderDto rootFolder = foldersAdminService.getRootGroupFolder(idGroup);
-			if(StringUtils.isEmpty(parentFolder) || !StringUtils.isNumeric(parentFolder)){
-				return saveFolderBy(name, enabled, isChannel, isPlain, 
-						rootFolder != null ? rootFolder.getId() : null, null, idGroup);
-			}else{
-				return saveFolderBy(name, enabled, isChannel, isPlain, Long.decode(parentFolder), null, idGroup);
+			FolderDto rootFolder = foldersAdminService
+					.getRootGroupFolder(idGroup);
+			if (StringUtils.isEmpty(parentFolder)
+					|| !StringUtils.isNumeric(parentFolder)) {
+				return saveFolderBy(name, enabled, isChannel, isPlain,
+						rootFolder != null ? rootFolder.getId() : null, null,
+						idGroup);
+			} else {
+				return saveFolderBy(name, enabled, isChannel, isPlain,
+						Long.decode(parentFolder), null, idGroup);
 			}
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -193,54 +203,62 @@ public class RestFoldersAdminController implements Serializable{
 	 * @param user
 	 */
 	@RequestMapping(value = "/persistenceGeo/saveFolder/{username}", method = RequestMethod.POST)
-	public @ResponseBody 
-	FolderDto saveFolder(@PathVariable String username,
+	public @ResponseBody
+	FolderDto saveFolder(
+			@PathVariable String username,
 			@RequestParam("name") String name,
 			@RequestParam("enabled") String enabled,
 			@RequestParam("isChannel") String isChannel,
 			@RequestParam("isPlain") String isPlain,
-			@RequestParam(value = "parentFolder", required = false) String parentFolder){
-		try{
+			@RequestParam(value = "parentFolder", required = false) String parentFolder) {
+		try {
 			/*
-			//TODO: Secure with logged user
-			String username = ((UserDetails) SecurityContextHolder.getContext()
-					.getAuthentication().getPrincipal()).getUsername(); 
+			 * //TODO: Secure with logged user String username = ((UserDetails)
+			 * SecurityContextHolder.getContext()
+			 * .getAuthentication().getPrincipal()).getUsername();
 			 */
 			UserDto user = userAdminService.obtenerUsuario(username);
-			if(StringUtils.isEmpty(parentFolder) || !StringUtils.isNumeric(parentFolder)){
-				FolderDto rootFolder = foldersAdminService.getRootFolder(user.getId());
-				return saveFolderBy(name, enabled, isChannel, isPlain, 
-						rootFolder != null ? rootFolder.getId() : null, user.getId(), null);
-			}else{
-				return saveFolderBy(name, enabled, isChannel, isPlain, Long.decode(parentFolder), user.getId(), null);
+			if (StringUtils.isEmpty(parentFolder)
+					|| !StringUtils.isNumeric(parentFolder)) {
+				FolderDto rootFolder = foldersAdminService.getRootFolder(user
+						.getId());
+				return saveFolderBy(name, enabled, isChannel, isPlain,
+						rootFolder != null ? rootFolder.getId() : null,
+						user.getId(), null);
+			} else {
+				return saveFolderBy(name, enabled, isChannel, isPlain,
+						Long.decode(parentFolder), user.getId(), null);
 			}
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
-	private FolderDto saveFolderBy(String name, String enabled, String isChannel,
-			String isPlain, Long parentFolder, Long userId, Long groupId){
+
+	private FolderDto saveFolderBy(String name, String enabled,
+			String isChannel, String isPlain, Long parentFolder, Long userId,
+			Long groupId) {
 		FolderDto folder = new FolderDto();
 		folder.setName(name);
-		folder.setEnabled(enabled != null ? enabled.toLowerCase().equals("true") : false);
-		folder.setIsChannel(isChannel != null ? isChannel.toLowerCase().equals("true") : false);
-		folder.setIsPlain(isPlain != null ? isPlain.toLowerCase().equals("true") : false);
+		folder.setEnabled(enabled != null ? enabled.toLowerCase()
+				.equals("true") : false);
+		folder.setIsChannel(isChannel != null ? isChannel.toLowerCase().equals(
+				"true") : false);
+		folder.setIsPlain(isPlain != null ? isPlain.toLowerCase()
+				.equals("true") : false);
 		folder.setIdParent(parentFolder);
 		folder.setIdAuth(groupId);
 		folder.setIdUser(userId);
-		
-		//TODO: folder.setZoneList(zoneList);
+
+		// TODO: folder.setZoneList(zoneList);
 		return foldersAdminService.saveFolder(folder);
 	}
 
-	
 	/**
 	 * Load folders without layers
 	 */
 	public static final String FILTER_WITHOUT_LAYERS = "NO_LAYERS";
-	
+
 	/**
 	 * Load folders with layers
 	 */
@@ -253,38 +271,37 @@ public class RestFoldersAdminController implements Serializable{
 	 * 
 	 * @return JSON file with folders
 	 */
-	@RequestMapping(value = "/persistenceGeo/loadFolders/{username}", 
-			produces = {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(value = "/persistenceGeo/loadFolders/{username}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public @ResponseBody
 	Map<String, Object> loadFolders(@PathVariable String username,
-			@RequestParam(value="filter", required=false) String filter){
+			@RequestParam(value = "filter", required = false) String filter) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<FolderDto> folders = null;
-		try{
+		try {
 			/*
-			//TODO: Secure with logged user
-			String username = ((UserDetails) SecurityContextHolder.getContext()
-					.getAuthentication().getPrincipal()).getUsername(); 
+			 * //TODO: Secure with logged user String username = ((UserDetails)
+			 * SecurityContextHolder.getContext()
+			 * .getAuthentication().getPrincipal()).getUsername();
 			 */
-			if(username != null){
+			if (username != null) {
 				folders = new LinkedList<FolderDto>();
 				UserDto user = userAdminService.obtenerUsuario(username);
 				FolderDto rootFolder;
 				rootFolder = foldersAdminService.getRootFolder(user.getId());
-				FoldersUtils.getFolderTreeFiltered(rootFolder, folders, filter != null ? new Boolean(filter) : null);
+				FoldersUtils.getFolderTreeFiltered(rootFolder, folders,
+						filter != null ? new Boolean(filter) : null);
 			}
 			result.put(SUCCESS, true);
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			result.put(SUCCESS, false);
 		}
-		
-		result.put(RESULTS, folders != null ? folders.size(): 0);
+
+		result.put(RESULTS, folders != null ? folders.size() : 0);
 		result.put(ROOT, folders);
 
 		return result;
 	}
-
 
 	/**
 	 * This method loads all folders related with a user
@@ -293,87 +310,92 @@ public class RestFoldersAdminController implements Serializable{
 	 * 
 	 * @return JSON file with folders
 	 */
-	@RequestMapping(value = "/persistenceGeo/loadFoldersByGroup/{idGroup}", 
-			produces = {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(value = "/persistenceGeo/loadFoldersByGroup/{idGroup}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public @ResponseBody
 	Map<String, Object> loadFoldersByGroup(@PathVariable String idGroup,
-			@RequestParam(value="filter", required=false) String filter){
+			@RequestParam(value = "filter", required = false) String filter) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<FolderDto> folders = null;
-		try{
+		try {
 			/*
-			//TODO: Secure with logged user
-			String username = ((UserDetails) SecurityContextHolder.getContext()
-					.getAuthentication().getPrincipal()).getUsername(); 
+			 * //TODO: Secure with logged user String username = ((UserDetails)
+			 * SecurityContextHolder.getContext()
+			 * .getAuthentication().getPrincipal()).getUsername();
 			 */
-			if(idGroup != null){
+			if (idGroup != null) {
 				folders = new LinkedList<FolderDto>();
 				FolderDto rootFolder;
-				if(filter != null){
-					rootFolder = foldersAdminService.getRootGroupFolder(Long.decode(idGroup));
-				}else{
-					rootFolder = foldersAdminService.getRootGroupFolder(Long.decode(idGroup));
+				if (filter != null) {
+					rootFolder = foldersAdminService.getRootGroupFolder(Long
+							.decode(idGroup));
+				} else {
+					rootFolder = foldersAdminService.getRootGroupFolder(Long
+							.decode(idGroup));
 				}
-				FoldersUtils.getFolderTreeFiltered(rootFolder, folders, filter != null ? new Boolean(filter) : null);
+				FoldersUtils.getFolderTreeFiltered(rootFolder, folders,
+						filter != null ? new Boolean(filter) : null);
 			}
 			result.put(SUCCESS, true);
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			result.put(SUCCESS, false);
 		}
-		
-		result.put(RESULTS, folders != null ? folders.size(): 0);
+
+		result.put(RESULTS, folders != null ? folders.size() : 0);
 		result.put(ROOT, folders);
 
 		return result;
 	}
-	
+
 	/**
 	 * Load folder tree by user or group styled
 	 * 
-	 * @param type user or group, default group
-	 * @param style tree or string, default string
-	 * @param userOrGroup id group or username
+	 * @param type
+	 *            user or group, default group
+	 * @param style
+	 *            tree or string, default string
+	 * @param userOrGroup
+	 *            id group or username
 	 * 
 	 * @see FoldersUtils
 	 * @see FolderStyle
 	 * 
 	 * @return List of user or group folders parsed with style
 	 */
-	@RequestMapping(value = "/persistenceGeo/loadFolders/{type}/{style}/{userOrGroup}", method = RequestMethod.GET, 
-			produces = {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(value = "/persistenceGeo/loadFolders/{type}/{style}/{userOrGroup}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public @ResponseBody
 	Map<String, Object> loadFolders(@PathVariable String type,
-			@PathVariable String style, 
-			@PathVariable String userOrGroup){
+			@PathVariable String style, @PathVariable String userOrGroup) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<FolderDto> folders = null;
-		try{
+		try {
 			/*
-			//TODO: Secure with logged user
-			String username = ((UserDetails) SecurityContextHolder.getContext()
-					.getAuthentication().getPrincipal()).getUsername(); 
+			 * //TODO: Secure with logged user String username = ((UserDetails)
+			 * SecurityContextHolder.getContext()
+			 * .getAuthentication().getPrincipal()).getUsername();
 			 */
 			FolderDto rootFolder;
 			folders = new LinkedList<FolderDto>();
-			if(LOAD_FOLDERS_BY_USER.equals(type)){
+			if (LOAD_FOLDERS_BY_USER.equals(type)) {
 				UserDto user = userAdminService.obtenerUsuario(userOrGroup);
 				rootFolder = foldersAdminService.getRootFolder(user.getId());
-			}else{
-				rootFolder = foldersAdminService.getRootGroupFolder(Long.decode(userOrGroup));
+			} else {
+				rootFolder = foldersAdminService.getRootGroupFolder(Long
+						.decode(userOrGroup));
 			}
-			if(LOAD_FOLDERS_STYLE_TREE.equals(style)){
-				FoldersUtils.getFolderTree(rootFolder, folders, FolderStyle.TREE, null);
-			}else{
+			if (LOAD_FOLDERS_STYLE_TREE.equals(style)) {
+				FoldersUtils.getFolderTree(rootFolder, folders,
+						FolderStyle.TREE, null);
+			} else {
 				FoldersUtils.getFolderTree(rootFolder, folders);
 			}
 			result.put(SUCCESS, true);
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			result.put(SUCCESS, false);
 		}
-		
-		result.put(RESULTS, folders != null ? folders.size(): 0);
+
+		result.put(RESULTS, folders != null ? folders.size() : 0);
 		result.put(ROOT, folders);
 
 		return result;
@@ -386,17 +408,16 @@ public class RestFoldersAdminController implements Serializable{
 	 * 
 	 * @return JSON file with success
 	 */
-	@RequestMapping(value = "/persistenceGeo/deleteFolder",
-			produces = {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(value = "/persistenceGeo/deleteFolder", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public @ResponseBody
-	Map<String, Object> deleteFolder(@RequestParam("folderId") String folderId){
+	Map<String, Object> deleteFolder(@RequestParam("folderId") String folderId) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		FolderDto folder = null;
-		try{
+		try {
 			/*
-			//TODO: Secure with logged user
-			String username = ((UserDetails) SecurityContextHolder.getContext()
-					.getAuthentication().getPrincipal()).getUsername(); 
+			 * //TODO: Secure with logged user String username = ((UserDetails)
+			 * SecurityContextHolder.getContext()
+			 * .getAuthentication().getPrincipal()).getUsername();
 			 */
 			Long idFolder = Long.decode(folderId);
 			folder = (FolderDto) foldersAdminService.getById(idFolder);
@@ -404,7 +425,7 @@ public class RestFoldersAdminController implements Serializable{
 			result.put(SUCCESS, true);
 			result.put(RESULTS, 1);
 			result.put(ROOT, "");
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			result.put(SUCCESS, false);
 			result.put(RESULTS, 0);
@@ -422,29 +443,28 @@ public class RestFoldersAdminController implements Serializable{
 	 * 
 	 * @return JSON file with success
 	 */
-	@RequestMapping(value = "/persistenceGeo/renameFolder",
-			produces = {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(value = "/persistenceGeo/renameFolder", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public @ResponseBody
 	Map<String, Object> renameFolder(@RequestParam("folderId") String folderId,
-			@RequestParam("name") String name){
+			@RequestParam("name") String name) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		FolderDto folder = null;
-		try{
+		try {
 			/*
-			//TODO: Secure with logged user
-			String username = ((UserDetails) SecurityContextHolder.getContext()
-					.getAuthentication().getPrincipal()).getUsername(); 
+			 * //TODO: Secure with logged user String username = ((UserDetails)
+			 * SecurityContextHolder.getContext()
+			 * .getAuthentication().getPrincipal()).getUsername();
 			 */
 			Long idFolder = Long.decode(folderId);
 			folder = (FolderDto) foldersAdminService.getById(idFolder);
 			folder.setName(name);
 			folder = (FolderDto) foldersAdminService.update(folder);
 			result.put(SUCCESS, true);
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			result.put(SUCCESS, false);
 		}
-		
+
 		result.put(RESULTS, folder != null ? 1 : 0);
 		result.put(ROOT, folder);
 
@@ -494,7 +514,6 @@ public class RestFoldersAdminController implements Serializable{
 		return result;
 	}
 
-
 	/**
 	 * This method loads all folders or layers in a folder
 	 * 
@@ -502,140 +521,155 @@ public class RestFoldersAdminController implements Serializable{
 	 * 
 	 * @return JSON file with folders
 	 */
-	@RequestMapping(value = "/persistenceGeo/loadFoldersById/{idFolder}", 
-			produces = {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(value = "/persistenceGeo/loadFoldersById/{idFolder}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public @ResponseBody
 	Map<String, Object> loadFoldersById(@PathVariable String idFolder,
-			@RequestParam(value="filter", required=false) String filter){
+			@RequestParam(value = "filter", required = false) String filter) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<Treeable> tree = null;
-		try{
-			if(idFolder != null){
+		try {
+			if (idFolder != null) {
 				Long folderId = new Long(idFolder);
 				tree = new LinkedList<Treeable>();
-				
+
 				// add folders
-				List<FolderDto> childrenFolders = foldersAdminService.findByZone(null, folderId, Boolean.TRUE);
-				if(childrenFolders != null 
-						&& !childrenFolders.isEmpty()){ 
-					for(FolderDto subRes: childrenFolders){
-						tree.add((Treeable) FoldersUtils.getFolderDecorator().applyStyle(subRes, FolderStyle.NORMAL));
+				List<FolderDto> childrenFolders = foldersAdminService
+						.findByZone(null, folderId, Boolean.TRUE);
+				if (childrenFolders != null && !childrenFolders.isEmpty()) {
+					for (FolderDto subRes : childrenFolders) {
+						tree.add((Treeable) FoldersUtils.getFolderDecorator()
+								.applyStyle(subRes, FolderStyle.NORMAL));
 					}
 				}
 
 				// add layers
 				Boolean isChannel = null;
-				if(ONLY_CHANNEL_MARK.equals(filter)){
+				if (ONLY_CHANNEL_MARK.equals(filter)) {
 					isChannel = Boolean.TRUE;
-				}else if(ONLY_NOT_CHANNEL_MARK.equals(filter)){
+				} else if (ONLY_NOT_CHANNEL_MARK.equals(filter)) {
 					isChannel = Boolean.FALSE;
 				}
-				List<LayerDto> previusLayers = layerAdminService.getLayersByFolder(folderId, isChannel, Boolean.TRUE);
-				for(LayerDto subRes: previusLayers){
+				List<LayerDto> previusLayers = layerAdminService
+						.getLayersByFolder(folderId, isChannel, Boolean.TRUE);
+				for (LayerDto subRes : previusLayers) {
 					tree.add(new TreeNode(subRes, true));
 				}
 			}
 			result.put(SUCCESS, true);
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			result.put(SUCCESS, false);
 		}
-		
-		result.put(RESULTS, tree != null ? tree.size(): 0);
+
+		result.put(RESULTS, tree != null ? tree.size() : 0);
 		result.put(ROOT, tree);
 
 		return result;
-	} 
+	}
 
 	/**
 	 * This method loads all channel folders in a zone
 	 * 
-	 * @param filter can be null {@link RestFoldersAdminController#ALL_CHANNEL_IN_ZONES} or id zone to filter 
+	 * @param filter
+	 *            can be null
+	 *            {@link RestFoldersAdminController#ALL_CHANNEL_IN_ZONES} or id
+	 *            zone to filter
 	 * 
 	 * @return JSON file with folders
 	 */
-	@RequestMapping(value = "/persistenceGeo/loadChannels", 
-			produces = {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(value = "/persistenceGeo/loadChannels", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public @ResponseBody
-	Map<String, Object> loadChannels(@RequestParam(value="filter", required = false) String filter){
+	Map<String, Object> loadChannels(
+			@RequestParam(value = "filter", required = false) String filter) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<FolderDto> folders = null;
 		List<FolderDto> previusFolders = null;
-		try{
-			if(filter != null){
-				if(filter.contains(ALL_CHANNEL_IN_ZONES)){
-					previusFolders = foldersAdminService.getChannelFolders(Boolean.TRUE, null, Boolean.TRUE);
-				}else{
+		try {
+			if (filter != null) {
+				if (filter.contains(ALL_CHANNEL_IN_ZONES)) {
+					previusFolders = foldersAdminService.getChannelFolders(
+							Boolean.TRUE, null, Boolean.TRUE);
+				} else {
 					Long zoneId = null;
-					try{
+					try {
 						zoneId = Long.decode(filter);
-						previusFolders = foldersAdminService.getChannelFolders(null, zoneId, Boolean.TRUE);
-					}catch(Exception e){
-						previusFolders = foldersAdminService.getChannelFolders(Boolean.FALSE, null, Boolean.TRUE);	
+						previusFolders = foldersAdminService.getChannelFolders(
+								null, zoneId, Boolean.TRUE);
+					} catch (Exception e) {
+						previusFolders = foldersAdminService.getChannelFolders(
+								Boolean.FALSE, null, Boolean.TRUE);
 					}
 				}
 
-                if (filter.contains(HIDE_IPT_CHANNELS)) {
-                    for (FolderDto folder: previusFolders) {
-                        if (folder.getIsPlain() != null) {
-                            previusFolders.remove(folder);
-                        }
-                    }
-                }
+				if (filter.contains(HIDE_IPT_CHANNELS)) {
+					List<FolderDto> filteredFolders = new ArrayList<FolderDto>();
 
-			}else{
-				previusFolders = foldersAdminService.getChannelFolders(Boolean.FALSE, null, Boolean.TRUE);	
-			} 
+					for (FolderDto folder : previusFolders) {
+						if (folder.getIsPlain() == null) {
+							filteredFolders.add(folder);
+						}
+					}
+					previusFolders = filteredFolders;
+				}
+
+			} else {
+				previusFolders = foldersAdminService.getChannelFolders(
+						Boolean.FALSE, null, Boolean.TRUE);
+			}
 			folders = new LinkedList<FolderDto>();
-			
-			for(FolderDto subRes: previusFolders){
-				TreeFolderDto folder = (TreeFolderDto) FoldersUtils.getFolderDecorator().applyStyle(subRes, FolderStyle.NORMAL);
-				if(filter != null 
-						&& filter.contains(SHOW_FOLDER_LAYERS)){
+
+			for (FolderDto subRes : previusFolders) {
+				TreeFolderDto folder = (TreeFolderDto) FoldersUtils
+						.getFolderDecorator().applyStyle(subRes,
+								FolderStyle.NORMAL);
+				if (filter != null && filter.contains(SHOW_FOLDER_LAYERS)) {
 					folder.setLeaf(false);
-				}else{
+				} else {
 					folder.setLeaf(true);
 				}
 				folders.add(folder);
 			}
 			result.put(SUCCESS, true);
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			result.put(SUCCESS, false);
 		}
-		
-		result.put(RESULTS, folders != null ? folders.size(): 0);
+
+		result.put(RESULTS, folders != null ? folders.size() : 0);
 		result.put(ROOT, folders);
 
 		return result;
 	}
 
-
 	/**
-	 * Returns all the folders of a specific zone and optionaly with
-     * a specific parent folder.
-	 *
-	 * @param zone Zone the folder belongs to
-     * @param parent Folder parent id
-	 *
+	 * Returns all the folders of a specific zone and optionaly with a specific
+	 * parent folder.
+	 * 
+	 * @param zone
+	 *            Zone the folder belongs to
+	 * @param parent
+	 *            Folder parent id
+	 * 
 	 * @return JSON file with success
 	 */
-	@RequestMapping(value = "/persistenceGeo/loadFoldersByZone",
-			produces = {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(value = "/persistenceGeo/loadFoldersByZone", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public @ResponseBody
-	Map<String, Object> loadFoldersByZone(@RequestParam(value="zone", required=true) String zoneId,
-            @RequestParam(value="parent", required=false) String parentId) {
+	Map<String, Object> loadFoldersByZone(
+			@RequestParam(value = "zone", required = true) String zoneId,
+			@RequestParam(value = "parent", required = false) String parentId) {
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<FolderDto> folders = null;
 
 		try {
 
-            if (parentId == null) {
-                folders = (List<FolderDto>) foldersAdminService.findByZone(new Long(zoneId), Boolean.TRUE);
-            } else {
-                folders = (List<FolderDto>) foldersAdminService.findByZone(new Long(zoneId), new Long(parentId), Boolean.TRUE);
-            }
+			if (parentId == null) {
+				folders = (List<FolderDto>) foldersAdminService.findByZone(
+						new Long(zoneId), Boolean.TRUE);
+			} else {
+				folders = (List<FolderDto>) foldersAdminService.findByZone(
+						new Long(zoneId), new Long(parentId), Boolean.TRUE);
+			}
 			result.put(SUCCESS, true);
 
 		} catch (Exception e) {
@@ -646,5 +680,5 @@ public class RestFoldersAdminController implements Serializable{
 		result.put(ROOT, folders != null ? folders : ListUtils.EMPTY_LIST);
 
 		return result;
-    }
+	}
 }
