@@ -28,6 +28,8 @@
  */
 package com.emergya.persistenceGeo.service.impl;
 
+import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -184,6 +186,8 @@ public class GeoserverServiceImpl implements GeoserverService {
 		fd.setNativeName(tableName);
 		fd.setTitle(title);
 		fd.setName(layerName);
+		fd.setSRS(nativeBoundingBox.getSrs());
+		fd.setNativeCRS(nativeBoundingBox.getSrs());		
 		if (nativeBoundingBox != null) {
 			fd.setNativeBoundingBox(nativeBoundingBox);
 			fd.setLatLonBoundingBox(nativeBoundingBox);

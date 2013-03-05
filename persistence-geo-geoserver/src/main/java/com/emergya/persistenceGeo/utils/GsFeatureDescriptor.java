@@ -162,6 +162,12 @@ public class GsFeatureDescriptor {
 		return this.srs;
 	}
 
+
+	
+	public void setSRS(String srs) {
+		this.srs = srs;
+	}
+	
 	/**
 	 * Get the Native CRS;
 	 */
