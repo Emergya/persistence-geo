@@ -50,20 +50,23 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
  * Folder DAO Hibernate Implementation
  * 
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
- *
+ * 
  */
 @SuppressWarnings("unchecked")
 @Repository("folderEntityDao")
-public class FolderEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractFolderEntity, Long> implements FolderEntityDao {
+public class FolderEntityDaoHibernateImpl extends
+		GenericHibernateDAOImpl<AbstractFolderEntity, Long> implements
+		FolderEntityDao {
 
 	@Resource
 	private Instancer instancer;
 
 	@Autowired
-    public void init(SessionFactory sessionFactory) {
-        super.init(sessionFactory);
-		this.persistentClass = (Class<AbstractFolderEntity>) instancer.createFolder().getClass();
-    }
+	public void init(SessionFactory sessionFactory) {
+		super.init(sessionFactory);
+		this.persistentClass = (Class<AbstractFolderEntity>) instancer
+				.createFolder().getClass();
+	}
 
 	/**
 	 * Create a new folder in the system
@@ -80,25 +83,26 @@ public class FolderEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstra
 	}
 
 	/**
-	 * Get a folders list by the folder name 
+	 * Get a folders list by the folder name
 	 * 
 	 * @param <code>folderName</code>
 	 * 
-	 * @return Entities list associated with the folder name or null if not found 
+	 * @return Entities list associated with the folder name or null if not
+	 *         found
 	 */
 	public List<AbstractFolderEntity> getFolders(String folderName) {
 		return findByCriteria(Restrictions.eq("name", folderName));
 	}
 
 	/**
-	 * Delete a folder by the folder identifier 
+	 * Delete a folder by the folder identifier
 	 * 
 	 * @param <code>folderID</code>
 	 * 
 	 */
 	public void deleteFolder(Long folderID) {
 		AbstractFolderEntity entity = findById(folderID, false);
-		if(entity != null){
+		if (entity != null) {
 			getHibernateTemplate().delete(entity);
 		}
 	}
@@ -108,12 +112,13 @@ public class FolderEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstra
 	 * 
 	 * @param <code>names</code>
 	 * 
-	 * @return Entities list associated with the names folders list or null if not found 
+	 * @return Entities list associated with the names folders list or null if
+	 *         not found
 	 */
 	public List<AbstractFolderEntity> findByName(List<String> names) {
 		List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
-		if(names != null){
-			for(String name: names){
+		if (names != null) {
+			for (String name : names) {
 				folderList.addAll(getFolders(name));
 			}
 		}
@@ -122,15 +127,16 @@ public class FolderEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstra
 
 	@Override
 	public AbstractFolderEntity findRootByUser(Long idUser) {
-		return (AbstractFolderEntity) getSession().createCriteria(persistentClass)
-				.add(Restrictions.isNull("parent"))
-				.createAlias("user", "user")
+		return (AbstractFolderEntity) getSession()
+				.createCriteria(persistentClass)
+				.add(Restrictions.isNull("parent")).createAlias("user", "user")
 				.add(Restrictions.eq("user.id", idUser)).uniqueResult();
 	}
 
 	@Override
 	public AbstractFolderEntity findRootByGroup(Long idGroup) {
-		return (AbstractFolderEntity) getSession().createCriteria(persistentClass)
+		return (AbstractFolderEntity) getSession()
+				.createCriteria(persistentClass)
 				.add(Restrictions.isNull("parent"))
 				.createAlias("authority", "authority")
 				.add(Restrictions.eq("authority.id", idGroup)).uniqueResult();
@@ -141,113 +147,119 @@ public class FolderEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstra
 		return getSession().createCriteria(persistentClass)
 				.createAlias("parent", "parent")
 				.add(Restrictions.eq("parent.id", parentFolder))
-				.addOrder(Order.asc("name"))
-				.list();
+				.addOrder(Order.asc("name")).list();
 	}
-	
+
 	private static String ZONE = "zone";
 	private static String PARENT = "parent";
 
 	/**
 	 * Get all channel folders filtered
 	 * 
-	 * @param inZone indicates if obtain channel folders with a zone. If this parameter is null only obtain not zoned channels
-	 * @param idZone filter by zone. Obtain only channels of the zone identified by <code>idZone</code>
+	 * @param inZone
+	 *            indicates if obtain channel folders with a zone. If this
+	 *            parameter is null only obtain not zoned channels
+	 * @param idZone
+	 *            filter by zone. Obtain only channels of the zone identified by
+	 *            <code>idZone</code>
 	 * 
 	 * @return folder list
 	 */
-	public List<AbstractFolderEntity> getChannelFolders(Boolean inZone, Long idZone){
+	public List<AbstractFolderEntity> getChannelFolders(Boolean inZone,
+			Long idZone) {
 		Criteria criteria = getSession().createCriteria(persistentClass);
-		//FIXME: remove this fixme when merge
-		if(inZone != null){ 
-			if(inZone){
+		// FIXME: remove this fixme when merge
+		if (inZone != null) {
+			if (inZone) {
 				criteria.add(Restrictions.isNotNull(ZONE));
-			}else{
+			} else {
 				criteria.add(Restrictions.isNull(ZONE));
 			}
 		}
-		if(idZone != null){
-			criteria.createAlias(ZONE, ZONE)
-			.add(Restrictions.eq(ZONE + ".id", idZone));
+		if (idZone != null) {
+			criteria.createAlias(ZONE, ZONE).add(
+					Restrictions.eq(ZONE + ".id", idZone));
 		}
 		// only parent folders
 		criteria.add(Restrictions.isNull(PARENT));
-		
+
 		return criteria.list();
 	}
 
-    /**
-     * Get a folders list by zones. If zoneId is NULL returns all the
-     * folder not associated to any zone.
-     *
-     * @params <code>zoneId</code>
-     *
-     * @return Entities list associated with the zoneId or null if not found
-     */
+	/**
+	 * Get a folders list by zones. If zoneId is NULL returns all the folder not
+	 * associated to any zone.
+	 * 
+	 * @params <code>zoneId</code>
+	 * 
+	 * @return Entities list associated with the zoneId or null if not found
+	 */
 	@Override
-    public List<AbstractFolderEntity> findByZone(Long zoneId) {
-        List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
-        folderList.addAll(
-            getSession().createCriteria(persistentClass)
+	public List<AbstractFolderEntity> findByZone(Long zoneId) {
+		List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
+		folderList.addAll(getSession().createCriteria(persistentClass)
 				.createAlias("zone", "zone")
-                .add(Restrictions.eq("zone.id", zoneId)).list()
-        );
-        return folderList;
-    }
+				.add(Restrictions.eq("zone.id", zoneId)).list());
+		return folderList;
+	}
 
-    /**
-     * Get a folders list by zones with an specific parent. If zoneId is NULL
-     * returns all the folder not associated to any zone. If parentId is NULL
-     * the returned folders are root folders.
-     *
-     * @params <code>zoneId</code>
-     * @params <code>parentId</code>
-     *
-     * @return Entities list associated with the zoneId or null if not found
-     */
+	/**
+	 * Get a folders list by zones with an specific parent. If zoneId is NULL
+	 * returns all the folder not associated to any zone. If parentId is NULL
+	 * the returned folders are root folders.
+	 * 
+	 * @params <code>zoneId</code>
+	 * @params <code>parentId</code>
+	 * 
+	 * @return Entities list associated with the zoneId or null if not found
+	 */
 	@Override
-    public List<AbstractFolderEntity> findByZone(Long zoneId, Long parentId) {
-        List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
-        Criteria criteria = getSession().createCriteria(persistentClass)
-			.createAlias("zone", "zone")
-            .add(Restrictions.eq("zone.id", zoneId));
-        if (parentId == null) {
+	public List<AbstractFolderEntity> findByZone(Long zoneId, Long parentId) {
+		List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
+		Criteria criteria = getSession().createCriteria(persistentClass)
+				.createAlias("zone", "zone")
+				.add(Restrictions.eq("zone.id", zoneId));
+		if (parentId == null) {
 			criteria.add(Restrictions.isNull("parent"));
-        } else {
+		} else {
 			criteria.createAlias("parent", "parent");
 			criteria.add(Restrictions.eq("parent.id", parentId));
-        }
-        folderList.addAll(criteria.list());
-        return folderList;
-    }
+		}
+		folderList.addAll(criteria.list());
+		return folderList;
+	}
 
 	/**
 	 * Get all channel folders filtered
 	 * 
-	 * @param inZone indicates if obtain channel folders with a zone. If this parameter is null only obtain not zoned channels
-	 * @param idZone filter by zone. Obtain only channels of the zone identified by <code>idZone</code>
-     * @param <code>isEnabled</code>
+	 * @param inZone
+	 *            indicates if obtain channel folders with a zone. If this
+	 *            parameter is null only obtain not zoned channels
+	 * @param idZone
+	 *            filter by zone. Obtain only channels of the zone identified by
+	 *            <code>idZone</code>
+	 * @param <code>isEnabled</code>
 	 * 
 	 * @return folder list
 	 */
-	public List<AbstractFolderEntity> getChannelFolders(Boolean inZone, Long idZone, Boolean isEnable){
+	public List<AbstractFolderEntity> getChannelFolders(Boolean inZone,
+			Long idZone, Boolean isEnable) {
 		Criteria criteria = getSession().createCriteria(persistentClass);
-		//FIXME: remove this fixme when merge
-		if(inZone != null){
-			if(inZone){
+		// FIXME: remove this fixme when merge
+		if (inZone != null) {
+			if (inZone) {
 				criteria.add(Restrictions.isNotNull(ZONE));
-			}else{
+			} else {
 				criteria.add(Restrictions.isNull(ZONE));
 			}
 		}
-		if(idZone != null){
-			criteria.createAlias(ZONE, ZONE)
-			.add(Restrictions.eq(ZONE + ".id", idZone));
+		if (idZone != null) {
+			criteria.createAlias(ZONE, ZONE).add(
+					Restrictions.eq(ZONE + ".id", idZone));
 		}
-		if(isEnable != null
-				&& isEnable){
+		if (isEnable != null && isEnable) {
 			criteria.add(Restrictions.eq("enabled", isEnable));
-		}else if(isEnable != null){
+		} else if (isEnable != null) {
 			Disjunction dis = Restrictions.disjunction();
 			dis.add(Restrictions.isNull("enabled"));
 			dis.add(Restrictions.eq("enabled", Boolean.FALSE));
@@ -256,75 +268,74 @@ public class FolderEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstra
 		// only parent folders
 		criteria.add(Restrictions.isNull(PARENT));
 		criteria.addOrder(Order.asc("name"));
-		
+
 		return criteria.list();
-		
+
 	}
 
-    /**
-     * Get a folders list by zones. If zoneId is NULL returns all the
-     * folder not associated to any zone.
-     *
-     * @param <code>zoneId</code>
-     * @param <code>isEnabled</code>
-     *
-     * @return Entities list associated with the zoneId or null if not found
-     */
-    public List<AbstractFolderEntity> findByZone(Long zoneId, Boolean isEnable){
-        List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
+	/**
+	 * Get a folders list by zones. If zoneId is NULL returns all the folder not
+	 * associated to any zone.
+	 * 
+	 * @param <code>zoneId</code>
+	 * @param <code>isEnabled</code>
+	 * 
+	 * @return Entities list associated with the zoneId or null if not found
+	 */
+	public List<AbstractFolderEntity> findByZone(Long zoneId, Boolean isEnable) {
+		List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
 		Criteria criteria = getSession().createCriteria(persistentClass)
 				.createAlias("zone", "zone")
 				.add(Restrictions.eq("zone.id", zoneId));
-		if(isEnable != null
-				&& isEnable){
+		if (isEnable != null && isEnable) {
 			criteria.add(Restrictions.eq("enabled", isEnable));
-		}else if(isEnable != null){
+		} else if (isEnable != null) {
 			Disjunction dis = Restrictions.disjunction();
 			dis.add(Restrictions.isNull("enabled"));
 			dis.add(Restrictions.eq("enabled", Boolean.FALSE));
 			criteria.add(dis);
 		}
-        folderList.addAll(criteria.list());
-        return folderList;
-    }
+		folderList.addAll(criteria.list());
+		return folderList;
+	}
 
-    /**
-     * Get a folders list by zones with an specific parent. If zoneId is NULL
-     * returns all the folder not associated to any zone. If parentId is NULL
-     * the returned folders are root folders.
-     *
-     * @param <code>zoneId</code>
-     * @param <code>parentId</code>
-     * @param <code>isEnabled</code>
-     *
-     * @return Entities list associated with the zoneId or null if not found
-     */
-    public List<AbstractFolderEntity> findByZone(Long zoneId, Long parentId, Boolean isEnable){
-        List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
-        Criteria criteria = getSession().createCriteria(persistentClass);
-        
-        if (zoneId != null) {
-			criteria.createAlias("zone", "zone")
-            .add(Restrictions.eq("zone.id", zoneId));
-        }
-			
-        if (parentId == null) {
+	/**
+	 * Get a folders list by zones with an specific parent. If zoneId is NULL
+	 * returns all the folder not associated to any zone. If parentId is NULL
+	 * the returned folders are root folders.
+	 * 
+	 * @param <code>zoneId</code>
+	 * @param <code>parentId</code>
+	 * @param <code>isEnabled</code>
+	 * 
+	 * @return Entities list associated with the zoneId or null if not found
+	 */
+	public List<AbstractFolderEntity> findByZone(Long zoneId, Long parentId,
+			Boolean isEnable) {
+		List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
+		Criteria criteria = getSession().createCriteria(persistentClass);
+
+		if (zoneId != null) {
+			criteria.createAlias("zone", "zone").add(
+					Restrictions.eq("zone.id", zoneId));
+		}
+
+		if (parentId == null) {
 			criteria.add(Restrictions.isNull("parent"));
-        } else {
+		} else {
 			criteria.createAlias("parent", "parent");
 			criteria.add(Restrictions.eq("parent.id", parentId));
-        }
-		if(isEnable != null
-				&& isEnable){
+		}
+		if (isEnable != null && isEnable) {
 			criteria.add(Restrictions.eq("enabled", isEnable));
-		}else if(isEnable != null){
+		} else if (isEnable != null) {
 			Disjunction dis = Restrictions.disjunction();
 			dis.add(Restrictions.isNull("enabled"));
 			dis.add(Restrictions.eq("enabled", Boolean.FALSE));
 			criteria.add(dis);
 		}
-        folderList.addAll(criteria.list());
-        return folderList;	
-    }
+		folderList.addAll(criteria.list());
+		return folderList;
+	}
 
 }

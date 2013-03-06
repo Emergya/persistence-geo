@@ -3,9 +3,11 @@
  */
 package com.emergya.persistenceGeo.utils;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -25,6 +27,7 @@ public class FileUtils {
 
 	private static final Log LOG = LogFactory.getLog(FileUtils.class);
 	private static final String PUNTO = ".";
+	public static byte[] MAGIC = { 'P', 'K', 0x3, 0x4 };
 
 	/**
 	 * Create a temporal file
@@ -160,6 +163,34 @@ public class FileUtils {
 
 		return result;
 
+	}
+
+	/**
+	 * Comprueba si un {@link InputStream} es un ZIP. Para ello debe empezar por
+	 * el MagicNumber de los archivos ZIP.
+	 * 
+	 * @param in
+	 * @return <code>true</code> si el InputStream es un ZIP, <code>false</code>
+	 *         en caso contrario.
+	 */
+	public static boolean checkIfInputStreamIsZip(InputStream in) {
+		boolean isZip = true;
+		if (!in.markSupported()) {
+			in = new BufferedInputStream(in);
+		}
+		try {
+			in.mark(MAGIC.length);
+			for (int i = 0; i < MAGIC.length; i++) {
+				if (MAGIC[i] != (byte) in.read()) {
+					isZip = false;
+					break;
+				}
+			}
+			in.reset();
+		} catch (IOException e) {
+			isZip = false;
+		}
+		return isZip;
 	}
 
 }
