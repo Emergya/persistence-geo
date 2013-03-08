@@ -53,7 +53,6 @@ public class FolderDto extends AbstractDto implements Serializable, Cloneable{
 	protected String name;
 	protected Boolean enabled;
 	protected Boolean isChannel;
-	protected Boolean isPlain;
 	protected Date createDate;
 	protected Date updateDate;
 	protected Long idParent;
@@ -63,6 +62,7 @@ public class FolderDto extends AbstractDto implements Serializable, Cloneable{
 	
 	protected List<FolderDto> folderList;
     protected Long zoneId;
+    protected Long idFolderType;
 
 	/**
 	 * @return the id
@@ -88,12 +88,7 @@ public class FolderDto extends AbstractDto implements Serializable, Cloneable{
 	public Boolean getIsChannel() {
 		return isChannel;
 	}
-	/**
-	 * @return the es_instrumento_planificacion
-	 */
-	public Boolean getIsPlain() {
-		return isPlain;
-	}
+	
 	/**
 	 * @return the fechaCreacion
 	 */
@@ -119,6 +114,12 @@ public class FolderDto extends AbstractDto implements Serializable, Cloneable{
 		return zoneId;
 	}
 	/**
+	 * @return the folder type
+	 */
+	public Long getIdFolderType() {
+		return idFolderType;
+	}
+	/**
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
@@ -142,12 +143,7 @@ public class FolderDto extends AbstractDto implements Serializable, Cloneable{
 	public void setIsChannel(Boolean es_canal) {
 		this.isChannel = es_canal;
 	}
-	/**
-	 * @param es_instrumento_planificacion the es_instrumento_planificacion to set
-	 */
-	public void setIsPlain(Boolean es_instrumento_planificacion) {
-		this.isPlain = es_instrumento_planificacion;
-	}
+	
 	/**
 	 * @param fechaCreacion the fechaCreacion to set
 	 */
@@ -221,6 +217,12 @@ public class FolderDto extends AbstractDto implements Serializable, Cloneable{
 	public void setOrder(Integer order) {
 		this.order = order;
 	}
+	/**
+	 * @param folder type
+	 */
+	public void setIdFolderType(Long idFolderType) {
+		this.idFolderType = idFolderType;
+	}
 	
 	/** 
 	 * Clone folder (id is always nulled)
@@ -238,8 +240,7 @@ public class FolderDto extends AbstractDto implements Serializable, Cloneable{
 				: null;
 		result.isChannel = this.isChannel != null ? new Boolean(this.isChannel)
 				: null;
-		result.isPlain = this.isChannel != null ? new Boolean(this.isChannel)
-				: null;
+		// TODO folder type
 		result.createDate = this.createDate != null ? (Date) this.createDate
 				.clone() : null;
 		result.updateDate = this.updateDate != null ? (Date) this.updateDate

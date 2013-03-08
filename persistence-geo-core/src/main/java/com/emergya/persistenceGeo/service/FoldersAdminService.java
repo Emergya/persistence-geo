@@ -42,6 +42,13 @@ import com.emergya.persistenceGeo.dto.FolderDto;
 public interface FoldersAdminService extends AbstractService{
 	
 	/**
+	 * 
+	 * 
+	 * 
+	 */
+	public static final Long DEFAULT_FOLDER_TYPE = new Long(1);
+	
+	/**
 	 * Get root folder for a user
 	 * 
 	 * @return root folder

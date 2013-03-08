@@ -96,4 +96,9 @@ public interface Instancer {
 	
 	
 	public AbstractRulePropertyEntity createRulePropertyEntity();
+	
+	/**
+	 * @return new folder type entity
+	 */
+	public AbstractFolderTypeEntity createFolderType();
 }

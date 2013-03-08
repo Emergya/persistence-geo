@@ -63,8 +63,7 @@ public class TreeFolderDto extends FolderDto implements Treeable {
 				: null;
 		this.isChannel = origin.isChannel != null ? new Boolean(
 				origin.isChannel) : null;
-		this.isPlain = origin.isChannel != null ? new Boolean(origin.isChannel)
-				: null;
+		this.idFolderType = origin.idFolderType != null ? new Long(origin.idFolderType) : null;
 		this.createDate = origin.createDate != null ? (Date) origin.createDate
 				.clone() : null;
 		this.updateDate = origin.updateDate != null ? (Date) origin.updateDate

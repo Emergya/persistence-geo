@@ -49,7 +49,6 @@ public abstract class AbstractFolderEntity extends AbstractEntity {
 	protected String name;
 	protected Boolean enabled;
 	protected Boolean isChannel;
-	protected Boolean isPlain;
 	protected Date createDate;
 	protected Date updateDate;
 	protected AbstractZoneEntity zone;
@@ -57,6 +56,7 @@ public abstract class AbstractFolderEntity extends AbstractEntity {
 	protected AbstractAuthorityEntity authority;
 	protected AbstractFolderEntity parent;
 	protected Integer folderOrder;
+	protected AbstractFolderTypeEntity folderType;
 
 	public AbstractFolderEntity(){
 		
@@ -79,10 +79,6 @@ public abstract class AbstractFolderEntity extends AbstractEntity {
 	 * @return the enabled
 	 */
 	public abstract Boolean getEnabled();
-	/**
-	 * @return the isPlain
-	 */
-	public abstract Boolean getIsPlain();
 	/**
 	 * @return the isChannel
 	 */
@@ -116,12 +112,16 @@ public abstract class AbstractFolderEntity extends AbstractEntity {
 	 */
 	public abstract Integer getFolderOrder();
 	/**
+	 * @return the folder type
+	 */
+	public abstract AbstractFolderTypeEntity getFolderType();
+	
+	/**
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 	/**
 	 * @param order the order to set
 	 */
@@ -148,13 +148,6 @@ public abstract class AbstractFolderEntity extends AbstractEntity {
 	 */
 	public void setIsChannel(Boolean isChannel) {
 		this.isChannel = isChannel;
-	}
-
-	/**
-	 * @param isPlain the isPlain to set
-	 */
-	public void setIsPlain(Boolean isPlain) {
-		this.isPlain = isPlain;
 	}
 
 	/**
@@ -197,5 +190,12 @@ public abstract class AbstractFolderEntity extends AbstractEntity {
 	 */
 	public void setParent(AbstractFolderEntity parent) {
 		this.parent = parent;
+	}
+	
+	/**
+	 * @param folderType the folder type to set
+	 */
+	public void setFolderType(AbstractFolderTypeEntity folderType) {
+		this.folderType = folderType;
 	}
 }

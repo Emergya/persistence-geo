@@ -42,6 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.emergya.persistenceGeo.dao.AbstractGenericDao;
 import com.emergya.persistenceGeo.dao.AuthorityEntityDao;
 import com.emergya.persistenceGeo.dao.FolderEntityDao;
+import com.emergya.persistenceGeo.dao.FolderTypeEntityDao;
 import com.emergya.persistenceGeo.dao.GenericDAO;
 import com.emergya.persistenceGeo.dao.LayerEntityDao;
 import com.emergya.persistenceGeo.dao.UserEntityDao;
@@ -78,9 +79,12 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
 	private AuthorityEntityDao authDao;
 	@Resource
 	private ZoneEntityDao zoneDao;
+	@Resource
+	private FolderTypeEntityDao folderTypeDao;
 	
 	@Resource
 	private LayerAdminService layerAdminService;
+
 
 	public FoldersAdminServiceImpl(){
 		super();
@@ -384,6 +388,12 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
                     && entity.getZone().getId() != null) {
                 dto.setZoneId((Long) entity.getZone().getId());
             }
+            
+            // Folder Type
+            if(entity.getFolderType() != null
+            		&& entity.getFolderType().getId() != null){
+            	dto.setIdFolderType(entity.getFolderType().getId());
+            }
 		}
 		return dto;
 	}
@@ -422,6 +432,11 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
 			// Zone
             if (dto.getZoneId() != null) {
                 entity.setZone(zoneDao.findById(dto.getZoneId(), false));
+            }
+            
+            // Folder Type
+            if(dto.getIdFolderType() != null){
+            	entity.setFolderType(folderTypeDao.findById(dto.getIdFolderType(), false));
             }
 		}
 		return entity;

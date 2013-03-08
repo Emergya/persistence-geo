@@ -89,11 +89,6 @@ public class FolderEntity extends AbstractFolderEntity {
 		return isChannel;
 	}
 
-	@Column(name = "is_plain")
-	public Boolean getIsPlain() {
-		return isPlain;
-	}
-
 	@Column(name = "create_date")
 	public Date getCreateDate() {
 		return createDate;
@@ -141,5 +136,12 @@ public class FolderEntity extends AbstractFolderEntity {
 	@Override
 	public void setId(Serializable id) {
 		this.id = (Long) id;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY,
+			cascade = CascadeType.MERGE)
+	@JoinColumn(name="folder_type_id")
+	public FolderTypeEntity getFolderType() {
+		return (FolderTypeEntity) folderType;
 	}
 }
