@@ -48,10 +48,14 @@ import com.emergya.persistenceGeo.dao.LayerEntityDao;
 import com.emergya.persistenceGeo.dao.UserEntityDao;
 import com.emergya.persistenceGeo.dao.ZoneEntityDao;
 import com.emergya.persistenceGeo.dto.FolderDto;
+import com.emergya.persistenceGeo.dto.FolderTypeDto;
 import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractFolderTypeEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
+import com.emergya.persistenceGeo.model.FolderEntity;
+import com.emergya.persistenceGeo.model.FolderTypeEntity;
 import com.emergya.persistenceGeo.service.FoldersAdminService;
 import com.emergya.persistenceGeo.service.LayerAdminService;
 
@@ -446,6 +450,74 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
 	protected GenericDAO<AbstractFolderEntity, Long> getDao() {
 		return folderDao;
 	}
+	/**
+	 * @return List<FolderTypeDto>
+	 * 			Devuelve la lista de todos los folder types
+	 */
+	public List<FolderTypeDto> getAllFolderType() {
+		List<FolderTypeDto> dtoList = new LinkedList<FolderTypeDto>();
+		List<AbstractFolderTypeEntity> entityList = folderTypeDao.findAll();
+		if(entityList != null){
+			for(AbstractFolderTypeEntity e: entityList){
+				dtoList.add(entityToDto(e));
+			}
+		}
+		return dtoList;
+	}
 	
+	/**
+	 * @param <code>excluded</code>
+	 * 
+	 * @return List<FolderTypeDto>
+	 * 			Devuelve la lista de todos los folder types excluyendo los del excluded
+	 */
+	public List<FolderTypeDto> getIPTtFolderType(String[] excluded) {
+		List<FolderTypeDto> dtoList = new LinkedList<FolderTypeDto>();
+		List<AbstractFolderTypeEntity> entityList = folderTypeDao.findAll();
+		int[] indexToRemove = new int[excluded.length];
+		if(entityList != null){
+			for(int i=0; i<entityList.size(); i++){
+				for(int j=0; j<excluded.length; j++){
+					if(excluded[j].equals(entityList.get(i).getType())){
+						indexToRemove[j] = i;
+					}
+				}
+			}
+			for(int el=0; el<indexToRemove.length; el++){
+				entityList.remove(indexToRemove[el]);
+			}
+			for(AbstractFolderTypeEntity e: entityList){
+				dtoList.add(entityToDto(e));
+			}
+		}
+		return dtoList;
+	}
 	
+	/**
+	 * Convierte de FolderTypeEntity a FolderTypeDto
+	 * 
+	 * @param user
+	 * @return
+	 */
+	protected FolderTypeDto entityToDto(AbstractFolderTypeEntity folderType) {
+		FolderTypeDto dto = null;
+		if (folderType != null) {
+			dto = new FolderTypeDto();
+			dto.setId(folderType.getId());
+			dto.setType(folderType.getType());
+		}
+		return dto;
+	}
+	
+	public List<FolderDto> findFoldersByType(Long typeId){
+		List<FolderDto> dtoList = new LinkedList<FolderDto>();
+		List<AbstractFolderEntity> dtoTemp = new LinkedList<AbstractFolderEntity>();
+		if(typeId != null){
+			dtoTemp = folderDao.findByType(typeId);
+			for(AbstractFolderEntity f: dtoTemp){
+				dtoList.add(entityToDto(f));
+			}
+		}
+		return dtoList;
+	}
 }

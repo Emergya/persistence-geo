@@ -49,4 +49,12 @@ public class FolderTypeDto implements Serializable, Cloneable {
 		return type;
 	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 }

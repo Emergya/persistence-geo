@@ -655,4 +655,40 @@ public class RestFoldersAdminController implements Serializable{
 
 		return result;
     }
+	
+	/**
+	 * Returns all the folders of a specific folder type
+	 * 
+	 * @param zone Zone the folder belongs to
+     * @param parent Folder parent id
+	 *
+	 * @return JSON file with success
+	 */
+	@RequestMapping(value = "/persistenceGeo/loadFoldersByFoldersType",
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	public @ResponseBody
+	Map<String, Object> loadFoldersByFoldersType(@RequestParam(value="type", required=true) String typeId,
+            @RequestParam(value="parent", required=false) String parentId) {
+
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<FolderDto> folders = null;
+
+		try {
+
+            if (parentId == null) {
+                folders = (List<FolderDto>) foldersAdminService.findFoldersByType(new Long(typeId));
+            } else {
+                //folders = (List<FolderDto>) foldersAdminService.findByZone(new Long(zoneId), new Long(parentId), Boolean.TRUE);
+            }
+			result.put(SUCCESS, true);
+
+		} catch (Exception e) {
+			result.put(SUCCESS, false);
+		}
+
+		result.put(RESULTS, folders != null ? folders.size() : 0);
+		result.put(ROOT, folders != null ? folders : ListUtils.EMPTY_LIST);
+
+		return result;
+    }
 }
