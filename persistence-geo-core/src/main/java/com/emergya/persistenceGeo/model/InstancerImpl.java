@@ -38,6 +38,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractLayerPropertyEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractLayerTypeEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractMapConfigurationEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractResourceEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractRuleEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractRulePropertyEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
@@ -105,6 +106,10 @@ public class InstancerImpl implements Instancer {
 	
 	public AbstractRulePropertyEntity createRulePropertyEntity(){
 		return new RulePropertyEntity();
+	}
+	
+	public AbstractResourceEntity createResourceEntity(){
+		return new ResourceEntity();
 	}
 
 	public AbstractFolderTypeEntity createFolderType() {
