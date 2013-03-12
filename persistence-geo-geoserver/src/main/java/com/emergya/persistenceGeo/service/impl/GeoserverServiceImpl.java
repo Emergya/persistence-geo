@@ -208,14 +208,13 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.emergya.persistenceGeo.service.GeoserverService#unpublishGsDbLayer
+	 * com.emergya.persistenceGeo.service.GeoserverService#unpublishGsLayer
 	 * (boolean)
 	 */
 	@Override
-	public boolean unpublishGsDbLayer(String workspaceName, String layerName,
-			boolean deletePostgisTable) {
+	public boolean unpublishGsLayer(String workspaceName, String layerName) {
 		if (LOG.isInfoEnabled()) {
-			LOG.info("Unpublishig geoserver database layer");
+			LOG.info("Unpublishig geoserver layer");
 		}
 		boolean result = false;
 		result = gsDao.deletePostgisFeatureTye(workspaceName, workspaceName

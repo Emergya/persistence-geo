@@ -42,8 +42,7 @@ public interface GeoserverService {
 
 	public boolean deleteGsWorkspace(String workspaceName);
 
-	public boolean unpublishGsDbLayer(String workspaceName, String dbLayer,
-			boolean deletePostgisTable);
+	public boolean unpublishGsLayer(String workspaceName, String layer);
 
 	boolean publishGsDbLayer(String workspaceName, String table_name,
 			String layerName, String title, BoundingBox nativeBoundingBox, GeometryType type);
