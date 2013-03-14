@@ -31,6 +31,7 @@ package com.emergya.persistenceGeo.web;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,6 +60,7 @@ import com.emergya.persistenceGeo.service.LayerAdminService;
 import com.emergya.persistenceGeo.service.UserAdminService;
 import com.emergya.persistenceGeo.utils.FolderStyle;
 import com.emergya.persistenceGeo.utils.FoldersUtils;
+import com.google.common.base.Strings;
 
 /**
  * Rest controller to admin and load foders
@@ -106,6 +108,13 @@ public class RestFoldersAdminController implements Serializable {
 	 * {@link RestFoldersAdminController#loadFoldersById(String, String)}
 	 */
 	public static final String ONLY_NOT_CHANNEL_MARK = "ONLY_NOT_CHANNEL_MARK";
+	
+	
+	/**
+	 * Filter to show subfolder's layers in 
+	 * {@link RestFoldersAdminController#loadFoldersById(String, String)}
+	 */
+	public static final String RECURSIVE_FOLDER_LAYERS_MARK = "RECURSIVE_FOLDER_LAYERS_MARK";
 
 	/**
 	 * Filter to show layers in channel tree
@@ -118,6 +127,8 @@ public class RestFoldersAdminController implements Serializable {
 	 * {@link RestFoldersAdminController#loadChannels(String)}
 	 */
 	public static final String HIDE_IPT_CHANNELS = "HIDE_IPT_CHANNELS";
+	
+	
 
 	/**
 	 * This method loads layers.json related with a folder
@@ -527,44 +538,73 @@ public class RestFoldersAdminController implements Serializable {
 			@RequestParam(value = "filter", required = false) String filter) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<Treeable> tree = null;
-		try {
-			if (idFolder != null) {
-				Long folderId = new Long(idFolder);
-				tree = new LinkedList<Treeable>();
-
-				// add folders
-				List<FolderDto> childrenFolders = foldersAdminService
-						.findByZone(null, folderId, Boolean.TRUE);
-				if (childrenFolders != null && !childrenFolders.isEmpty()) {
-					for (FolderDto subRes : childrenFolders) {
-						tree.add((Treeable) FoldersUtils.getFolderDecorator()
-								.applyStyle(subRes, FolderStyle.NORMAL));
-					}
-				}
-
-				// add layers
-				Boolean isChannel = null;
-				if (ONLY_CHANNEL_MARK.equals(filter)) {
-					isChannel = Boolean.TRUE;
-				} else if (ONLY_NOT_CHANNEL_MARK.equals(filter)) {
-					isChannel = Boolean.FALSE;
-				}
-				List<LayerDto> previusLayers = layerAdminService
-						.getLayersByFolder(folderId, isChannel, Boolean.TRUE);
-				for (LayerDto subRes : previusLayers) {
-					tree.add(new TreeNode(subRes, true));
-				}
-			}
+		
+		List<String> filters;
+		if(!Strings.isNullOrEmpty(filter)){
+			filters = Arrays.asList(filter.split(","));
+		} else {
+			filters = new LinkedList<String>();
+		}
+		
+		boolean onlyChannelMark = filters.contains(ONLY_CHANNEL_MARK);
+		boolean onlyNotChannelMark = filters.contains(ONLY_NOT_CHANNEL_MARK);
+		boolean recursiveLoadMark = filters.contains(RECURSIVE_FOLDER_LAYERS_MARK);
+			
+		// add layers
+		Boolean isChannel = null;
+		if (onlyChannelMark) {
+			isChannel = Boolean.TRUE;
+		} else if (onlyNotChannelMark) {
+			isChannel = Boolean.FALSE;
+		}
+		
+		if (idFolder == null) {
 			result.put(SUCCESS, true);
+			return result;
+		}
+		
+		try {
+			
+			Long folderId = new Long(idFolder);
+			tree = new LinkedList<Treeable>();
+			
+			
+			loadLayersInTree(folderId, isChannel, recursiveLoadMark, tree);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.put(SUCCESS, false);
+			return result;
 		}
 
+		result.put(SUCCESS, true);
 		result.put(RESULTS, tree != null ? tree.size() : 0);
 		result.put(ROOT, tree);
 
 		return result;
+	}
+	
+	private void loadLayersInTree(
+			Long folderId,  Boolean isChannel, boolean recursive, List<Treeable> tree) {
+		// add folders
+		List<FolderDto> childrenFolders = foldersAdminService
+				.findByZone(null, folderId, Boolean.TRUE);
+		if (childrenFolders != null && !childrenFolders.isEmpty()) {
+			for (FolderDto subRes : childrenFolders) {
+				if(!recursive) {
+					tree.add((Treeable) FoldersUtils.getFolderDecorator()
+							.applyStyle(subRes, FolderStyle.NORMAL));
+				} else {
+					loadLayersInTree(subRes.getId(), isChannel, true, tree);
+				}						
+			}
+		}
+		
+		List<LayerDto> previusLayers = layerAdminService
+				.getLayersByFolder(folderId, isChannel, Boolean.TRUE);
+		for (LayerDto subRes : previusLayers) {
+			tree.add(new TreeNode(subRes, true));
+		}
 	}
 
 	/**
