@@ -31,8 +31,17 @@ package com.emergya.persistenceGeo.dao.impl;
 import it.geosolutions.geoserver.rest.GeoServerRESTManager;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
+import it.geosolutions.geoserver.rest.HTTPUtils;
+import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.CoverageStoreExtension;
+import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.DataStoreExtension;
+import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.DataStoreType;
+import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.ParameterConfigure;
+import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.StoreType;
+import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.UploadMethod;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
+import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
+import it.geosolutions.geoserver.rest.encoder.coverage.GSCoverageEncoder;
 import it.geosolutions.geoserver.rest.encoder.datastore.GSPostGISDatastoreEncoder;
 import it.geosolutions.geoserver.rest.manager.GeoServerRESTStoreManager;
 
@@ -44,6 +53,8 @@ import java.net.URI;
 import java.net.URL;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -442,12 +453,14 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 
 	@Override
 	public boolean publishGeoTIFF(String workspace, String storeName,
-			File geotiff) {
+			File geotiff, String crs) {
 		GeoServerRESTPublisher gsPublisher;
 		boolean result = false;
 		try {
 			gsPublisher = getPublisher();
-			result = gsPublisher.publishGeoTIFF(workspace, storeName, geotiff);
+			//result = gsPublisher.publishGeoTIFF(workspace, storeName, geotiff);
+			result =gsPublisher.publishGeoTIFF(workspace, storeName, storeName, geotiff,
+					crs, ProjectionPolicy.FORCE_DECLARED, DEFAULT_RASTER_STYLE, null);
 		} catch (FileNotFoundException e) {
 			LOG.error("File not found", e);
 			throw new GeoserverException("File not found", e);
@@ -457,4 +470,5 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		}
 		return result;
 	}
+
 }
