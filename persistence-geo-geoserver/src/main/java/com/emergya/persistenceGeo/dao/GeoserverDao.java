@@ -164,4 +164,38 @@ public interface GeoserverDao {
 	public boolean publishGeoTIFF(String workspace, String storeName,
 			File geotif, String crs);
 
+	/**
+	 * Upload and publish a Image Mosaic raster.
+	 * 
+	 * @param workspace
+	 *            workspace to use
+	 * @param storeName
+	 *            the store name to be used or created.
+	 * @param imageFile
+	 *            a ZIP file with an image mosaic.
+	 * @param crs
+	 *            the image mosaic coordinates system.
+	 * @return <code>true</code> if success.
+	 * 
+	 */
+	boolean publishImageMosaic(String workspaceName, String storeName,
+			File imageFile, String crs);
+
+	/**
+	 * Upload and publish a World Image raster.
+	 * 
+	 * @param workspace
+	 *            workspace to use
+	 * @param storeName
+	 *            the store name to be used or created.
+	 * @param imageFile
+	 *            a ZIP file with a World Image.
+	 * @param crs
+	 *            the image mosaic coordinates system.
+	 * @return <code>true</code> if success.
+	 * 
+	 */
+	boolean publishWorldImage(String workspaceName, String storeName,
+			File imageFile, String crs);
+
 }

@@ -30,15 +30,11 @@ package com.emergya.persistenceGeo.dao.impl;
 
 import it.geosolutions.geoserver.rest.GeoServerRESTManager;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
-import it.geosolutions.geoserver.rest.GeoServerRESTReader;
-import it.geosolutions.geoserver.rest.HTTPUtils;
-import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.CoverageStoreExtension;
-import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.DataStoreExtension;
-import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.DataStoreType;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.ParameterConfigure;
-import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.StoreType;
-import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.UploadMethod;
+import it.geosolutions.geoserver.rest.GeoServerRESTReader;
+import it.geosolutions.geoserver.rest.decoder.RESTCoverageList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
+import it.geosolutions.geoserver.rest.decoder.utils.NameLinkElem;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
 import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
 import it.geosolutions.geoserver.rest.encoder.coverage.GSCoverageEncoder;
@@ -54,7 +50,6 @@ import java.net.URL;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -458,9 +453,11 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		boolean result = false;
 		try {
 			gsPublisher = getPublisher();
-			//result = gsPublisher.publishGeoTIFF(workspace, storeName, geotiff);
-			result =gsPublisher.publishGeoTIFF(workspace, storeName, storeName, geotiff,
-					crs, ProjectionPolicy.FORCE_DECLARED, DEFAULT_RASTER_STYLE, null);
+			// result = gsPublisher.publishGeoTIFF(workspace, storeName,
+			// geotiff);
+			result = gsPublisher.publishGeoTIFF(workspace, storeName,
+					storeName, geotiff, crs, ProjectionPolicy.FORCE_DECLARED,
+					DEFAULT_RASTER_STYLE, null);
 		} catch (FileNotFoundException e) {
 			LOG.error("File not found", e);
 			throw new GeoserverException("File not found", e);
@@ -471,4 +468,85 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		return result;
 	}
 
+	@Override
+	public boolean publishImageMosaic(String workspaceName, String storeName,
+			File zipFile, String crs) {
+		boolean result = false;
+		GeoServerRESTPublisher gsPublisher;
+		try {
+			gsPublisher = getPublisher();
+			NameValuePair paramName = new NameValuePair("coverageName", storeName);
+			result = gsPublisher.publishImageMosaic(workspaceName, storeName,
+					zipFile, ParameterConfigure.FIRST, paramName);
+		} catch (FileNotFoundException e) {
+			LOG.error("File not found", e);
+			throw new GeoserverException("File not found", e);
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
+
+		return result;
+	}
+
+	@Override
+	public boolean publishWorldImage(String workspaceName, String storeName,
+			File zipFile, String crs) {
+		boolean result = false;
+		GeoServerRESTPublisher gsPublisher;
+		
+		try {
+			gsPublisher = getPublisher();
+			NameValuePair paramName = new NameValuePair("coverageName", storeName);
+			result = gsPublisher.publishWorldImage(workspaceName, storeName,
+					zipFile, ParameterConfigure.FIRST, paramName);
+			
+			// If coverage has been created configure the layer with the SRS passed.
+			if (result) {
+				result = configureCoverage(workspaceName, storeName, crs,
+						result, gsPublisher);
+
+			}
+		} catch (FileNotFoundException e) {
+			LOG.error("File not found", e);
+			throw new GeoserverException("File not found", e);
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
+
+		return result;
+	}
+
+	/**
+	 * @param workspaceName
+	 * @param storeName
+	 * @param crs
+	 * @param result
+	 * @param gsPublisher
+	 * @return
+	 * @throws MalformedURLException
+	 */
+	private boolean configureCoverage(String workspaceName, String storeName,
+			String crs, boolean result, GeoServerRESTPublisher gsPublisher)
+			throws MalformedURLException {
+		GeoServerRESTReader gsReader = getReader();
+		RESTCoverageList coverageList = gsReader.getCoverages(workspaceName, storeName);
+		for (NameLinkElem coverage : coverageList) {
+			String coverageName = coverage.getName();
+			GSCoverageEncoder enc = new GSCoverageEncoder();
+			enc.setName(coverageName);
+			enc.setSRS(crs);
+			enc.setNativeCRS(crs);
+			enc.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+			
+			result = gsPublisher.configureCoverage(enc, workspaceName, storeName);
+			
+			if (!result) {
+				break;
+			}
+			
+		}
+		return result;
+	}
 }

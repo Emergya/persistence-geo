@@ -124,8 +124,20 @@ public class GeoserverGsManagerDaoImplTest {
 		String crs = "EPSG:32719";
 		
 		result = geoserverDao.publishGeoTIFF(WORKSPACE_NAME, storeName, geotiff, crs);
-		assertTrue("Couldn't create a GeoTIFF layer", result);
-		
-		
+		assertTrue("Couldn't create a GeoTIFF layer", result);		
 	}
+	@Test
+	public void publishWorldImage() {
+		createGsWorkspaceTest();
+		boolean result;
+		File imageFile = new File(this.getClass().getResource("/ficheros/raster/testWorldImage.zip").getFile());
+		
+		String storeName = "imageWorld_" + System.currentTimeMillis();
+		String crs = "EPSG:32719";
+		
+		result = geoserverDao.publishWorldImage(WORKSPACE_NAME, storeName, imageFile, crs);
+		assertTrue("Couldn't create a WorldImage layer", result);
+	}
+	
+	
 }

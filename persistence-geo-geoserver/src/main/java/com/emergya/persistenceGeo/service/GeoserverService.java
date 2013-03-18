@@ -88,4 +88,36 @@ public interface GeoserverService {
 	 */
 	public boolean publishGeoTIFF(String workspace, String storeName,
 			File geotiff, String crs);
+
+	/**
+	 * Upload and publish an Image Mosaic image.
+	 * 
+	 * @param workspaceName
+	 *            workspace to use.
+	 * @param storeName
+	 *            the store name to be used or created.
+	 * @param imageFile
+	 *            a ZIP file with an image mosaic.
+	 * @param crs
+	 *            the image mosaic coordinates system.
+	 * @return <code>true</code> if success.
+	 */
+	public boolean publishImageMosaic(String workspaceName, String storeName,
+			File imageFile, String crs);
+
+	/**
+	 * Upload and publish an World Image file.
+	 * 
+	 * @param workspaceName
+	 *            workspace to use.
+	 * @param storeName
+	 *            the store name to be used or created.
+	 * @param imageFile
+	 *            a ZIP file with an World Image.
+	 * @param crs
+	 *            the world image coordinates system.
+	 * @return <code>true</code> if success.
+	 */
+	public boolean publishWorldImage(String workspaceName,
+			String storeName, File imageFile, String crs);
 }
