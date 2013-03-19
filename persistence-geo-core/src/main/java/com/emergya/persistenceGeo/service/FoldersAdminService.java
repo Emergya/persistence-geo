@@ -32,6 +32,7 @@ package com.emergya.persistenceGeo.service;
 import java.util.List;
 
 import com.emergya.persistenceGeo.dto.FolderDto;
+import com.emergya.persistenceGeo.dto.FolderTypeDto;
 
 /**
  * Layers Administration Interface 
@@ -40,6 +41,12 @@ import com.emergya.persistenceGeo.dto.FolderDto;
  *
  */
 public interface FoldersAdminService extends AbstractService{
+	
+	/**
+	 * Default folder type that represent a simple folder
+	 * 
+	 */
+	public static final Long DEFAULT_FOLDER_TYPE = new Long(1);
 	
 	/**
 	 * Get root folder for a user
@@ -157,5 +164,27 @@ public interface FoldersAdminService extends AbstractService{
      * @return Entities list associated with the zoneId or null if not found
      */
     public List<FolderDto> findByZone(Long zoneId, Long parentId, Boolean isEnabled);
+    
+    /**
+	 * @return List<FolderTypeDto>
+	 * 			Devuelve la lista de todos los folder types
+	 */
+	public List<FolderTypeDto> getAllFolderType();
+	
+	/**
+	 * @param <code>excluded</code>
+	 * 
+	 * @return List<FolderTypeDto>
+	 * 			Devuelve la lista de todos los folder types excluyendo los de excluded
+	 */
+	public List<FolderTypeDto> getIPTtFolderType(String[] excluded);
+	
+	/**
+	 * @param <code>typeId</code>
+	 * 
+	 * @return List<FolderTypeDto>
+	 * 			Devuelve la lista de todos los folder types que tenga el mismo type id
+	 */
+	public List<FolderDto> findFoldersByType(Long typeId);
     
 }

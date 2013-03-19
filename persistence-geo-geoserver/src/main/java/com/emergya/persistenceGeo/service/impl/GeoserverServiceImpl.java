@@ -28,8 +28,6 @@
  */
 package com.emergya.persistenceGeo.service.impl;
 
-import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
-
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -58,6 +56,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 
 	@Resource
 	private GeoserverDao gsDao;
+
 	/**
 	 * @return the gsDao
 	 */
@@ -66,7 +65,8 @@ public class GeoserverServiceImpl implements GeoserverService {
 	}
 
 	/**
-	 * @param gsDao the gsDao to set
+	 * @param gsDao
+	 *            the gsDao to set
 	 */
 	public void setGsDao(GeoserverDao gsDao) {
 		this.gsDao = gsDao;
@@ -80,7 +80,8 @@ public class GeoserverServiceImpl implements GeoserverService {
 	}
 
 	/**
-	 * @param namespaceBaseUrl the namespaceBaseUrl to set
+	 * @param namespaceBaseUrl
+	 *            the namespaceBaseUrl to set
 	 */
 	public void setNamespaceBaseUrl(String namespaceBaseUrl) {
 		this.namespaceBaseUrl = namespaceBaseUrl;
@@ -175,11 +176,13 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 */
 	@Override
 	public boolean publishGsDbLayer(String workspaceName, String tableName,
-			String layerName, String title,  BoundingBox nativeBoundingBox, GeometryType geomType) {
+			String layerName, String title, BoundingBox nativeBoundingBox,
+			GeometryType geomType) {
 		if (LOG.isInfoEnabled()) {
 			LOG.info("Publising geoserver database layer [workspaceName="
-					+ workspaceName + ", tableName=" + tableName + ", layerName="
-					+ layerName + ", geometryType=" + geomType + "]");
+					+ workspaceName + ", tableName=" + tableName
+					+ ", layerName=" + layerName + ", geometryType=" + geomType
+					+ "]");
 		}
 		boolean result = false;
 		GsFeatureDescriptor fd = new GsFeatureDescriptor();
@@ -187,15 +190,14 @@ public class GeoserverServiceImpl implements GeoserverService {
 		fd.setTitle(title);
 		fd.setName(layerName);
 		fd.setSRS(nativeBoundingBox.getSrs());
-		fd.setNativeCRS(nativeBoundingBox.getSrs());		
+		fd.setNativeCRS(nativeBoundingBox.getSrs());
 		if (nativeBoundingBox != null) {
 			fd.setNativeBoundingBox(nativeBoundingBox);
 			fd.setLatLonBoundingBox(nativeBoundingBox);
 		}
-		
+
 		GsLayerDescriptor ld = new GsLayerDescriptor();
-		
-		
+
 		ld.setType(geomType);
 		String datastoreName = workspaceName + DATASTORE_SUFFIX;
 		result = gsDao
@@ -207,15 +209,13 @@ public class GeoserverServiceImpl implements GeoserverService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.emergya.persistenceGeo.service.GeoserverService#unpublishGsDbLayer
+	 * @see com.emergya.persistenceGeo.service.GeoserverService#unpublishGsLayer
 	 * (boolean)
 	 */
 	@Override
-	public boolean unpublishGsDbLayer(String workspaceName, String layerName,
-			boolean deletePostgisTable) {
+	public boolean unpublishGsLayer(String workspaceName, String layerName) {
 		if (LOG.isInfoEnabled()) {
-			LOG.info("Unpublishig geoserver database layer");
+			LOG.info("Unpublishig geoserver layer");
 		}
 		boolean result = false;
 		result = gsDao.deletePostgisFeatureTye(workspaceName, workspaceName
@@ -223,16 +223,24 @@ public class GeoserverServiceImpl implements GeoserverService {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.emergya.persistenceGeo.service.GeoserverService#existsLayerInWorkspace(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.emergya.persistenceGeo.service.GeoserverService#existsLayerInWorkspace
+	 * (java.lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean existsLayerInWorkspace(String layerName, String workspaceName) {	
+	public boolean existsLayerInWorkspace(String layerName, String workspaceName) {
 		return gsDao.existsLayerInWorkspace(layerName, workspaceName);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.emergya.persistenceGeo.service.GeoserverService#createDatastoreJndi(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.emergya.persistenceGeo.service.GeoserverService#createDatastoreJndi
+	 * (java.lang.String, java.lang.String)
 	 */
 	@Override
 	public boolean createDatastoreJndi(String workspaceName,
@@ -242,10 +250,21 @@ public class GeoserverServiceImpl implements GeoserverService {
 
 	@Override
 	public boolean publishGeoTIFF(String workspace, String storeName,
-			File geotiff) {
-		return gsDao.publishGeoTIFF(workspace, storeName, geotiff);
+			File geotiff, String crs) {
+		return gsDao.publishGeoTIFF(workspace, storeName, geotiff, crs);
 	}
-	
-	
+
+	@Override
+	public boolean publishImageMosaic(String workspaceName, String storeName,
+			File imageFile, String crs) {
+		return gsDao.publishImageMosaic(workspaceName, storeName, imageFile, crs);
+	}
+
+	@Override
+	public boolean publishWorldImage(String workspaceName, String storeName,
+			File imageFile, String crs) {
+		
+	 return gsDao.publishWorldImage(workspaceName, storeName, imageFile, crs);
+	}
 
 }

@@ -169,4 +169,14 @@ public interface FolderEntityDao extends GenericDAO<AbstractFolderEntity, Long> 
 	 * @return folder list
 	 */
 	public List<AbstractFolderEntity> getChannelFolders(Boolean inZone, Long idZone, Boolean isEnable);
+	
+	/**
+     * Get a folders list by types.
+     *
+     * @param <code>zoneId</code>
+     * @param <code>isEnabled</code>
+     *
+     * @return Entities list associated with the zoneId or null if not found
+     */
+    public List<AbstractFolderEntity> findByType(Long typeId);
 }

@@ -42,15 +42,20 @@ import org.springframework.transaction.annotation.Transactional;
 import com.emergya.persistenceGeo.dao.AbstractGenericDao;
 import com.emergya.persistenceGeo.dao.AuthorityEntityDao;
 import com.emergya.persistenceGeo.dao.FolderEntityDao;
+import com.emergya.persistenceGeo.dao.FolderTypeEntityDao;
 import com.emergya.persistenceGeo.dao.GenericDAO;
 import com.emergya.persistenceGeo.dao.LayerEntityDao;
 import com.emergya.persistenceGeo.dao.UserEntityDao;
 import com.emergya.persistenceGeo.dao.ZoneEntityDao;
 import com.emergya.persistenceGeo.dto.FolderDto;
+import com.emergya.persistenceGeo.dto.FolderTypeDto;
 import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractFolderTypeEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractLayerEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
+import com.emergya.persistenceGeo.model.FolderEntity;
+import com.emergya.persistenceGeo.model.FolderTypeEntity;
 import com.emergya.persistenceGeo.service.FoldersAdminService;
 import com.emergya.persistenceGeo.service.LayerAdminService;
 
@@ -78,9 +83,12 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
 	private AuthorityEntityDao authDao;
 	@Resource
 	private ZoneEntityDao zoneDao;
+	@Resource
+	private FolderTypeEntityDao folderTypeDao;
 	
 	@Resource
 	private LayerAdminService layerAdminService;
+
 
 	public FoldersAdminServiceImpl(){
 		super();
@@ -328,7 +336,6 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
 			dto = new FolderDto();
 			dto.setEnabled(entity.getEnabled());
 			dto.setIsChannel(entity.getIsChannel());
-			dto.setIsPlain(entity.getIsPlain());
 			dto.setUpdateDate(entity.getUpdateDate());
 			dto.setCreateDate(entity.getCreateDate());
 			dto.setId(entity.getId());
@@ -385,6 +392,12 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
                     && entity.getZone().getId() != null) {
                 dto.setZoneId((Long) entity.getZone().getId());
             }
+            
+            // Folder Type
+            if(entity.getFolderType() != null
+            		&& entity.getFolderType().getId() != null){
+            	dto.setIdFolderType(entity.getFolderType().getId());
+            }
 		}
 		return dto;
 	}
@@ -403,7 +416,6 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
 			entity.setCreateDate(dto.getCreateDate());
 			entity.setName(dto.getName());
 			entity.setFolderOrder(dto.getOrder());
-			entity.setIsPlain(dto.getIsPlain());
 			
 			//TODO: Children if is necesary
 			
@@ -425,6 +437,11 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
             if (dto.getZoneId() != null) {
                 entity.setZone(zoneDao.findById(dto.getZoneId(), false));
             }
+            
+            // Folder Type
+            if(dto.getIdFolderType() != null){
+            	entity.setFolderType(folderTypeDao.findById(dto.getIdFolderType(), false));
+            }
 		}
 		return entity;
 	}
@@ -433,6 +450,74 @@ public class FoldersAdminServiceImpl extends AbstractServiceImpl<FolderDto, Abst
 	protected GenericDAO<AbstractFolderEntity, Long> getDao() {
 		return folderDao;
 	}
+	/**
+	 * @return List<FolderTypeDto>
+	 * 			Devuelve la lista de todos los folder types
+	 */
+	public List<FolderTypeDto> getAllFolderType() {
+		List<FolderTypeDto> dtoList = new LinkedList<FolderTypeDto>();
+		List<AbstractFolderTypeEntity> entityList = folderTypeDao.findAll();
+		if(entityList != null){
+			for(AbstractFolderTypeEntity e: entityList){
+				dtoList.add(entityToDto(e));
+			}
+		}
+		return dtoList;
+	}
 	
+	/**
+	 * @param <code>excluded</code>
+	 * 
+	 * @return List<FolderTypeDto>
+	 * 			Devuelve la lista de todos los folder types excluyendo los del excluded
+	 */
+	public List<FolderTypeDto> getIPTtFolderType(String[] excluded) {
+		List<FolderTypeDto> dtoList = new LinkedList<FolderTypeDto>();
+		List<AbstractFolderTypeEntity> entityList = folderTypeDao.findAll();
+		int[] indexToRemove = new int[excluded.length];
+		if(entityList != null){
+			for(int i=0; i<entityList.size(); i++){
+				for(int j=0; j<excluded.length; j++){
+					if(excluded[j].equals(entityList.get(i).getType())){
+						indexToRemove[j] = i;
+					}
+				}
+			}
+			for(int el=0; el<indexToRemove.length; el++){
+				entityList.remove(indexToRemove[el]);
+			}
+			for(AbstractFolderTypeEntity e: entityList){
+				dtoList.add(entityToDto(e));
+			}
+		}
+		return dtoList;
+	}
 	
+	/**
+	 * Convierte de FolderTypeEntity a FolderTypeDto
+	 * 
+	 * @param user
+	 * @return
+	 */
+	protected FolderTypeDto entityToDto(AbstractFolderTypeEntity folderType) {
+		FolderTypeDto dto = null;
+		if (folderType != null) {
+			dto = new FolderTypeDto();
+			dto.setId(folderType.getId());
+			dto.setType(folderType.getType());
+		}
+		return dto;
+	}
+	
+	public List<FolderDto> findFoldersByType(Long typeId){
+		List<FolderDto> dtoList = new LinkedList<FolderDto>();
+		List<AbstractFolderEntity> dtoTemp = new LinkedList<AbstractFolderEntity>();
+		if(typeId != null){
+			dtoTemp = folderDao.findByType(typeId);
+			for(AbstractFolderEntity f: dtoTemp){
+				dtoList.add(entityToDto(f));
+			}
+		}
+		return dtoList;
+	}
 }

@@ -2,6 +2,9 @@ package com.emergya.persistenceGeo.dao.impl;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.io.File;
+
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList.RESTShortWorkspace;
 
@@ -110,4 +113,31 @@ public class GeoserverGsManagerDaoImplTest {
 				DATASTORE_NAME, TABLE_NAME);
 		assertTrue("Couldn't delete test feature type", result);
 	}
+	
+	@Test
+	public void publishGeoTIFFTest() {
+		createGsWorkspaceTest();
+		boolean result;
+		
+		File geotiff = new File(this.getClass().getResource("/ficheros/raster/prueba_rcgua.tif").getFile());
+		String storeName = "testGeotiff_" + System.currentTimeMillis();
+		String crs = "EPSG:32719";
+		
+		result = geoserverDao.publishGeoTIFF(WORKSPACE_NAME, storeName, geotiff, crs);
+		assertTrue("Couldn't create a GeoTIFF layer", result);		
+	}
+	@Test
+	public void publishWorldImage() {
+		createGsWorkspaceTest();
+		boolean result;
+		File imageFile = new File(this.getClass().getResource("/ficheros/raster/testWorldImage.zip").getFile());
+		
+		String storeName = "imageWorld_" + System.currentTimeMillis();
+		String crs = "EPSG:32719";
+		
+		result = geoserverDao.publishWorldImage(WORKSPACE_NAME, storeName, imageFile, crs);
+		assertTrue("Couldn't create a WorldImage layer", result);
+	}
+	
+	
 }

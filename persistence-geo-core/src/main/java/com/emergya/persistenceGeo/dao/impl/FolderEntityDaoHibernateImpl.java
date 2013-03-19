@@ -334,8 +334,27 @@ public class FolderEntityDaoHibernateImpl extends
 			dis.add(Restrictions.eq("enabled", Boolean.FALSE));
 			criteria.add(dis);
 		}
-		folderList.addAll(criteria.list());
-		return folderList;
-	}
+
+        folderList.addAll(criteria.list());
+        return folderList;	
+    }
+    
+    /**
+     * Get a folders list by types.
+     *
+     * @param <code>zoneId</code>
+     * @param <code>isEnabled</code>
+     *
+     * @return Entities list associated with the zoneId or null if not found
+     */
+    public List<AbstractFolderEntity> findByType(Long typeId){
+    	List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
+    	Criteria criteria = getSession().createCriteria(persistentClass);
+    	if(typeId != null){
+    		criteria.add(Restrictions.eq("folderType.id", typeId));
+    	}
+    	folderList.addAll(criteria.list());
+    	return folderList;
+    }
 
 }

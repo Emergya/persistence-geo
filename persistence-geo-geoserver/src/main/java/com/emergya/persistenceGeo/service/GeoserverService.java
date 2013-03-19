@@ -42,11 +42,11 @@ public interface GeoserverService {
 
 	public boolean deleteGsWorkspace(String workspaceName);
 
-	public boolean unpublishGsDbLayer(String workspaceName, String dbLayer,
-			boolean deletePostgisTable);
+	public boolean unpublishGsLayer(String workspaceName, String layer);
 
 	boolean publishGsDbLayer(String workspaceName, String table_name,
-			String layerName, String title, BoundingBox nativeBoundingBox, GeometryType type);
+			String layerName, String title, BoundingBox nativeBoundingBox,
+			GeometryType type);
 
 	/**
 	 * Check if a layer with <code>layerName</code> exists in the workspace
@@ -60,9 +60,10 @@ public interface GeoserverService {
 	 *         in the workspace named <code>workspaceName</code>.
 	 */
 	public boolean existsLayerInWorkspace(String layerName, String workspaceName);
-	
+
 	/**
 	 * Create a Postgis datastore using a JNDI connection.
+	 * 
 	 * @param workspaceName
 	 *            the workspace where datastore will be created.
 	 * @param datastoreName
@@ -71,16 +72,52 @@ public interface GeoserverService {
 	 */
 	public boolean createDatastoreJndi(String workspaceName,
 			String datastoreName);
-	
+
 	/**
 	 * Upload and publish a GeoTIFF image.
-	 * @param workspace 
-	 * 			workspace to use
-	 * @param storeName 
-	 * 			the store name to be used or created.
-	 * @parama geotiff 
-	 * 			the GeoTIFF file.
+	 * 
+	 * @param workspace
+	 *            workspace to use.
+	 * @param storeName
+	 *            the store name to be used or created.
+	 * @param geotiff
+	 *            the GeoTIFF file.
+	 * @param crs
+	 *            the image native SRS.
 	 * @return <code>true</code> if success.
 	 */
-	public boolean publishGeoTIFF(String workspace, String storeName, File geotiff);
+	public boolean publishGeoTIFF(String workspace, String storeName,
+			File geotiff, String crs);
+
+	/**
+	 * Upload and publish an Image Mosaic image.
+	 * 
+	 * @param workspaceName
+	 *            workspace to use.
+	 * @param storeName
+	 *            the store name to be used or created.
+	 * @param imageFile
+	 *            a ZIP file with an image mosaic.
+	 * @param crs
+	 *            the image mosaic coordinates system.
+	 * @return <code>true</code> if success.
+	 */
+	public boolean publishImageMosaic(String workspaceName, String storeName,
+			File imageFile, String crs);
+
+	/**
+	 * Upload and publish an World Image file.
+	 * 
+	 * @param workspaceName
+	 *            workspace to use.
+	 * @param storeName
+	 *            the store name to be used or created.
+	 * @param imageFile
+	 *            a ZIP file with an World Image.
+	 * @param crs
+	 *            the world image coordinates system.
+	 * @return <code>true</code> if success.
+	 */
+	public boolean publishWorldImage(String workspaceName,
+			String storeName, File imageFile, String crs);
 }

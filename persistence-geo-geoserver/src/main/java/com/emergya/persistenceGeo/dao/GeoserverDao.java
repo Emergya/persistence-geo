@@ -28,13 +28,13 @@
  */
 package com.emergya.persistenceGeo.dao;
 
+import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
+
 import java.io.File;
 import java.net.URI;
 
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
-
-import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 
 /**
  * Dao para la consulta y modificación de datos en Geoserver.
@@ -43,6 +43,8 @@ import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
  * 
  */
 public interface GeoserverDao {
+
+	public static final String DEFAULT_RASTER_STYLE = "raster";
 
 	boolean createWorkspace(String name);
 
@@ -132,9 +134,10 @@ public interface GeoserverDao {
 	 *         in the workspace named <code>workspaceName</code>.
 	 */
 	boolean existsLayerInWorkspace(String layerName, String workspaceName);
-	
+
 	/**
 	 * Create a Postgis datastore using a JNDI connection.
+	 * 
 	 * @param workspaceName
 	 *            the workspace where datastore will be created.
 	 * @param datastoreName
@@ -143,17 +146,56 @@ public interface GeoserverDao {
 	 */
 	public boolean createDatastoreJndi(String workspaceName,
 			String datastoreName);
-	
+
 	/**
 	 * Upload and publish a GeoTIFF image.
-	 * @param workspace 
-	 * 			workspace to use
-	 * @param storeName 
-	 * 			the store name to be used or created.
-	 * @parama geotiff 
-	 * 			the GeoTIFF file.
+	 * 
+	 * @param workspace
+	 *            workspace to use
+	 * @param storeName
+	 *            the store name to be used or created.
+	 * @param geotiff
+	 *            the GeoTIFF file.
+	 * @param crs
+	 *            the image's native SRS.
 	 * @return <code>true</code> if success.
+	 * 
 	 */
-	public boolean publishGeoTIFF(String workspace, String storeName, File geotiff);
+	public boolean publishGeoTIFF(String workspace, String storeName,
+			File geotif, String crs);
+
+	/**
+	 * Upload and publish a Image Mosaic raster.
+	 * 
+	 * @param workspace
+	 *            workspace to use
+	 * @param storeName
+	 *            the store name to be used or created.
+	 * @param imageFile
+	 *            a ZIP file with an image mosaic.
+	 * @param crs
+	 *            the image mosaic coordinates system.
+	 * @return <code>true</code> if success.
+	 * 
+	 */
+	boolean publishImageMosaic(String workspaceName, String storeName,
+			File imageFile, String crs);
+
+	/**
+	 * Upload and publish a World Image raster.
+	 * 
+	 * @param workspace
+	 *            workspace to use
+	 * @param storeName
+	 *            the store name to be used or created.
+	 * @param imageFile
+	 *            a ZIP file with a World Image.
+	 * @param crs
+	 *            the image mosaic coordinates system.
+	 * @return <code>true</code> if success.
+	 * 
+	 */
+	boolean publishWorldImage(String workspaceName, String storeName,
+			File imageFile, String crs);
 
 }
