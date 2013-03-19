@@ -77,7 +77,7 @@ public class ZoneEntityDaoHibernateImplTest {
 		try {
 
             String zoneName = "zone1.test";
-            AbstractZoneEntity zone = zoneDao.createZone(zoneName);
+            zoneDao.createZone(zoneName);
 
 			List<AbstractZoneEntity> zones = zoneDao.getZones(zoneName);
 

@@ -31,6 +31,7 @@ package com.emergya.persistenceGeo.service;
 import java.io.File;
 
 import com.emergya.persistenceGeo.utils.BoundingBox;
+import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor.GeometryType;
 
 /**
@@ -120,4 +121,13 @@ public interface GeoserverService {
 	 */
 	public boolean publishWorldImage(String workspaceName,
 			String storeName, File imageFile, String crs);
+	
+	/**
+	 * Gets info about a coverage store.
+	 * @param workspaceName
+	 * @param coverageStoreName
+	 * @return
+	 */
+	public GsCoverageStoreData getCoverageStoreData(
+		String workspaceName, String coverageStoreName);
 }

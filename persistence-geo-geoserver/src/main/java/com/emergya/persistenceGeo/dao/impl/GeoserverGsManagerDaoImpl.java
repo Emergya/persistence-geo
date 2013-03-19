@@ -30,9 +30,11 @@ package com.emergya.persistenceGeo.dao.impl;
 
 import it.geosolutions.geoserver.rest.GeoServerRESTManager;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
+import it.geosolutions.geoserver.rest.HTTPUtils;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.ParameterConfigure;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.decoder.RESTCoverageList;
+import it.geosolutions.geoserver.rest.decoder.RESTCoverageStore;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.decoder.utils.NameLinkElem;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
@@ -52,12 +54,15 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.emergya.persistenceGeo.dao.GeoserverDao;
 import com.emergya.persistenceGeo.exceptions.GeoserverException;
 import com.emergya.persistenceGeo.utils.BoundingBox;
 import com.emergya.persistenceGeo.utils.GSFeatureTypeNativeNameEncoder;
+import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
 import com.emergya.persistenceGeo.utils.GsRestApiConfiguration;
@@ -549,4 +554,39 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		}
 		return result;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.emergya.persistenceGeo.dao.GeoserverDao#getCoverageStoreData()
+	 */
+	@Override
+	public GsCoverageStoreData getCoverageStoreData(
+			String workspaceName, String coverageStoreName) {
+		
+		
+		// We cant' use GeoServerRESTReader's getCoverageStore because
+		// it doesn't returns the stores file url and we need it.
+		  String url = "/rest/workspaces/" + workspaceName + "/coveragestores/" + coverageStoreName + ".xml";
+	        if (LOG.isDebugEnabled()) {
+	        	LOG.debug("### Retrieving CS from " + url);
+	        }
+	        return GsCoverageStoreData.build(load(url));
+	}
+	
+	private String load(String url) {
+		LOG.info("Loading from REST path " + url);
+		String baseurl = this.gsConfiguration.getServerUrl();
+		String username = this.gsConfiguration.getAdminUsername();
+		String password = this.gsConfiguration.getAdminPassword();
+        try {
+            String response = HTTPUtils.get(baseurl + url, username, password);
+            return response;
+        } catch (MalformedURLException ex) {
+        	LOG.warn("Bad URL", ex);
+        } 
+
+        return null;
+    } 
 }

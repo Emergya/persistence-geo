@@ -41,6 +41,7 @@ import com.emergya.persistenceGeo.dao.GeoserverDao;
 import com.emergya.persistenceGeo.exceptions.GeoserverException;
 import com.emergya.persistenceGeo.service.GeoserverService;
 import com.emergya.persistenceGeo.utils.BoundingBox;
+import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor.GeometryType;
@@ -267,4 +268,8 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 return gsDao.publishWorldImage(workspaceName, storeName, imageFile, crs);
 	}
 
+	@Override
+	public GsCoverageStoreData getCoverageStoreData(String workspaceName, String coverageStoreName) {
+		return gsDao.getCoverageStoreData(workspaceName, coverageStoreName);
+	}
 }
