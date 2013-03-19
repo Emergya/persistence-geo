@@ -33,6 +33,7 @@ import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import java.io.File;
 import java.net.URI;
 
+import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
 
@@ -198,4 +199,15 @@ public interface GeoserverDao {
 	boolean publishWorldImage(String workspaceName, String storeName,
 			File imageFile, String crs);
 
+	/**
+	 * Retrieves info about a coverage store.
+	 * 
+	 * @param workspaceName 
+	 * 				The workspace the store is associated to.
+	 * @param coverageStoreName 
+	 * 				The name of the coverage store whose info we want to retrieve.
+	 * @return A {@link GsCoverageStoreData} object if succesful or null if not.
+	 */
+	GsCoverageStoreData getCoverageStoreData(
+			String workspaceName, String coverageStoreName); 
 }
