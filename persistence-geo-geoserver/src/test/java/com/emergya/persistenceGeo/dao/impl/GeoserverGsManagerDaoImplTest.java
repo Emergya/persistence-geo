@@ -109,7 +109,7 @@ public class GeoserverGsManagerDaoImplTest {
 
 		createPostgisDatasourceTest();
 
-		result = geoserverDao.deletePostgisFeatureTye(WORKSPACE_NAME,
+		result = geoserverDao.deletePostgisFeatureType(WORKSPACE_NAME,
 				DATASTORE_NAME, TABLE_NAME);
 		assertTrue("Couldn't delete test feature type", result);
 	}

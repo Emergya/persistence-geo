@@ -120,7 +120,7 @@ public interface GeoserverDao {
 	 * @return <code>true</code> if the feature type has been successfully
 	 *         deleted. Otherwise return <code>false</code>.
 	 */
-	boolean deletePostgisFeatureTye(String workspaceName, String datastoreName,
+	boolean deletePostgisFeatureType(String workspaceName, String datastoreName,
 			String layerName);
 
 	/**
@@ -209,5 +209,16 @@ public interface GeoserverDao {
 	 * @return A {@link GsCoverageStoreData} object if succesful or null if not.
 	 */
 	GsCoverageStoreData getCoverageStoreData(
-			String workspaceName, String coverageStoreName); 
+			String workspaceName, String coverageStoreName);
+
+	/**
+	 * Removes a coverage store from the geoserver.
+	 * 
+	 * @param workspaceName
+	 * @param coverageStoreName
+	 * @return
+	 */
+	boolean deleteGsCoverageStore(String workspaceName, String coverageStoreName);
+
+	boolean deleteCoverageFeatureType(String workspaceName, String coverageLayer); 
 }

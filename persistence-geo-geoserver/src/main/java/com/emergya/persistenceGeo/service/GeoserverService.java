@@ -43,7 +43,7 @@ public interface GeoserverService {
 
 	public boolean deleteGsWorkspace(String workspaceName);
 
-	public boolean unpublishGsLayer(String workspaceName, String layer);
+	public boolean unpublishGsDbLayer(String workspaceName, String layer);
 
 	boolean publishGsDbLayer(String workspaceName, String table_name,
 			String layerName, String title, BoundingBox nativeBoundingBox,
@@ -130,4 +130,13 @@ public interface GeoserverService {
 	 */
 	public GsCoverageStoreData getCoverageStoreData(
 		String workspaceName, String coverageStoreName);
+	
+
+	/**
+	 * Unpublishes a layer stored in a coverage store from the geoserver.
+	 * @param workspaceName
+	 * @param coverageStoreName
+	 * @return
+	 */
+	public boolean unpublishGsCoverageLayer(String adminWorkspaceName, String tmpLayerName);
 }

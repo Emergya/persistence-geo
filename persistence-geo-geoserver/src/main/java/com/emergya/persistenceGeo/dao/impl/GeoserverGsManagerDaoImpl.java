@@ -397,7 +397,7 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	 * .lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean deletePostgisFeatureTye(String workspaceName,
+	public boolean deletePostgisFeatureType(String workspaceName,
 			String datastoreName, String layerName) {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Deleting Postgis Layer [workspace=" + workspaceName
@@ -420,6 +420,28 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		return result;
 	}
 
+	@Override
+	public boolean deleteCoverageFeatureType(String workspaceName, String coverageLayer) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Deleting Coverage Layer [workspace=" + workspaceName
+					+ ", datastore=" + coverageLayer + "]");
+		}
+		boolean result = false;
+		GeoServerRESTPublisher gsPublisher;
+
+		try {
+			gsPublisher = getPublisher();
+			result = gsPublisher.unpublishCoverage(workspaceName, coverageLayer, coverageLayer);
+
+		} catch (MalformedURLException murle) {
+			LOG.error("Malformed Geoserver REST API URL", murle);
+			throw new GeoserverException("Malformed Geoserver REST API URL",
+					murle);
+		}
+
+		return result;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -589,4 +611,17 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 
         return null;
     } 
+	
+	@Override
+	public boolean deleteGsCoverageStore(String workspaceName, String coverageStoreName) {
+		GeoServerRESTPublisher publisher;
+		try {
+			publisher = this.getPublisher();
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
+		
+		return publisher.removeCoverageStore(workspaceName, coverageStoreName, true);
+	}
 }

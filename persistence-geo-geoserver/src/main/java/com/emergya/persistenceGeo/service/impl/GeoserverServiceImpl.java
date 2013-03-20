@@ -214,12 +214,12 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * (boolean)
 	 */
 	@Override
-	public boolean unpublishGsLayer(String workspaceName, String layerName) {
+	public boolean unpublishGsDbLayer(String workspaceName, String layerName) {
 		if (LOG.isInfoEnabled()) {
 			LOG.info("Unpublishig geoserver layer");
 		}
 		boolean result = false;
-		result = gsDao.deletePostgisFeatureTye(workspaceName, workspaceName
+		result = gsDao.deletePostgisFeatureType(workspaceName, workspaceName
 				+ DATASTORE_SUFFIX, layerName);
 		return result;
 	}
@@ -271,5 +271,20 @@ public class GeoserverServiceImpl implements GeoserverService {
 	@Override
 	public GsCoverageStoreData getCoverageStoreData(String workspaceName, String coverageStoreName) {
 		return gsDao.getCoverageStoreData(workspaceName, coverageStoreName);
+	}
+	
+	@Override
+	public boolean unpublishGsCoverageLayer(
+			String workspaceName, String coverageLayer) {
+		
+		if(!gsDao.deleteCoverageFeatureType(workspaceName, coverageLayer)){
+			return false;
+		}
+		
+		if(!gsDao.deleteGsCoverageStore(workspaceName, coverageLayer)){
+			return false;
+		}
+		
+		return true;
 	}
 }
