@@ -62,6 +62,7 @@ import com.emergya.persistenceGeo.dao.GeoserverDao;
 import com.emergya.persistenceGeo.exceptions.GeoserverException;
 import com.emergya.persistenceGeo.utils.BoundingBox;
 import com.emergya.persistenceGeo.utils.GSFeatureTypeNativeNameEncoder;
+import com.emergya.persistenceGeo.utils.GsCoverageDetails;
 import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
@@ -79,6 +80,9 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	private static final Log LOG = LogFactory
 			.getLog(GeoserverGsManagerDaoImpl.class);
 
+	private static final String GET_COVERAGE_DETAILS_URL="/rest/workspaces/%s/coveragestores/%s/coverages/%s.xml";
+	private static final String GET_COVERAGE_STORE_DATA_URL="/rest/workspaces/%s/coveragestores/%s.xml";
+	
 	@Autowired
 	private GsRestApiConfiguration gsConfiguration;
 
@@ -421,7 +425,7 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	}
 
 	@Override
-	public boolean deleteCoverageFeatureType(String workspaceName, String coverageLayer) {
+	public boolean deleteCoverage(String workspaceName, String coverageLayer) {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Deleting Coverage Layer [workspace=" + workspaceName
 					+ ", datastore=" + coverageLayer + "]");
@@ -441,7 +445,7 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 
 		return result;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -521,14 +525,15 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			File zipFile, String crs) {
 		boolean result = false;
 		GeoServerRESTPublisher gsPublisher;
-		
+
 		try {
 			gsPublisher = getPublisher();
 			NameValuePair paramName = new NameValuePair("coverageName", storeName);
 			result = gsPublisher.publishWorldImage(workspaceName, storeName,
 					zipFile, ParameterConfigure.FIRST, paramName);
-			
-			// If coverage has been created configure the layer with the SRS passed.
+
+			// If coverage has been created configure the layer with the SRS
+			// passed.
 			if (result) {
 				result = configureCoverage(workspaceName, storeName, crs,
 						result, gsPublisher);
@@ -566,52 +571,50 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			enc.setSRS(crs);
 			enc.setNativeCRS(crs);
 			enc.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
-			
+
 			result = gsPublisher.configureCoverage(enc, workspaceName, storeName);
-			
+
 			if (!result) {
 				break;
 			}
-			
+
 		}
 		return result;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.emergya.persistenceGeo.dao.GeoserverDao#getCoverageStoreData()
+	 * @see com.emergya.persistenceGeo.dao.GeoserverDao#getCoverageStoreData()
 	 */
 	@Override
 	public GsCoverageStoreData getCoverageStoreData(
 			String workspaceName, String coverageStoreName) {
-		
-		
+
 		// We cant' use GeoServerRESTReader's getCoverageStore because
 		// it doesn't returns the stores file url and we need it.
-		  String url = "/rest/workspaces/" + workspaceName + "/coveragestores/" + coverageStoreName + ".xml";
-	        if (LOG.isDebugEnabled()) {
-	        	LOG.debug("### Retrieving CS from " + url);
-	        }
-	        return GsCoverageStoreData.build(load(url));
+		String url = String.format(GET_COVERAGE_STORE_DATA_URL,workspaceName, coverageStoreName);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("### Retrieving CS from " + url);
+		}
+		return GsCoverageStoreData.build(load(url));
 	}
-	
+
 	private String load(String url) {
 		LOG.info("Loading from REST path " + url);
 		String baseurl = this.gsConfiguration.getServerUrl();
 		String username = this.gsConfiguration.getAdminUsername();
 		String password = this.gsConfiguration.getAdminPassword();
-        try {
-            String response = HTTPUtils.get(baseurl + url, username, password);
-            return response;
-        } catch (MalformedURLException ex) {
-        	LOG.warn("Bad URL", ex);
-        } 
+		try {
+			String response = HTTPUtils.get(baseurl + url, username, password);
+			return response;
+		} catch (MalformedURLException ex) {
+			LOG.warn("Bad URL", ex);
+		}
 
-        return null;
-    } 
-	
+		return null;
+	}
+
 	@Override
 	public boolean deleteGsCoverageStore(String workspaceName, String coverageStoreName) {
 		GeoServerRESTPublisher publisher;
@@ -621,7 +624,21 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			LOG.error("Malformed Geoserver REST API URL", e);
 			throw new GeoserverException("Malformed Geoserver REST API URL", e);
 		}
-		
+
 		return publisher.removeCoverageStore(workspaceName, coverageStoreName, true);
+	}
+
+	@Override
+	public GsCoverageDetails getCoverageDetails(
+			String workspaceName, String coverageStoreName, String coverageName) {
+		// We cant' use GeoServerRESTReader's getCoverageStore because
+		// it doesn't returns the stores file url and we need it.
+		String url = String.format(
+				GET_COVERAGE_DETAILS_URL,
+				workspaceName, coverageStoreName, coverageName);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("### Retrieving CS from " + url);
+		}
+		return GsCoverageDetails.build(load(url));
 	}
 }

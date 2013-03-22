@@ -33,6 +33,7 @@ import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import java.io.File;
 import java.net.URI;
 
+import com.emergya.persistenceGeo.utils.GsCoverageDetails;
 import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
@@ -220,5 +221,21 @@ public interface GeoserverDao {
 	 */
 	boolean deleteGsCoverageStore(String workspaceName, String coverageStoreName);
 
-	boolean deleteCoverageFeatureType(String workspaceName, String coverageLayer); 
+	/**
+	 * Unpublishes a coverage layer from the geoserver.
+	 * @param workspaceName
+	 * @param coverageLayer
+	 * @return
+	 */
+	boolean deleteCoverage(String workspaceName, String coverageLayer);
+
+	/**
+	 * Gets the details of a coverage layer.
+	 * @param workspaceName
+	 * @param coverageStoreName
+	 * @param coverageName
+	 * @return
+	 */
+	GsCoverageDetails getCoverageDetails(
+			String workspaceName, String coverageStoreName, String coverageName); 
 }

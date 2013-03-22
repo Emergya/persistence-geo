@@ -31,6 +31,7 @@ package com.emergya.persistenceGeo.service;
 import java.io.File;
 
 import com.emergya.persistenceGeo.utils.BoundingBox;
+import com.emergya.persistenceGeo.utils.GsCoverageDetails;
 import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor.GeometryType;
 
@@ -134,9 +135,20 @@ public interface GeoserverService {
 
 	/**
 	 * Unpublishes a layer stored in a coverage store from the geoserver.
+	 * Also, it deletes the 
 	 * @param workspaceName
 	 * @param coverageStoreName
 	 * @return
 	 */
 	public boolean unpublishGsCoverageLayer(String adminWorkspaceName, String tmpLayerName);
+	
+	/**
+	 * Retrieves the details of a coverage store: bbox, projection, etc.
+	 * @param workspaceName
+	 * @param coverageStore
+	 * @param coverageName
+	 * @return
+	 */
+	public GsCoverageDetails getCoverageDetails(
+			String workspaceName, String coverageStore, String coverageName);
 }

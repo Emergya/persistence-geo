@@ -41,6 +41,7 @@ import com.emergya.persistenceGeo.dao.GeoserverDao;
 import com.emergya.persistenceGeo.exceptions.GeoserverException;
 import com.emergya.persistenceGeo.service.GeoserverService;
 import com.emergya.persistenceGeo.utils.BoundingBox;
+import com.emergya.persistenceGeo.utils.GsCoverageDetails;
 import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
@@ -277,7 +278,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	public boolean unpublishGsCoverageLayer(
 			String workspaceName, String coverageLayer) {
 		
-		if(!gsDao.deleteCoverageFeatureType(workspaceName, coverageLayer)){
+		if(!gsDao.deleteCoverage(workspaceName, coverageLayer)){
 			return false;
 		}
 		
@@ -286,5 +287,11 @@ public class GeoserverServiceImpl implements GeoserverService {
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public GsCoverageDetails getCoverageDetails(
+			String workspaceName, String coverageStore, String coverageName) {
+		return gsDao.getCoverageDetails(workspaceName, coverageStore, coverageName);
 	}
 }
