@@ -68,6 +68,8 @@ public class LayerDto extends AbstractDto implements Serializable, Cloneable {
 	protected Long folderId;
 	protected Map<String, String> properties;
 	protected Long authId;
+
+	private String layerTitle;
 	
 	public Long getId() {
 		return id;
@@ -247,6 +249,12 @@ public class LayerDto extends AbstractDto implements Serializable, Cloneable {
 		return cloned;
 	}
 	
+	public String getLayerTitle() {
+		return layerTitle;
+	}
 	
+	public void setLayerTitle(String title) {
+		this.layerTitle = title;		
+	}
 
 }

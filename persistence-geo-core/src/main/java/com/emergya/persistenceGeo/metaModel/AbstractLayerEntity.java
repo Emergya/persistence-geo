@@ -34,6 +34,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.Column;
+
 /**
  * Entidad de capa
  * 
@@ -52,6 +54,7 @@ public abstract class AbstractLayerEntity extends AbstractEntity implements Clon
 	protected Long id;
 	
 	protected String name;
+	protected String layerTitle;
 	protected String order;
 	protected AbstractLayerTypeEntity type;
 	protected String server_resource;
@@ -145,6 +148,8 @@ public abstract class AbstractLayerEntity extends AbstractEntity implements Clon
 	 */
 	public abstract List getStyleList();
 
+	public abstract String getLayerTitle();
+	
 	/**
 	 * @param id the id to set
 	 */
@@ -193,6 +198,11 @@ public abstract class AbstractLayerEntity extends AbstractEntity implements Clon
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
 	}
+	
+	public void setLayerTitle(String layerTitle) {
+		this.layerTitle = layerTitle;
+	}
+
 
 	/**
 	 * @param pertenece_a_canal the pertenece_a_canal to set

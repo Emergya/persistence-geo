@@ -245,4 +245,11 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 		return criteria.list();
 	}
 
+	@Override
+	public List<AbstractLayerEntity> getPublicLayers() {
+		Criteria crit = getSession().createCriteria(persistentClass);
+		crit.add(Restrictions.eq("publicized", true));
+		return crit.list();
+	}
+
 }

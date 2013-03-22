@@ -68,6 +68,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractRulePropertyEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
+import com.emergya.persistenceGeo.model.LayerEntity;
 import com.emergya.persistenceGeo.service.LayerAdminService;
 
 /**
@@ -460,6 +461,12 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 		return (List<LayerDto>) entitiesToDtos(layerDao.findByUserId(idUser));
 	}
 
+	@Override
+	@Cacheable("persistenceGeo")
+	public List<LayerDto> getPublicLayers() {		
+		return (List<LayerDto>) entitiesToDtos(layerDao.getPublicLayers());
+	}
+	
 	@Override
 	@Cacheable("persistenceGeo")
 	public List<LayerDto> getLayersByAuthority(Long id) {

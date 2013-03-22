@@ -147,4 +147,9 @@ public interface LayerEntityDao extends GenericDAO<AbstractLayerEntity, Long> {
 	public List<AbstractLayerEntity> getLayersByFolder(Long folderId,
 			Boolean isChannel);
 	
+	/**
+	 * Gets all the public layers.
+	 * @return
+	 */
+	public List<AbstractLayerEntity> getPublicLayers();
 }
