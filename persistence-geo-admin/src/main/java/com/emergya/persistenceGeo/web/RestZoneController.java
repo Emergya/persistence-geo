@@ -30,6 +30,7 @@
 package com.emergya.persistenceGeo.web;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.emergya.persistenceGeo.dto.ZoneDto;
 import com.emergya.persistenceGeo.service.ZoneAdminService;
+import com.google.common.collect.Maps;
 
 /**
  * Rest controller for zones
@@ -82,7 +84,7 @@ public class RestZoneController implements Serializable{
 			if(idZone == null){
 				zones = (List<ZoneDto>) zoneAdminService.findAllEnabled();
 			}else{
-				zones = (List<ZoneDto>) zoneAdminService.findByParent(Long.decode(idZone), Boolean.TRUE);
+				zones = (List<ZoneDto>) zoneAdminService.findByParent(Long.decode(idZone));
 			}
 			result.put(SUCCESS, true);
 		}catch (Exception e){
@@ -130,14 +132,25 @@ public class RestZoneController implements Serializable{
 	Map<String, Object> getZonesByParent(@RequestParam(value="parentId", required = true)Long parentId) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<ZoneDto> zones = null;
+		List<Map<String, Object>> zonesResult = null;
 		try {
-			zones = (List<ZoneDto>) zoneAdminService.findByParent(parentId, true);
+			zones = (List<ZoneDto>) zoneAdminService.findByParent(parentId);
+			zonesResult = new ArrayList<Map<String,Object>>(zones.size());
+			for (ZoneDto zone : zones) {
+				Map<String, Object> zoneAux = Maps.newHashMap();
+				zoneAux.put("id", zone.getId());
+				zoneAux.put("code", zone.getCode());
+				zoneAux.put("name", zone.getName());
+				zoneAux.put("type", zone.getType());
+				zoneAux.put("extension", zone.getExtension());
+				zonesResult.add(zoneAux);
+			}
 			result.put(SUCCESS, true);
 		} catch (Exception e) {
 			result.put(SUCCESS, false);
 		}
 		result.put(RESULTS, zones != null ? zones.size() : 0);
-		result.put(ROOT, zones != null ? zones : ListUtils.EMPTY_LIST);
+		result.put(ROOT, zones != null ? zonesResult : ListUtils.EMPTY_LIST);
 
 		return result;
 	}

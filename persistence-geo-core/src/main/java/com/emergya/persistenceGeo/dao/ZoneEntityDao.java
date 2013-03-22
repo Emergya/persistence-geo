@@ -80,11 +80,10 @@ public interface ZoneEntityDao extends GenericDAO<AbstractZoneEntity, Long> {
 	 * Find zone by id
 	 * 
 	 * @param idParent
-	 * @param isEnabled
 	 * 
 	 * @return zones
 	 */
-	public List<AbstractZoneEntity> findByParent(Long idParent, Boolean isEnabled);
+	public List<AbstractZoneEntity> findByParent(Long idParent);
 	
 	/**
 	 * Get all zones enabled

@@ -48,20 +48,23 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
  * Zone DAO Hibernate Implementation
  * 
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
- *
+ * 
  */
 @SuppressWarnings("unchecked")
 @Repository("zoneEntityDao")
-public class ZoneEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractZoneEntity, Long> implements ZoneEntityDao {
+public class ZoneEntityDaoHibernateImpl extends
+		GenericHibernateDAOImpl<AbstractZoneEntity, Long> implements
+		ZoneEntityDao {
 
 	@Resource
 	private Instancer instancer;
 
 	@Autowired
-    public void init(SessionFactory sessionFactory) {
-        super.init(sessionFactory);
-		this.persistentClass = (Class<AbstractZoneEntity>) instancer.createZone().getClass();
-    }
+	public void init(SessionFactory sessionFactory) {
+		super.init(sessionFactory);
+		this.persistentClass = (Class<AbstractZoneEntity>) instancer
+				.createZone().getClass();
+	}
 
 	/**
 	 * Create a new zone in the system
@@ -78,11 +81,11 @@ public class ZoneEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstract
 	}
 
 	/**
-	 * Get a zones list by the zone name 
+	 * Get a zones list by the zone name
 	 * 
 	 * @param <code>zoneName</code>
 	 * 
-	 * @return Entities list associated with the zone name or null if not found 
+	 * @return Entities list associated with the zone name or null if not found
 	 */
 	public List<AbstractZoneEntity> getZones(String zoneName) {
 		return findByCriteria(Restrictions.eq("name", zoneName));
@@ -90,9 +93,9 @@ public class ZoneEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstract
 
 	/**
 	 * Get a zones list by its type
-	 *
+	 * 
 	 * @param <code>zoneType</code>
-	 *
+	 * 
 	 * @return Entities list associated with the zone type or null if not found
 	 */
 	public List<AbstractZoneEntity> findByType(String zoneType) {
@@ -101,80 +104,81 @@ public class ZoneEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstract
 
 	/**
 	 * Delete a zone by the zone identifier
-	 *
+	 * 
 	 * @param <code>zoneID</code>
 	 * 
 	 */
 	public void deleteZone(Long zoneID) {
 		AbstractZoneEntity zoneEntity = findById(zoneID, false);
-		if(zoneEntity != null){
+		if (zoneEntity != null) {
 			getHibernateTemplate().delete(zoneEntity);
 		}
 	}
-	
+
 	/**
-	 * Get a zones list by the zone name 
+	 * Get a zones list by the zone name
 	 * 
 	 * @param <code>zoneName</code>
 	 * @param isEnabled
 	 * 
-	 * @return Entities list associated with the zone name or null if not found 
+	 * @return Entities list associated with the zone name or null if not found
 	 */
-	public List<AbstractZoneEntity> getZones(String zoneName, Boolean isEnabled){
+	public List<AbstractZoneEntity> getZones(String zoneName, Boolean isEnabled) {
 
-		Criteria criteria = getSession().createCriteria(persistentClass)
-				.add(Restrictions.eq("name", zoneName));
-		
-		if(isEnabled == null){
+		Criteria criteria = getSession().createCriteria(persistentClass).add(
+				Restrictions.eq("name", zoneName));
+
+		if (isEnabled == null) {
 			criteria.add(Restrictions.isNull("enabled"));
-		}else if(isEnabled){
+		} else if (isEnabled) {
 			criteria.add(Restrictions.eq("enabled", isEnabled));
-		}else{
+		} else {
 			Disjunction dis = Restrictions.disjunction();
 			dis.add(Restrictions.isNull("enabled"));
 			dis.add(Restrictions.eq("enabled", isEnabled));
 			criteria.add(dis);
 		}
-		
+
 		return criteria.list();
 	}
 
 	/**
 	 * Get a zones list by its type
-	 *
+	 * 
 	 * @param <code>zoneType</code>
 	 * @param isEnabled
-	 *
+	 * 
 	 * @return Entities list associated with the zone type or null if not found
 	 */
-	public List<AbstractZoneEntity> findByType(String zoneType, Boolean isEnabled){
+	public List<AbstractZoneEntity> findByType(String zoneType,
+			Boolean isEnabled) {
 
-		Criteria criteria = getSession().createCriteria(persistentClass)
-				.add(Restrictions.eq("type", zoneType));
-		
-		if(isEnabled == null){
+		Criteria criteria = getSession().createCriteria(persistentClass).add(
+				Restrictions.eq("type", zoneType));
+
+		if (isEnabled == null) {
 			criteria.add(Restrictions.isNull("enabled"));
-		}else if(isEnabled){
+		} else if (isEnabled) {
 			criteria.add(Restrictions.eq("enabled", isEnabled));
-		}else{
+		} else {
 			Disjunction dis = Restrictions.disjunction();
 			dis.add(Restrictions.isNull("enabled"));
 			dis.add(Restrictions.eq("enabled", isEnabled));
 			criteria.add(dis);
 		}
-		
+
 		return criteria.list();
 	}
-	
+
 	/**
 	 * Get all zones enabled
 	 * 
-	 * @return Entities 
+	 * @return Entities
 	 */
-	public List<AbstractZoneEntity> findAllEnabled(){
+	public List<AbstractZoneEntity> findAllEnabled() {
 		return findByCriteria(Restrictions.eq("enabled", Boolean.TRUE));
 	}
-	
+
 	/**
 	 * Find zone by id
 	 * 
@@ -183,23 +187,33 @@ public class ZoneEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstract
 	 * 
 	 * @return zones
 	 */
-	public List<AbstractZoneEntity> findByParent(Long idParent, Boolean isEnabled){
-		Criteria criteria = getSession().createCriteria(persistentClass)
-				.add(Restrictions.eq("id", idParent))
-				.createAlias("zoneList", "child");
-		
-		if(isEnabled == null){
-			criteria.add(Restrictions.isNull("enabled"));
-		}else if(isEnabled){
-			criteria.add(Restrictions.eq("enabled", isEnabled));
-		}else{
-			Disjunction dis = Restrictions.disjunction();
-			dis.add(Restrictions.isNull("enabled"));
-			dis.add(Restrictions.eq("enabled", isEnabled));
-			criteria.add(dis);
-		}
-		
+	public List<AbstractZoneEntity> findByParent(Long idParent) {
+		// Criteria criteria = getSession().createCriteria(persistentClass)
+		// .add(Restrictions.eq("id", idParent))
+		// .createAlias("zoneList", "child");
+		//
+		// if(isEnabled == null){
+		// criteria.add(Restrictions.isNull("enabled"));
+		// }else if(isEnabled){
+		// criteria.add(Restrictions.eq("enabled", isEnabled));
+		// }else{
+		// Disjunction dis = Restrictions.disjunction();
+		// dis.add(Restrictions.isNull("enabled"));
+		// dis.add(Restrictions.eq("enabled", isEnabled));
+		// criteria.add(dis);
+		// }
+		//
+		// return criteria.list();
+
+		Criteria criteria = getSession()
+				.createCriteria(persistentClass)
+				.createAlias("nivelPadre", "parent")
+				.add(Restrictions.eq("parent.id", idParent))
+				.add(Restrictions.or(Restrictions.eq("enabled", true),
+						Restrictions.isNull("enabled")))
+				.add(Restrictions.or(Restrictions.eq("parent.enabled", true),
+						Restrictions.isNull("parent.enabled")));
+
 		return criteria.list();
 	}
-
 }
