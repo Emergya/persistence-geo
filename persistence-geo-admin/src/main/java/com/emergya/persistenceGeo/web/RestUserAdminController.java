@@ -51,9 +51,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.emergya.persistenceGeo.dto.AuthorityDto;
 import com.emergya.persistenceGeo.dto.FolderDto;
 import com.emergya.persistenceGeo.dto.UserDto;
+import com.emergya.persistenceGeo.dto.ZoneDto;
 import com.emergya.persistenceGeo.service.FoldersAdminService;
 import com.emergya.persistenceGeo.service.LayerAdminService;
 import com.emergya.persistenceGeo.service.UserAdminService;
+import com.emergya.persistenceGeo.service.ZoneAdminService;
+import com.google.common.base.Strings;
 
 /**
  * Simple REST controller for user admin
@@ -70,6 +73,9 @@ public class RestUserAdminController implements Serializable{
 	
 	@Resource
 	private UserAdminService userAdminService;
+	
+	@Resource
+	private ZoneAdminService zoneAdminService;
 	
 	@Resource
 	private LayerAdminService layerAdminService;
@@ -276,9 +282,47 @@ public class RestUserAdminController implements Serializable{
 		}
 		
 		result.put(RESULTS, user != null ? 1: 0);
+		
+		// We dont want return the password.
+		user.setPassword("");
+		
 		result.put(ROOT, user);
 
 		return result;
 	}
 
+	/**
+	 * Returns the user's zone geometry.
+	 *
+	 * @return json with user info or null if is not logged 
+	 */
+	@RequestMapping(value = "/persistenceGeo/getUserZoneGeom/{userId}/{projectionName}", 
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	public @ResponseBody
+	Map<String, Object> getUserZoneGeom (@PathVariable Long userId, 
+			@PathVariable String projectionName){
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		UserDto user = null;
+		String zoneGeom ="";
+		try{
+			// Secure with logged user
+			user = (UserDto) userAdminService.getById(userId);
+			
+			if(user.getAuthorityZoneId()!=null){
+				zoneGeom = zoneAdminService.getZoneGeomAsText(user.getAuthorityZoneId(),projectionName);
+			}
+			
+			result.put(SUCCESS, true);
+		}catch (Exception e){
+			e.printStackTrace();
+			result.put(SUCCESS, false);
+		}
+		
+		result.put(RESULTS, Strings.isNullOrEmpty(zoneGeom)? 0: 1);	
+		
+		result.put(ROOT, zoneGeom);
+
+		return result;
+	}
 }

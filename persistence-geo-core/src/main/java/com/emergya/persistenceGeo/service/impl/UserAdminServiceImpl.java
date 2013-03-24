@@ -300,6 +300,9 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 			if (authority != null) {
 				dto.setAuthority(authority.getName());
 				dto.setAuthorityId(authority.getId());
+				if(authority.getZone()!=null) {
+					dto.setAuthorityZoneId(authority.getZone().getId());
+				}
 			}
 //			// Add layer
 //			List<AbstractLayerEntity> layers = user.getLayerList();

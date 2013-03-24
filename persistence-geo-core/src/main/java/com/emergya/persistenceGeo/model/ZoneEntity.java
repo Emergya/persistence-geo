@@ -132,6 +132,6 @@ public class ZoneEntity extends AbstractZoneEntity {
 	@OneToMany(mappedBy = "zone")
 	public List<AuthorityEntity> getAuthList() {
 		return authList;
-	}
+	}	
 
 }

@@ -61,6 +61,7 @@ public class UserDto implements Serializable {
     //private List<String> grupos;
     private String authority;
     private Long authorityId;
+	private Long authorityZoneId;
 	
 	public Long getAuthorityId() {
 		return authorityId;
@@ -146,6 +147,14 @@ public class UserDto implements Serializable {
 	}
 	public void setAuthority(String authority) {
 		this.authority = authority;
+	}
+	
+	public Long getAuthorityZoneId() {
+		return authorityZoneId;
+	}
+	
+	public void setAuthorityZoneId(Long authorityZoneId) {
+		this.authorityZoneId = authorityZoneId;
 	}
 
 }

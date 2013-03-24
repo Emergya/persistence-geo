@@ -111,4 +111,12 @@ public interface ZoneEntityDao extends GenericDAO<AbstractZoneEntity, Long> {
 	 * @return Entities list associated with the zone name or null if not found 
 	 */
 	public List<AbstractZoneEntity> getZones(String zoneName, Boolean isEnabled);
+
+	/**
+	 * Gets a zone's geometry as it Well Known Text representation.
+	 * @param zoneId
+	 * @param projectionName
+	 * @return
+	 */
+	public String getZoneGeomAsText(Long zoneId, String projectionName);
 }

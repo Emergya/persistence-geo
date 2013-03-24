@@ -56,7 +56,9 @@ import com.emergya.persistenceGeo.service.ZoneAdminService;
  */
 @Repository
 @Transactional
-public class ZoneAdminServiceImpl extends AbstractServiceImpl<ZoneDto, AbstractZoneEntity> implements ZoneAdminService {
+public class ZoneAdminServiceImpl 
+	extends AbstractServiceImpl<ZoneDto, AbstractZoneEntity> 
+	implements ZoneAdminService {
 	
 	@Resource
 	private ZoneEntityDao zoneDao;
@@ -168,4 +170,8 @@ public class ZoneAdminServiceImpl extends AbstractServiceImpl<ZoneDto, AbstractZ
 		return entity;
 	}
 
+	@Override
+	public String getZoneGeomAsText(Long zoneId, String projectionName) {
+		return zoneDao.getZoneGeomAsText(zoneId, projectionName);
+	}
 }
