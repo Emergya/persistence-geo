@@ -893,7 +893,7 @@ public class RestLayersAdminController extends RestPersistenceGeoController
 	
 	@RequestMapping(value = "/persistenceGeo/deleteLayerByLayerId/{layerId}", method = RequestMethod.POST)
 	public @ResponseBody
-	Map<String, Object> DeleteLayerByLayerId(@PathVariable String layerId){
+	Map<String, Object> deleteLayerByLayerId(@PathVariable String layerId){
 		Map<String, Object> result = new HashMap<String, Object>();
 		try{
 			/*
@@ -901,6 +901,8 @@ public class RestLayersAdminController extends RestPersistenceGeoController
 			String username = ((UserDetails) SecurityContextHolder.getContext()
 					.getAuthentication().getPrincipal()).getUsername(); 
 			 */
+			
+			// TODO: Delete layer from geoserver
 			Long idLayer = Long.decode(layerId);
 			layerAdminService.deleteLayerById(idLayer);
 			result.put(SUCCESS, true);
