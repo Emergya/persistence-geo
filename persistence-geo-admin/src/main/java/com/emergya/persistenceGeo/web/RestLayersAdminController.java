@@ -289,6 +289,7 @@ public class RestLayersAdminController extends RestPersistenceGeoController
 		}catch (Exception e){
 			e.printStackTrace();
 			result.put(SUCCESS, false);
+			return result;
 		}
 		
 		result.put(RESULTS, layers.size());
@@ -683,7 +684,7 @@ public class RestLayersAdminController extends RestPersistenceGeoController
 	 */
 	@RequestMapping(value = "/persistenceGeo/saveLayerByGroup/{idGroup}", method = RequestMethod.POST)
 	public @ResponseBody 
-	LayerDto saveLayerByGroup(@PathVariable String idGroup,
+	Map<String,Object> saveLayerByGroup(@PathVariable String idGroup,
 			@RequestParam("name") String name,
 			@RequestParam("type") String type,
 			@RequestParam(value="properties", required=false) String properties,
@@ -694,6 +695,10 @@ public class RestLayersAdminController extends RestPersistenceGeoController
 			@RequestParam(value="server_resource", required=false) String server_resource,
 			@RequestParam(value="folderId", required=false) String folderId,
 			@RequestParam(value="idFile", required=false) String idFile){
+		
+		Map<String,Object> result = new HashMap<String,Object>();
+		
+		
 		try{
 			/*
 			//TODO: Secure with logged user
@@ -709,12 +714,16 @@ public class RestLayersAdminController extends RestPersistenceGeoController
 			//Copy layerData
 			layer = copyDataToLayer(name, type, properties, enabled, order_layer,
 					is_channel, publicized, server_resource, idFile, layer, folderId, true);
+			result.put(SUCCESS, true);
+			result.put(RESULTS, 1);
+			result.put(ROOT, layer);
 			
-			return layer;
 		}catch (Exception e){
 			e.printStackTrace();
-			return null;
+			result.put(SUCCESS,false);			
 		}
+		
+		return result;
 	}
 
 

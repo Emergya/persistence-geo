@@ -86,8 +86,13 @@ public class RestPersistenceGeoController implements Serializable{
 			canAccess = true;
 		}else{
 			//Secure with logged user
-			String username = ((UserDetails) SecurityContextHolder.getContext()
-					.getAuthentication().getPrincipal()).getUsername();
+			Object principal =  SecurityContextHolder.getContext()
+					.getAuthentication().getPrincipal();
+			if(principal.toString().equals("anonymousUser")) {
+				return false;
+			}
+			
+			String username = ((UserDetails)principal).getUsername();
 			UserDto user  = userAdminService.obtenerUsuario(username);
 			canAccess = groupId == null
 					|| (groupId.equals(user.getAuthorityId()) || userAdminService
