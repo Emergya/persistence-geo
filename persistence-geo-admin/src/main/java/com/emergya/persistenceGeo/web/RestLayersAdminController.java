@@ -950,5 +950,4 @@ public class RestLayersAdminController extends RestPersistenceGeoController
 
 		return result;
 	}
-
 }

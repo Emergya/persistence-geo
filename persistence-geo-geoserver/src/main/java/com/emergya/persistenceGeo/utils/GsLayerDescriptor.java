@@ -43,7 +43,7 @@ public class GsLayerDescriptor implements Serializable {
 	private static final String DEFAULT_WMS_PATH = "/geoserver/wms";
 
 	public static enum GeometryType {
-		POINT, LINE, POLYGON
+		POINT, LINESTRING, POLYGON
 	};
 
 	private String wmsPath;
@@ -80,7 +80,7 @@ public class GsLayerDescriptor implements Serializable {
 			case POINT:
 				result = DEFAULT_STYLE_POINT;
 				break;
-			case LINE:
+			case LINESTRING:
 				result = DEFAULT_STYLE_LINE;
 				break;
 			case POLYGON:

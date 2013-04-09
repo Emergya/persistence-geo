@@ -274,6 +274,9 @@ public class RestUserAdminController implements Serializable{
 					.getAuthentication().getPrincipal()).getUsername();
 			if(userLogged != null){
 				user = userAdminService.obtenerUsuario(userLogged);
+				if (user != null) {
+					user.setPassword("");
+				}
 			}
 			result.put(SUCCESS, true);
 		}catch (Exception e){
@@ -284,9 +287,8 @@ public class RestUserAdminController implements Serializable{
 		result.put(RESULTS, user != null ? 1: 0);
 		
 		// We dont want return the password.
-		user.setPassword("");
-		
 		result.put(ROOT, user);
+		
 
 		return result;
 	}

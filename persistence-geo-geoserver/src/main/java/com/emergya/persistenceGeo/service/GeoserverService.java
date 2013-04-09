@@ -176,10 +176,10 @@ public interface GeoserverService {
 	 * Changes a layer style. The style must exist in geoserver.
 	 * @param workspaceName
 	 * @param layerName
-	 * @param newLayerStyleName
+	 * @param newStyleName
 	 * @return
 	 */
-	public boolean setLayerStyle(String workspaceName, String layerName, String newLayerStyleName);
+	public boolean setLayerStyle(String workspaceName, String layerName, String newStyleName);
 	
 	/**
 	 * Removes an style from GeoServer. 
