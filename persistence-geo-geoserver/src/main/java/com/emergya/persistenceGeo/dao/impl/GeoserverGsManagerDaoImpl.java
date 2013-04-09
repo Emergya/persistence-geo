@@ -35,6 +35,7 @@ import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.ParameterConfigure;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.decoder.RESTCoverageList;
 import it.geosolutions.geoserver.rest.decoder.RESTCoverageStore;
+import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.decoder.utils.NameLinkElem;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
@@ -82,6 +83,8 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 
 	private static final String GET_COVERAGE_DETAILS_URL="/rest/workspaces/%s/coveragestores/%s/coverages/%s.xml";
 	private static final String GET_COVERAGE_STORE_DATA_URL="/rest/workspaces/%s/coveragestores/%s.xml";
+	private static final String SET_LAYER_STYLE_URL="/rest/layers/%s:%s";
+	private static final String SET_LAYER_STYLE_PAYLOAD="<layer><defaultStyle><name>%s</name></defaultStyle></layer>";
 	
 	@Autowired
 	private GsRestApiConfiguration gsConfiguration;
@@ -381,7 +384,7 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 
 			GSLayerEncoder layerEncoder = this
 					.tranformToGSLayerEncoder(layerDescriptor);
-
+			
 			result = gsPublisher.publishDBLayer(workspace, storename, fte,
 					layerEncoder);
 		} catch (MalformedURLException murle) {
@@ -614,7 +617,22 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 
 		return null;
 	}
+	
+	private String put(String url, String content) {
+		LOG.info("Loading from REST path " + url);
+		String baseurl = this.gsConfiguration.getServerUrl();
+		String username = this.gsConfiguration.getAdminUsername();
+		String password = this.gsConfiguration.getAdminPassword();
+		
+		String response = HTTPUtils.put(baseurl + url, content, "text/xml", username, password);
+		return response;
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.emergya.persistenceGeo.dao.GeoserverDao#deleteGsCoverageStore()
+	 */
 	@Override
 	public boolean deleteGsCoverageStore(String workspaceName, String coverageStoreName) {
 		GeoServerRESTPublisher publisher;
@@ -624,10 +642,15 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			LOG.error("Malformed Geoserver REST API URL", e);
 			throw new GeoserverException("Malformed Geoserver REST API URL", e);
 		}
-
+		
 		return publisher.removeCoverageStore(workspaceName, coverageStoreName, true);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.emergya.persistenceGeo.dao.GeoserverDao#getCoverageDetails()
+	 */
 	@Override
 	public GsCoverageDetails getCoverageDetails(
 			String workspaceName, String coverageStoreName, String coverageName) {
@@ -640,5 +663,79 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			LOG.debug("### Retrieving CS from " + url);
 		}
 		return GsCoverageDetails.build(load(url));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.emergya.persistenceGeo.dao.GeoserverDao#getLayerStyle()
+	 */
+	@Override
+	public String getLayerStyle(String layerName) {
+		GeoServerRESTReader reader;
+		try {
+			reader = this.getReader();
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
+		
+		RESTLayer layer = reader.getLayer(layerName);
+		return reader.getSLD( layer.getDefaultStyle());		
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.emergya.persistenceGeo.dao.GeoserverDao#createStyle()
+	 */
+	@Override
+	public boolean createStyle(String newStyleName, String layerSDLContent) {
+		GeoServerRESTPublisher publisher;
+		try {
+			publisher = this.getPublisher();
+		} catch(MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
+		
+		return publisher.publishStyle(layerSDLContent, newStyleName);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.emergya.persistenceGeo.dao.GeoserverDao#setLayerStyle()
+	 */
+	@Override
+	public boolean setLayerStyle(String workspaceName, String layerName, String newLayerStyleName) {
+		
+		String url = String.format(
+				SET_LAYER_STYLE_URL,
+				workspaceName, layerName);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("### Setting layer style using " + url);
+		}
+		
+		String payload = String.format(SET_LAYER_STYLE_PAYLOAD,newLayerStyleName);
+		
+		return this.put(url, payload) !=null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.emergya.persistenceGeo.dao.GeoserverDao#deleteStyle()
+	 */
+	public boolean deleteStyle(String styleName) {
+		GeoServerRESTPublisher publisher;
+		try {
+			publisher = this.getPublisher();
+		} catch(MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
+		
+		return publisher.removeStyle(styleName, true);
 	}
 }

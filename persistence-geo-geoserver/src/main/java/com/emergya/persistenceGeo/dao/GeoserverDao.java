@@ -238,4 +238,34 @@ public interface GeoserverDao {
 	 */
 	GsCoverageDetails getCoverageDetails(
 			String workspaceName, String coverageStoreName, String coverageName); 
+	
+	/**
+	 * Retrieves a layer's style associated SDL file's contents.
+	 * @param layerName
+	 * @return
+	 */
+	String getLayerStyle(String layerName);
+
+	/**
+	 * Creates a new style with the given name and contents.
+	 * @param newLayerName
+	 * @param layerSDLContent
+	 * @return true if the style creation was successful.
+	 */
+	boolean createStyle(String newLayerName, String layerSDLContent);
+
+	/**
+	 * Sets a layer's style.
+	 * @param workspaceName
+	 * @param layerName
+	 * @param newLayerStyleName
+	 */
+	boolean setLayerStyle(String workspaceName, String layerName, String newLayerStyleName);
+	
+	/**
+	 * Removes a style.
+	 * @param styleName
+	 * @return
+	 */
+	boolean deleteStyle(String styleName);
 }

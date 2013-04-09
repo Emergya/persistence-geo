@@ -46,9 +46,20 @@ public interface GeoserverService {
 
 	public boolean unpublishGsDbLayer(String workspaceName, String layer);
 
+	/**
+	 * Publishes a vectorial layer with data in a PostGis database with the default 
+	 * styles and given parameters.
+	 * @param workspaceName
+	 * @param table_name
+	 * @param layerName
+	 * @param title
+	 * @param nativeBoundingBox
+	 * @param type
+	 * @return
+	 */
 	boolean publishGsDbLayer(String workspaceName, String table_name,
 			String layerName, String title, BoundingBox nativeBoundingBox,
-			GeometryType type);
+			GeometryType type);	
 
 	/**
 	 * Check if a layer with <code>layerName</code> exists in the workspace
@@ -151,4 +162,27 @@ public interface GeoserverService {
 	 */
 	public GsCoverageDetails getCoverageDetails(
 			String workspaceName, String coverageStore, String coverageName);
+
+	/**
+	 * Copies the style of the source layer with a new name, including the 
+	 * sdl file stored in the server.
+	 * @param sourceLayerName
+	 * @param newLayerName
+	 * @return
+	 */
+	public boolean copyLayerStyle(String sourceLayerName, String newLayerName);
+	
+	/**
+	 * Changes a layer style. The style must exist in geoserver.
+	 * @param workspaceName
+	 * @param layerName
+	 * @param newLayerStyleName
+	 * @return
+	 */
+	public boolean setLayerStyle(String workspaceName, String layerName, String newLayerStyleName);
+	
+	/**
+	 * Removes an style from GeoServer. 
+	 */
+	public boolean deleteStyle(String styleName);
 }

@@ -169,7 +169,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 		}
 		return gsDao.deleteWorkspace(workspaceName);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -177,9 +177,9 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * com.emergya.persistenceGeo.service.GeoserverService#publishGsDbLayer()
 	 */
 	@Override
-	public boolean publishGsDbLayer(String workspaceName, String tableName,
-			String layerName, String title, BoundingBox nativeBoundingBox,
-			GeometryType geomType) {
+	public boolean publishGsDbLayer(
+			String workspaceName, String tableName, String layerName, String title,
+			BoundingBox nativeBoundingBox, GeometryType geomType) {
 		if (LOG.isInfoEnabled()) {
 			LOG.info("Publising geoserver database layer [workspaceName="
 					+ workspaceName + ", tableName=" + tableName
@@ -201,6 +201,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 		GsLayerDescriptor ld = new GsLayerDescriptor();
 
 		ld.setType(geomType);
+		
 		String datastoreName = workspaceName + DATASTORE_SUFFIX;
 		result = gsDao
 				.publishPostgisLayer(workspaceName, datastoreName, fd, ld);
@@ -293,5 +294,23 @@ public class GeoserverServiceImpl implements GeoserverService {
 	public GsCoverageDetails getCoverageDetails(
 			String workspaceName, String coverageStore, String coverageName) {
 		return gsDao.getCoverageDetails(workspaceName, coverageStore, coverageName);
+	}
+	
+	@Override
+	public boolean copyLayerStyle(String sourceLayerName, String newLayerName) {
+		String layerSDLContent = gsDao.getLayerStyle(sourceLayerName);
+		
+		return gsDao.createStyle(newLayerName, layerSDLContent);
+	}
+	
+	@Override
+	public boolean setLayerStyle(String workspaceName, String layerName, String newLayerStyleName) {
+		
+		return gsDao.setLayerStyle(workspaceName, layerName, newLayerStyleName);
+	}
+	
+	@Override
+	public boolean deleteStyle(String styleName) {
+		return gsDao.deleteStyle(styleName);
 	}
 }
