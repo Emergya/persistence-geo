@@ -40,7 +40,7 @@ public class GeoserverUtils {
 	public static String generateName(String name) {
 		String workspaceName = name;
 		workspaceName = StringUtils
-				.replaceChars(workspaceName, ".- \t", "____");
+				.replaceChars(workspaceName, ".- \t:", "_____");
 		workspaceName = StringUtils.lowerCase(workspaceName);
 		workspaceName = StringUtils.replaceChars(workspaceName,
 				"áéíóúñàèìòùü''\"´", "aeiounaeiouu___");
