@@ -1,207 +1,213 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.emergya</groupId>
-        <artifactId>persistence-geo</artifactId>
-        <version>8.3-SNAPSHOT</version>
-    </parent>
+	<parent>
+		<groupId>com.emergya</groupId>
+		<artifactId>persistence-geo</artifactId>
+		<version>8.3-SNAPSHOT</version>
+	</parent>
 
-    <artifactId>persistence-geo-geoserver</artifactId>
-    <packaging>jar</packaging>
-    <!-- Project Information -->
-    <licenses>
-        <license>
-            <name>Apache License V2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-    </licenses>
+	<artifactId>persistence-geo-geoserver</artifactId>
+	<packaging>jar</packaging>
+	<!-- Project Information -->
+	<licenses>
+		<license>
+			<name>Apache License V2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
 
-    <name>persistence-geo-geoserver</name>
-    <url>http://www.emergya.es</url>
-    <description>Geoserver module for persistence-geo</description>
+	<name>persistence-geo-geoserver</name>
+	<url>http://www.emergya.es</url>
+	<description>Geoserver module for persistence-geo</description>
 
-    <organization>
-        <name>Emergya</name>
-        <url>http://www.emergya.es</url>
-    </organization>
+	<organization>
+		<name>Emergya</name>
+		<url>http://www.emergya.es</url>
+	</organization>
 
-    <developers>
-        <developer>
-            <id>adiaz</id>
-            <name>Alejandro Diaz Torres</name>
-            <email>adiaz@emergya.com</email>
-            <organization>Emergya Consultoria</organization>
-            <organizationUrl>http://www.emergya.es</organizationUrl>
-            <roles>
-                <role>Analyst</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>marcos</id>
-            <name>Moisés Arcos Santiago</name>
-            <email>marcos@emergya.com</email>
-            <organization>Emergya Consultoria</organization>
-            <organizationUrl>http://www.emergya.es</organizationUrl>
-            <roles>
-                <role>Junior Programmer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>jlrodriguez</id>
-            <name>Juan Luis Rodriguez Ponce</name>
-            <email>jlrodriguez@emergya.com</email>
-            <organization>Emergya Consultoria</organization>
-            <organizationUrl>http://www.emergya.es</organizationUrl>
-            <roles>
-                <role>Analyst</role>
-            </roles>
-        </developer>
-    </developers>
-
-
-    <issueManagement>
-        <system>redmine</system>
-        <url>https://redmine.emergya.es/projects/maagya</url>
-    </issueManagement>
-    <ciManagement>
-        <system>jenkins</system>
-        <url>http://jenkins.emergya.es/jenkins/view/maagya/</url>
-    </ciManagement>
-    <inceptionYear>2012</inceptionYear>
-    <!-- Project Information -->
+	<developers>
+		<developer>
+			<id>adiaz</id>
+			<name>Alejandro Diaz Torres</name>
+			<email>adiaz@emergya.com</email>
+			<organization>Emergya Consultoria</organization>
+			<organizationUrl>http://www.emergya.es</organizationUrl>
+			<roles>
+				<role>Analyst</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>marcos</id>
+			<name>Moisés Arcos Santiago</name>
+			<email>marcos@emergya.com</email>
+			<organization>Emergya Consultoria</organization>
+			<organizationUrl>http://www.emergya.es</organizationUrl>
+			<roles>
+				<role>Junior Programmer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>jlrodriguez</id>
+			<name>Juan Luis Rodriguez Ponce</name>
+			<email>jlrodriguez@emergya.com</email>
+			<organization>Emergya Consultoria</organization>
+			<organizationUrl>http://www.emergya.es</organizationUrl>
+			<roles>
+				<role>Analyst</role>
+			</roles>
+		</developer>
+	</developers>
 
 
-    <!-- Environment Information -->
-    <scm>
-        <connection>scm:git:git@github.com:Emergya/persistence-geo.git</connection>
-        <url>scm:git:git@github.com:Emergya/persistence-geo.git</url>
-        <developerConnection>scm:git:git@github.com:Emergya/persistence-geo.git</developerConnection>
-    </scm>
+	<issueManagement>
+		<system>redmine</system>
+		<url>https://redmine.emergya.es/projects/maagya</url>
+	</issueManagement>
+	<ciManagement>
+		<system>jenkins</system>
+		<url>http://jenkins.emergya.es/jenkins/view/maagya/</url>
+	</ciManagement>
+	<inceptionYear>2012</inceptionYear>
+	<!-- Project Information -->
+
+
+	<!-- Environment Information -->
+	<scm>
+		<connection>scm:git:git@github.com:Emergya/persistence-geo.git</connection>
+		<url>scm:git:git@github.com:Emergya/persistence-geo.git</url>
+		<developerConnection>scm:git:git@github.com:Emergya/persistence-geo.git</developerConnection>
+	</scm>
 
 
 
-    <repositories>
-        <repository>
-            <id>jboss-repo</id>
-            <url>http://repository.jboss.org/maven2</url>
-        </repository>
-        <repository>
-            <id>spring-repo</id>
-            <url>http://maven.springframework.org</url>
-        </repository>
-        <repository>
-            <id>nexus</id>
-            <url>http://nexus.emergya.es/nexus/content/groups/public</url>
-        </repository>
-    </repositories>
+	<repositories>
+		<repository>
+			<id>jboss-repo</id>
+			<url>http://repository.jboss.org/maven2</url>
+		</repository>
+		<repository>
+			<id>spring-repo</id>
+			<url>http://maven.springframework.org</url>
+		</repository>
+		<repository>
+			<id>nexus</id>
+			<url>http://nexus.emergya.es/nexus/content/groups/public</url>
+		</repository>
+	</repositories>
 
-    <dependencies>
+	<dependencies>
 		<!-- Internal dependencies -->
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>persistence-geo-core</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
-        <!-- SPRING DEPENDENCIES -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!--Misc dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+		<!-- SPRING DEPENDENCIES -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!--Misc dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
 
-    <build>
-        <finalName>${project.artifactId}</finalName>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-epsg-hsql</artifactId>
+		</dependency>
+	</dependencies>
 
-        <filters>
-            <filter>src/main/filters/${filter.profile}</filter>
-        </filters>
+	<build>
+		<finalName>${project.artifactId}</finalName>
 
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>src/test/resources</directory>
-                <filtering>true</filtering>
-                <targetPath>test-classes</targetPath>
-            </resource>
-        </resources>
+		<filters>
+			<filter>src/main/filters/${filter.profile}</filter>
+		</filters>
 
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <optimize>true</optimize>
-                    <debug>true</debug>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+				<targetPath>test-classes</targetPath>
+			</resource>
+		</resources>
 
-    <profiles>
-        <!-- ================= Profiles to deploy ================= -->
-        <profile>
-            <id>local</id>
-            <properties>
-                <filter.profile>local.properties</filter.profile>
-            </properties>
-        </profile>
-        <profile>
-            <id>first</id>
-            <properties>
-                <!-- Database validate -->
-                <database.hibernate.hbm2ddl.auto>create</database.hibernate.hbm2ddl.auto>
-                <filter.profile>${filterToApply}.properties</filter.profile>
-            </properties>
-        </profile>
-        <profile>
-            <id>test</id>
-            <properties>
-                <filter.profile>test.properties</filter.profile>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>devel</id>
-            <properties>
-                <!-- Database validate -->
-                <database.hibernate.hbm2ddl.auto>validate</database.hibernate.hbm2ddl.auto>
-                <filter.profile>devel.properties</filter.profile>
-            </properties>
-        </profile>
-        <profile>
-            <id>oracle</id>
-            <properties>
-                <!-- Database validate -->
-                <database.hibernate.hbm2ddl.auto>validate</database.hibernate.hbm2ddl.auto>
-                <filter.profile>oracle.properties</filter.profile>
-            </properties>
-        </profile>
-    </profiles>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<optimize>true</optimize>
+					<debug>true</debug>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<!-- ================= Profiles to deploy ================= -->
+		<profile>
+			<id>local</id>
+			<properties>
+				<filter.profile>local.properties</filter.profile>
+			</properties>
+		</profile>
+		<profile>
+			<id>first</id>
+			<properties>
+				<!-- Database validate -->
+				<database.hibernate.hbm2ddl.auto>create</database.hibernate.hbm2ddl.auto>
+				<filter.profile>${filterToApply}.properties</filter.profile>
+			</properties>
+		</profile>
+		<profile>
+			<id>test</id>
+			<properties>
+				<filter.profile>test.properties</filter.profile>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+		<profile>
+			<id>devel</id>
+			<properties>
+				<!-- Database validate -->
+				<database.hibernate.hbm2ddl.auto>validate</database.hibernate.hbm2ddl.auto>
+				<filter.profile>devel.properties</filter.profile>
+			</properties>
+		</profile>
+		<profile>
+			<id>oracle</id>
+			<properties>
+				<!-- Database validate -->
+				<database.hibernate.hbm2ddl.auto>validate</database.hibernate.hbm2ddl.auto>
+				<filter.profile>oracle.properties</filter.profile>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>
