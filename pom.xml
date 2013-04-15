@@ -1,190 +1,202 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.emergya</groupId>
-    <artifactId>persistence-geo</artifactId>
-    <version>8.3-SNAPSHOT</version>
-    <packaging>pom</packaging>
+	<groupId>com.emergya</groupId>
+	<artifactId>persistence-geo</artifactId>
+	<version>8.3-SNAPSHOT</version>
+	<packaging>pom</packaging>
 
-    <!-- Project Information -->
-    <licenses>
-        <license>
-            <name>GPL 2.0</name>
-            <url>http://www.gnu.org/licenses/gpl-2.0.html</url>
-        </license>
-    </licenses>
+	<!-- Project Information -->
+	<licenses>
+		<license>
+			<name>GPL 2.0</name>
+			<url>http://www.gnu.org/licenses/gpl-2.0.html</url>
+		</license>
+	</licenses>
 
-    <name>persistence-geo</name>
-    <url>http://www.emergya.es</url>
-    <description>Proyecto multi-modulo para el mantenimiento y explotacion de permisos, capas, estilos...; asociados con herramientas geograficas tipo geoext o gxp</description>
+	<name>persistence-geo</name>
+	<url>http://www.emergya.es</url>
+	<description>Proyecto multi-modulo para el mantenimiento y explotacion de permisos, capas, estilos...; asociados con herramientas geograficas tipo geoext o gxp</description>
 
-    <organization>
-        <name>Emergya</name>
-        <url>http://www.emergya.es</url>
-    </organization>
+	<organization>
+		<name>Emergya</name>
+		<url>http://www.emergya.es</url>
+	</organization>
 
-    <developers>
-        <developer>
-            <id>adiaz</id>
-            <name>Alejandro Diaz Torres</name>
-            <email>adiaz@emergya.com</email>
-            <organization>Emergya Consultoria</organization>
-            <organizationUrl>http://www.emergya.es</organizationUrl>
-            <roles>
-                <role>Analista</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>jlrodriguez</id>
-            <name>Juan Luis Rodriguez Ponce</name>
-            <email>jlrodriguez@emergya.com</email>
-            <organization>Emergya Consultoria</organization>
-            <organizationUrl>http://www.emergya.es</organizationUrl>
-            <roles>
-                <role>Analyst</role>
-            </roles>
-        </developer>
-    </developers>
-
-
-    <issueManagement>
-        <system>redmine</system>
-        <url>https://redmine.emergya.es/projects/maagya</url>
-    </issueManagement>
-    <ciManagement>
-        <system>jenkins</system>
-        <url>http://jenkins.emergya.es/jenkins/view/maagya/</url>
-    </ciManagement>
-    <inceptionYear>2012</inceptionYear>
-    <!-- Project Information -->
+	<developers>
+		<developer>
+			<id>adiaz</id>
+			<name>Alejandro Diaz Torres</name>
+			<email>adiaz@emergya.com</email>
+			<organization>Emergya Consultoria</organization>
+			<organizationUrl>http://www.emergya.es</organizationUrl>
+			<roles>
+				<role>Analista</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>jlrodriguez</id>
+			<name>Juan Luis Rodriguez Ponce</name>
+			<email>jlrodriguez@emergya.com</email>
+			<organization>Emergya Consultoria</organization>
+			<organizationUrl>http://www.emergya.es</organizationUrl>
+			<roles>
+				<role>Analyst</role>
+			</roles>
+		</developer>
+	</developers>
 
 
-    <!-- Environment Information -->
-    <scm>
-        <connection>scm:git:git@github.com:Emergya/persistence-geo.git</connection>
-        <developerConnection>scm:git:git@github.com:Emergya/persistence-geo.git</developerConnection>
-        <url>scm:git:git@github.com:Emergya/persistence-geo.git</url>
-    </scm>
+	<issueManagement>
+		<system>redmine</system>
+		<url>https://redmine.emergya.es/projects/maagya</url>
+	</issueManagement>
+	<ciManagement>
+		<system>jenkins</system>
+		<url>http://jenkins.emergya.es/jenkins/view/maagya/</url>
+	</ciManagement>
+	<inceptionYear>2012</inceptionYear>
+	<!-- Project Information -->
 
 
-    <distributionManagement>
-        <!-- use the following if you're not using a snapshot version. -->
-        <repository>
-            <id>nexus.releases</id>
-            <name>Nexus Releases</name>
-            <url>http://nexus.emergya.es/nexus/content/repositories/releases</url>
-        </repository>
-        <!-- use the following if you ARE using a snapshot version. -->
-        <snapshotRepository>
-            <id>nexus.snapshots</id>
-            <name>Nexus Snapshot</name>
-            <url>http://nexus.emergya.es/nexus/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+	<!-- Environment Information -->
+	<scm>
+		<connection>scm:git:git@github.com:Emergya/persistence-geo.git</connection>
+		<developerConnection>scm:git:git@github.com:Emergya/persistence-geo.git</developerConnection>
+		<url>scm:git:git@github.com:Emergya/persistence-geo.git</url>
+	</scm>
 
-    <properties>
-        <jetty.version>6.1.26</jetty.version>
-        <hibernate.version>3.5.1-Final</hibernate.version>
-        <hsqldb.version>1.8.0.7</hsqldb.version>
-        <commons-dbcp.version>1.4</commons-dbcp.version>
-        <maven-compiler-plugin.version>2.3.1</maven-compiler-plugin.version>
-        <maven-resource-plugin.version>2.5</maven-resource-plugin.version>
-        <maven-jetty-plugin.version>6.1.24</maven-jetty-plugin.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>3.1.2.RELEASE</spring.version>
-        <spring.security.version>3.1.2.RELEASE</spring.security.version>
-        <slf4j-log4j.version>1.4.2</slf4j-log4j.version>
-        <log4j.version>1.2.14</log4j.version>
-        <postgresql.version>9.1-901.jdbc4</postgresql.version>
-        <junit.version>4.8.1</junit.version>
-        <javax.servlet-servlet-api.version>2.5</javax.servlet-servlet-api.version>
-        <javax.servlet-jstl.version>1.2</javax.servlet-jstl.version>
-        <!-- OJDBC14 <ojdbc.groupId>oracle</ojdbc.groupId> <ojdbc.artifactId>ojdbc14</ojdbc.artifactId> 
-            <ojdbc.version>1.4</ojdbc.version> -->
-        <!-- OJDBC6 -->
-        <ojdbc.groupId>com.oracle</ojdbc.groupId>
-        <ojdbc.artifactId>ojdbc6</ojdbc.artifactId>
-        <ojdbc.version>11.2.0.3.0</ojdbc.version>
-        <geoserver.manager.version>1.5.1</geoserver.manager.version>
-        <mockito.version>1.9.5</mockito.version>
-        <guava.version>13.0.1</guava.version>
-    </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
+	<distributionManagement>
+		<!-- use the following if you're not using a snapshot version. -->
+		<repository>
+			<id>nexus.releases</id>
+			<name>Nexus Releases</name>
+			<url>http://nexus.emergya.es/nexus/content/repositories/releases</url>
+		</repository>
+		<!-- use the following if you ARE using a snapshot version. -->
+		<snapshotRepository>
+			<id>nexus.snapshots</id>
+			<name>Nexus Snapshot</name>
+			<url>http://nexus.emergya.es/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<properties>
+		<jetty.version>6.1.26</jetty.version>
+		<hibernate.version>3.5.1-Final</hibernate.version>
+		<hsqldb.version>1.8.0.7</hsqldb.version>
+		<commons-dbcp.version>1.4</commons-dbcp.version>
+		<maven-compiler-plugin.version>2.3.1</maven-compiler-plugin.version>
+		<maven-resource-plugin.version>2.5</maven-resource-plugin.version>
+		<maven-jetty-plugin.version>6.1.24</maven-jetty-plugin.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring.version>3.1.2.RELEASE</spring.version>
+		<spring.security.version>3.1.2.RELEASE</spring.security.version>
+		<slf4j-log4j.version>1.4.2</slf4j-log4j.version>
+		<log4j.version>1.2.14</log4j.version>
+		<postgresql.version>9.1-901.jdbc4</postgresql.version>
+		<junit.version>4.8.1</junit.version>
+		<javax.servlet-servlet-api.version>2.5</javax.servlet-servlet-api.version>
+		<javax.servlet-jstl.version>1.2</javax.servlet-jstl.version>
+		<geotools.version>8.4</geotools.version>
+		<!-- OJDBC14 <ojdbc.groupId>oracle</ojdbc.groupId> <ojdbc.artifactId>ojdbc14</ojdbc.artifactId> 
+			<ojdbc.version>1.4</ojdbc.version> -->
+		<!-- OJDBC6 -->
+		<ojdbc.groupId>com.oracle</ojdbc.groupId>
+		<ojdbc.artifactId>ojdbc6</ojdbc.artifactId>
+		<ojdbc.version>11.2.0.3.0</ojdbc.version>
+		<geoserver.manager.version>1.5.1</geoserver.manager.version>
+		<mockito.version>1.9.5</mockito.version>
+		<guava.version>13.0.1</guava.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt-epsg-hsql</artifactId>
+				<version>${geotools.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
 		<dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>${mockito.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
-    <modules>
-        <module>persistence-geo-core</module>
-        <module>persistence-geo-geoserver</module>
-	<module>persistence-geo-admin</module>
-        <module>persistence-geo-rest</module>
-    </modules>
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>buildnumber-maven-plugin</artifactId>
-                    <version>1.1</version>
-                    <executions>
-                        <execution>
-                            <phase>validate</phase>
-                            <goals>
-                                <goal>create</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <shortRevisionLength>8</shortRevisionLength>
-                        <doCheck>false</doCheck>
-                        <doUpdate>false</doUpdate>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.4</version>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            </manifest>
-                            <manifestEntries>
-                                <Implementation-Build>${buildNumber}</Implementation-Build>
-                            </manifestEntries>
-                        </archive>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>2.3</version>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            </manifest>
-                            <manifestEntries>
-                                <Implementation-Build>${buildNumber}</Implementation-Build>
-                            </manifestEntries>
-                        </archive>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+	<modules>
+		<module>persistence-geo-core</module>
+		<module>persistence-geo-geoserver</module>
+		<module>persistence-geo-admin</module>
+		<module>persistence-geo-rest</module>
+	</modules>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>buildnumber-maven-plugin</artifactId>
+					<version>1.1</version>
+					<executions>
+						<execution>
+							<phase>validate</phase>
+							<goals>
+								<goal>create</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<shortRevisionLength>8</shortRevisionLength>
+						<doCheck>false</doCheck>
+						<doUpdate>false</doUpdate>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.4</version>
+					<configuration>
+						<archive>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							</manifest>
+							<manifestEntries>
+								<Implementation-Build>${buildNumber}</Implementation-Build>
+							</manifestEntries>
+						</archive>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.3</version>
+					<configuration>
+						<archive>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							</manifest>
+							<manifestEntries>
+								<Implementation-Build>${buildNumber}</Implementation-Build>
+							</manifestEntries>
+						</archive>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 </project>

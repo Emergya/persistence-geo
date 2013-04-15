@@ -40,6 +40,9 @@ import com.emergya.persistenceGeo.utils.GsLayerDescriptor.GeometryType;
  * 
  */
 public interface GeoserverService {
+	
+	public final String DEFAULT_SRS = "EPSG:4326";
+	
 	public boolean createGsWorkspaceWithDatastore(String workspaceName);
 
 	public boolean deleteGsWorkspace(String workspaceName);

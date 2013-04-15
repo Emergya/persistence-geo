@@ -30,11 +30,10 @@ package com.emergya.persistenceGeo.dao.impl;
 
 import it.geosolutions.geoserver.rest.GeoServerRESTManager;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
-import it.geosolutions.geoserver.rest.HTTPUtils;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.ParameterConfigure;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
+import it.geosolutions.geoserver.rest.HTTPUtils;
 import it.geosolutions.geoserver.rest.decoder.RESTCoverageList;
-import it.geosolutions.geoserver.rest.decoder.RESTCoverageStore;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.decoder.utils.NameLinkElem;
@@ -55,12 +54,17 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.emergya.persistenceGeo.dao.GeoserverDao;
 import com.emergya.persistenceGeo.exceptions.GeoserverException;
+import com.emergya.persistenceGeo.service.GeoserverService;
 import com.emergya.persistenceGeo.utils.BoundingBox;
 import com.emergya.persistenceGeo.utils.GSFeatureTypeNativeNameEncoder;
 import com.emergya.persistenceGeo.utils.GsCoverageDetails;
@@ -493,6 +497,10 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			result = gsPublisher.publishGeoTIFF(workspace, storeName,
 					storeName, geotiff, crs, ProjectionPolicy.FORCE_DECLARED,
 					DEFAULT_RASTER_STYLE, null);
+			if (result) {
+				result = configureCoverage(workspace, storeName, crs, gsPublisher);
+			}
+
 		} catch (FileNotFoundException e) {
 			LOG.error("File not found", e);
 			throw new GeoserverException("File not found", e);
@@ -514,6 +522,9 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 					storeName);
 			result = gsPublisher.publishImageMosaic(workspaceName, storeName,
 					zipFile, ParameterConfigure.FIRST, paramName);
+			if (result) {
+				result = configureCoverage(workspaceName, storeName, crs, gsPublisher);
+			}
 		} catch (FileNotFoundException e) {
 			LOG.error("File not found", e);
 			throw new GeoserverException("File not found", e);
@@ -542,7 +553,7 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			// passed.
 			if (result) {
 				result = configureCoverage(workspaceName, storeName, crs,
-						result, gsPublisher);
+						gsPublisher);
 
 			}
 		} catch (FileNotFoundException e) {
@@ -566,14 +577,56 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	 * @throws MalformedURLException
 	 */
 	private boolean configureCoverage(String workspaceName, String storeName,
-			String crs, boolean result, GeoServerRESTPublisher gsPublisher)
+			String crs, GeoServerRESTPublisher gsPublisher)
 			throws MalformedURLException {
 		GeoServerRESTReader gsReader = getReader();
+		boolean result = false;
 		RESTCoverageList coverageList = gsReader.getCoverages(workspaceName,
 				storeName);
 		for (NameLinkElem coverage : coverageList) {
 			String coverageName = coverage.getName();
+
+			GsCoverageDetails details = getCoverageDetails(workspaceName,
+					storeName, coverageName);
 			GSCoverageEncoder enc = new GSCoverageEncoder();
+			if (details != null) {
+				BoundingBox nativeBoundingBox = details.getNativeBoundingBox();
+				try {
+					CoordinateReferenceSystem nativeCRS = CRS
+							.decode(nativeBoundingBox.getSrs());
+					CoordinateReferenceSystem targetCRS = CRS
+							.decode(GeoserverService.DEFAULT_SRS);
+					MathTransform transform = CRS.findMathTransform(nativeCRS,
+							targetCRS);
+					double[] sourceCoords = new double[4];
+					double[] coordTransformed = new double[4];
+
+					// Fill the array with the bounding box
+					sourceCoords[0] = nativeBoundingBox.getMinx();
+					sourceCoords[1] = nativeBoundingBox.getMiny();
+					sourceCoords[2] = nativeBoundingBox.getMaxx();
+					sourceCoords[3] = nativeBoundingBox.getMaxy();
+					transform
+							.transform(sourceCoords, 0, coordTransformed, 0, 2);
+
+					enc.setLatLonBoundingBox(coordTransformed[0],
+							coordTransformed[1], coordTransformed[2],
+							coordTransformed[3], GeoserverService.DEFAULT_SRS);
+				} catch (NoSuchAuthorityCodeException e) {
+					LOG.error(
+							"No se ha encontrado la autoridad especificada en el Sistema de Referencia Nativo",
+							e);
+				} catch (FactoryException e) {
+					LOG.error(
+							"No se ha podido crear la factoría de SRS en GeoserverServiceImpl",
+							e);
+				} catch (TransformException e) {
+					LOG.error(
+							"Error transformando las coordenadas del nativo al delcarado. Se usará como declarado el mismo que el nativo",
+							e);
+				}
+			}
+
 			enc.setName(coverageName);
 			enc.setSRS(crs);
 			enc.setNativeCRS(crs);

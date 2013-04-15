@@ -36,6 +36,12 @@ import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 
 import com.emergya.persistenceGeo.dao.GeoserverDao;
 import com.emergya.persistenceGeo.exceptions.GeoserverException;
@@ -169,7 +175,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 		}
 		return gsDao.deleteWorkspace(workspaceName);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -177,9 +183,9 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * com.emergya.persistenceGeo.service.GeoserverService#publishGsDbLayer()
 	 */
 	@Override
-	public boolean publishGsDbLayer(
-			String workspaceName, String tableName, String layerName, String title,
-			BoundingBox nativeBoundingBox, GeometryType geomType) {
+	public boolean publishGsDbLayer(String workspaceName, String tableName,
+			String layerName, String title, BoundingBox nativeBoundingBox,
+			GeometryType geomType) {
 		if (LOG.isInfoEnabled()) {
 			LOG.info("Publising geoserver database layer [workspaceName="
 					+ workspaceName + ", tableName=" + tableName
@@ -187,21 +193,68 @@ public class GeoserverServiceImpl implements GeoserverService {
 					+ "]");
 		}
 		boolean result = false;
+
+		// Transform native bounding box to EPSG:4326
+		String nativeSrs = nativeBoundingBox.getSrs();
+		BoundingBox declaredBBox = new BoundingBox();
+		declaredBBox.setSrs(DEFAULT_SRS);
+		boolean declaredSrsTransformed = false;
+		try {
+			CoordinateReferenceSystem nativeCRS = CRS.decode(nativeSrs);
+			CoordinateReferenceSystem targetCRS = CRS.decode(DEFAULT_SRS);
+			MathTransform transform = CRS.findMathTransform(nativeCRS,
+					targetCRS);
+			double[] sourceCoords = new double[4];
+			double[] coordTransformed = new double[4];
+
+			// Fill the array with the bounding box
+			sourceCoords[0] = nativeBoundingBox.getMinx();
+			sourceCoords[1] = nativeBoundingBox.getMiny();
+			sourceCoords[2] = nativeBoundingBox.getMaxx();
+			sourceCoords[3] = nativeBoundingBox.getMaxy();
+			transform.transform(sourceCoords, 0, coordTransformed, 0, 2);
+
+			declaredBBox.setMinx(coordTransformed[0]);
+			declaredBBox.setMiny(coordTransformed[1]);
+			declaredBBox.setMaxx(coordTransformed[2]);
+			declaredBBox.setMaxy(coordTransformed[3]);
+			declaredSrsTransformed = true;
+
+		} catch (NoSuchAuthorityCodeException e) {
+			LOG.error(
+					"No se ha encontrado la autoridad especificada en el Sistema de Referencia Nativo",
+					e);
+		} catch (FactoryException e) {
+			LOG.error(
+					"No se ha podido crear la factoría de SRS en GeoserverServiceImpl",
+					e);
+		} catch (TransformException e) {
+			LOG.error(
+					"Error transformando las coordenadas del nativo al delcarado. Se usará como declarado el mismo que el nativo",
+					e);
+		}
+
 		GsFeatureDescriptor fd = new GsFeatureDescriptor();
 		fd.setNativeName(tableName);
 		fd.setTitle(title);
 		fd.setName(layerName);
-		fd.setSRS(nativeBoundingBox.getSrs());
-		fd.setNativeCRS(nativeBoundingBox.getSrs());
 		if (nativeBoundingBox != null) {
+			if (declaredSrsTransformed) {
+				fd.setLatLonBoundingBox(declaredBBox);
+
+				// this is not an error. You should assign the native SRS to the
+				// declared SRS.
+				fd.setSRS(nativeBoundingBox.getSrs());
+
+			}
+			fd.setNativeCRS(nativeBoundingBox.getSrs());
 			fd.setNativeBoundingBox(nativeBoundingBox);
-			fd.setLatLonBoundingBox(nativeBoundingBox);
 		}
 
 		GsLayerDescriptor ld = new GsLayerDescriptor();
 
 		ld.setType(geomType);
-		
+
 		String datastoreName = workspaceName + DATASTORE_SUFFIX;
 		result = gsDao
 				.publishPostgisLayer(workspaceName, datastoreName, fd, ld);
@@ -260,55 +313,60 @@ public class GeoserverServiceImpl implements GeoserverService {
 	@Override
 	public boolean publishImageMosaic(String workspaceName, String storeName,
 			File imageFile, String crs) {
-		return gsDao.publishImageMosaic(workspaceName, storeName, imageFile, crs);
+		return gsDao.publishImageMosaic(workspaceName, storeName, imageFile,
+				crs);
 	}
 
 	@Override
 	public boolean publishWorldImage(String workspaceName, String storeName,
 			File imageFile, String crs) {
-		
-	 return gsDao.publishWorldImage(workspaceName, storeName, imageFile, crs);
+
+		return gsDao
+				.publishWorldImage(workspaceName, storeName, imageFile, crs);
 	}
 
 	@Override
-	public GsCoverageStoreData getCoverageStoreData(String workspaceName, String coverageStoreName) {
+	public GsCoverageStoreData getCoverageStoreData(String workspaceName,
+			String coverageStoreName) {
 		return gsDao.getCoverageStoreData(workspaceName, coverageStoreName);
 	}
-	
+
 	@Override
-	public boolean unpublishGsCoverageLayer(
-			String workspaceName, String coverageLayer) {
-		
-		if(!gsDao.deleteCoverage(workspaceName, coverageLayer)){
+	public boolean unpublishGsCoverageLayer(String workspaceName,
+			String coverageLayer) {
+
+		if (!gsDao.deleteCoverage(workspaceName, coverageLayer)) {
 			return false;
 		}
-		
-		if(!gsDao.deleteGsCoverageStore(workspaceName, coverageLayer)){
+
+		if (!gsDao.deleteGsCoverageStore(workspaceName, coverageLayer)) {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
-	public GsCoverageDetails getCoverageDetails(
-			String workspaceName, String coverageStore, String coverageName) {
-		return gsDao.getCoverageDetails(workspaceName, coverageStore, coverageName);
+	public GsCoverageDetails getCoverageDetails(String workspaceName,
+			String coverageStore, String coverageName) {
+		return gsDao.getCoverageDetails(workspaceName, coverageStore,
+				coverageName);
 	}
-	
+
 	@Override
 	public boolean copyLayerStyle(String sourceLayerName, String newStyleName) {
 		String layerSDLContent = gsDao.getLayerStyle(sourceLayerName);
-		
+
 		return gsDao.createStyle(newStyleName, layerSDLContent);
 	}
-	
+
 	@Override
-	public boolean setLayerStyle(String workspaceName, String layerName, String newLayerStyleName) {
-		
+	public boolean setLayerStyle(String workspaceName, String layerName,
+			String newLayerStyleName) {
+
 		return gsDao.setLayerStyle(workspaceName, layerName, newLayerStyleName);
 	}
-	
+
 	@Override
 	public boolean deleteStyle(String styleName) {
 		return gsDao.deleteStyle(styleName);
