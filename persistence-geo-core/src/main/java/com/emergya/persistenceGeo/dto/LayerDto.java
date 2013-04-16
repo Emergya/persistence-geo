@@ -55,6 +55,7 @@ public class LayerDto extends AbstractDto implements Serializable, Cloneable {
 	protected String name;
 	protected String order;
 	protected String type;
+	private Long typeId;
 	protected String server_resource;
 	protected File data;
 	protected Boolean published;
@@ -255,6 +256,13 @@ public class LayerDto extends AbstractDto implements Serializable, Cloneable {
 	
 	public void setLayerTitle(String title) {
 		this.layerTitle = title;		
+	}
+
+	public Long getTypeId() {
+		return typeId;
+	}
+	public void setTypeId(Long typeId) {
+		this.typeId = typeId;
 	}
 
 }

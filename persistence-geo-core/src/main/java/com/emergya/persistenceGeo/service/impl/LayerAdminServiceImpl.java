@@ -69,6 +69,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
 import com.emergya.persistenceGeo.model.LayerEntity;
+import com.emergya.persistenceGeo.model.LayerTypeEntity;
 import com.emergya.persistenceGeo.service.LayerAdminService;
 
 /**
@@ -275,10 +276,13 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			dto.setCreateDate(entity.getCreateDate());
 			dto.setUpdateDate(entity.getUpdateDate());
 			
+			
+			AbstractLayerTypeEntity type = entity.getType();
 			//Layer type
-			if(entity.getType() != null
-					&& entity.getType().getName() != null){
-				dto.setType(entity.getType().getName());
+			if(type!= null
+					&& type.getName() != null){
+				dto.setType(type.getName());
+				dto.setTypeId(type.getId());
 			}
 			
 			if(entity.getData() != null){
