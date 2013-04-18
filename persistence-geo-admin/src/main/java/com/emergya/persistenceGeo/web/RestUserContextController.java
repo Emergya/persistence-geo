@@ -31,16 +31,25 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.MapUtils;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.emergya.persistenceGeo.dto.FeatureDto;
+import com.emergya.persistenceGeo.dto.LayerDto;
 import com.emergya.persistenceGeo.service.UserContextService;
 
+/**
+ * Simple REST controller for user context
+ * 
+ * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
+ */
+@Controller
 public class RestUserContextController extends RestPersistenceGeoController{
-	
 	
 	/**
 	 * 
@@ -49,6 +58,10 @@ public class RestUserContextController extends RestPersistenceGeoController{
 	
 	@Resource
 	private UserContextService userContextService;
+	
+	protected final String RESULTS= "results";
+	protected final String ROOT= "data";
+	protected final String SUCCESS= "success";
 	
 	//FIXME: Trust with spring security context
 	
@@ -59,23 +72,22 @@ public class RestUserContextController extends RestPersistenceGeoController{
 	 * 
 	 * @return 
 	 */
-	@RequestMapping("/persistenceGeo/userContext/loadFeatures/{idUser}")
+	@RequestMapping(value = "/persistenceGeo/userContext/loadFeatures/{idUser}",
+			method = RequestMethod.POST, 
+			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody
 	Map<String, Object> loadFeatures(@PathVariable String idUser) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		Map<Long, FeatureDto> features = null;
-		
 		try{
-			//TODO: get user features
 			features = (Map<Long, FeatureDto>) userContextService.getUserFeatures(Long.decode(idUser));
 			result.put(SUCCESS, true);
 		}catch(Exception e){
+			e.printStackTrace();
 			result.put(SUCCESS, false);
 		}
-		
 		result.put(RESULTS, features != null ? features.size() : 0);
 		result.put(ROOT, features != null ? features : MapUtils.EMPTY_MAP);
-		
 		return result;
 	}
 	
@@ -86,11 +98,22 @@ public class RestUserContextController extends RestPersistenceGeoController{
 	 * 
 	 * @return 
 	 */
-	@RequestMapping("/persistenceGeo/userContext/loadLayers/{idUser}")
+	@RequestMapping(value = "/persistenceGeo/userContext/loadLayers/{idUser}",
+			method = RequestMethod.POST, 
+			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody
 	Map<String, Object> loadLayers(@PathVariable String idUser) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		//TODO: Implement!!
+		Map<Long, LayerDto> layers = null;
+		try{
+			layers = (Map<Long, LayerDto>) userContextService.getUserLayers(Long.decode(idUser));
+			result.put(SUCCESS, true);
+		}catch(Exception e){
+			e.printStackTrace();
+			result.put(SUCCESS, false);
+		}
+		result.put(RESULTS, layers != null ? layers.size() : 0);
+		result.put(ROOT, layers != null ? layers : MapUtils.EMPTY_MAP);
 		return result;
 	}
 
@@ -102,12 +125,32 @@ public class RestUserContextController extends RestPersistenceGeoController{
 	 * 
 	 * @return Map of stored features by user updated
 	 */
-	@RequestMapping("/persistenceGeo/userContext/saveFeature/{idUser}")
+	@RequestMapping(value = "/persistenceGeo/userContext/saveFeature/{idUser}", 
+			method = RequestMethod.POST, 
+			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody
 	Map<String, Object> saveFeature(@PathVariable String idUser,   
-			@RequestParam("feature") Map<String, String> feature) {
+			@RequestParam("feature") String feature, 
+			@RequestParam("featureID") String featureID) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		//TODO: Implement!!
+		Map<Long, FeatureDto> mapFeatures = new HashMap<Long, FeatureDto>();
+		FeatureDto featureDto = null;
+		try{
+			featureDto = new FeatureDto();
+			featureDto.setId(Long.decode(featureID));
+			featureDto.setJsonFeature(feature);
+			mapFeatures = userContextService.saveFeature(featureDto, Long.decode(idUser));
+			if(mapFeatures.containsKey(Long.decode(featureID))){
+				result.put(SUCCESS, true);
+			}else{
+				result.put(SUCCESS, false);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			result.put(SUCCESS, false);
+		}
+		result.put(RESULTS, featureDto != null ? 1: 0);
+		result.put(ROOT, featureDto);
 		return result;
 	}
 
@@ -120,12 +163,28 @@ public class RestUserContextController extends RestPersistenceGeoController{
 	 * 
 	 * @return Map of stored features by user updated
 	 */
-	@RequestMapping("/persistenceGeo/userContext/removeFeature/{idUser}/{idFeature}")
+	@RequestMapping(value = "/persistenceGeo/userContext/removeFeature/{idUser}",
+			method = RequestMethod.POST, 
+			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody
 	Map<String, Object> removeFeature(@PathVariable String idUser,  
 			@RequestParam("idFeature") String idFeature) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		//TODO: Implement!!
+		Map<Long, FeatureDto> mapFeatures = new HashMap<Long, FeatureDto>();
+		FeatureDto featureDto = null;
+		try{
+			mapFeatures = userContextService.removeFeature(Long.decode(idFeature), Long.decode(idUser));
+			if(mapFeatures.containsKey(Long.decode(idFeature))){
+				result.put(SUCCESS, false);
+			}else{
+				result.put(SUCCESS, true);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			result.put(SUCCESS, false);
+		}
+		result.put(RESULTS, featureDto != null ? 1: 0);
+		result.put(ROOT, featureDto);
 		return result;
 	}
 
@@ -137,12 +196,35 @@ public class RestUserContextController extends RestPersistenceGeoController{
 	 * 
 	 * @return Map of stored layers by user
 	 */
-	@RequestMapping("/persistenceGeo/userContext/saveLayer/{idUser}")
+	@RequestMapping(value = "/persistenceGeo/userContext/saveLayer/{idUser}",
+			method = RequestMethod.POST, 
+			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody
 	Map<String, Object> saveLayer(@PathVariable String idUser, 
-			@RequestParam("layer") Map<String, String> layer) {
+			@RequestParam("layer") String layer,
+			@RequestParam("layerID") String layerID,
+			@RequestParam("layerOrder") String layerOrder,
+			@RequestParam("layerName") String layerName) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		//TODO: Implement!!
+		Map<Long, LayerDto> mapLayers = new HashMap<Long, LayerDto>();
+		LayerDto layerDto = null;
+		try{
+			layerDto = new LayerDto();
+			layerDto.setId(Long.decode(layerID));
+			layerDto.setOrder(layerOrder);
+			layerDto.setName(layerName);
+			mapLayers = userContextService.saveLayer(layerDto, Long.decode(idUser));
+			if(mapLayers.containsKey(Long.decode(layerID))){
+				result.put(SUCCESS, true);
+			}else{
+				result.put(SUCCESS, false);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			result.put(SUCCESS, false);
+		}
+		result.put(RESULTS, layerDto != null ? 1: 0);
+		result.put(ROOT, layerDto);
 		return result;
 	}
 
@@ -154,13 +236,52 @@ public class RestUserContextController extends RestPersistenceGeoController{
 	 * 
 	 * @return Map of stored layers by user
 	 */	
-	@RequestMapping("/persistenceGeo/userContext/removeLayer/{idUser}/{idLayer}")
+	@RequestMapping("/persistenceGeo/userContext/removeLayer/{idUser}")
 	public @ResponseBody
 	Map<String, Object> removeLayer(@PathVariable String idUser,  
 			@RequestParam("idLayer") String idLayer) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		//TODO: Implement!!
+		Map<Long, LayerDto> mapLayers = new HashMap<Long, LayerDto>();
+		LayerDto layerDto = null;
+		try{
+			mapLayers = userContextService.removeLayer(Long.decode(idLayer), Long.decode(idUser));
+			if(mapLayers.containsKey(Long.decode(idLayer))){
+				result.put(SUCCESS, false);
+			}else{
+				result.put(SUCCESS, true);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			result.put(SUCCESS, false);
+		}
+		result.put(RESULTS, layerDto != null ? 1: 0);
+		result.put(ROOT, layerDto);
 		return result;
 	}
 	
+	/**
+	 * Remove all
+	 * 
+	 * @return Map with the elements removed
+	 */	
+	@RequestMapping("/persistenceGeo/userContext/removeAll")
+	public @ResponseBody
+	Map<String, Object> removeAll() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		Boolean clean = false;
+		try{
+			clean = userContextService.clearTemporalElements();
+			if(clean){
+				result.put(SUCCESS, true);
+			}else{
+				result.put(SUCCESS, false);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			result.put(SUCCESS, false);
+		}
+		result.put(RESULTS, clean != null ? 1: 0);
+		result.put(ROOT, clean);
+		return result;
+	}
 }

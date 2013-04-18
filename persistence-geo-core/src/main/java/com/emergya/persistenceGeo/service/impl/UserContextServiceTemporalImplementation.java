@@ -97,13 +97,30 @@ public class UserContextServiceTemporalImplementation implements UserContextServ
 
 	@Override
 	public Map<Long, LayerDto> saveLayer(LayerDto layer, Long idUser) {
-		return null;
+		Map<Long, LayerDto> layers = loadedLayers.containsKey(idUser) 
+				? loadedLayers.get(idUser) : new ConcurrentHashMap<Long, LayerDto>();
+		layers.put(layer.getId(), layer);
+		loadedLayers.put(idUser, layers);
+		return layers;
 	}
 
 	@Override
 	public Map<Long, LayerDto> removeLayer(Long idLayer, Long idUser) {
-		// TODO Auto-generated method stub
-		return null;
+		Map<Long, LayerDto> layers = loadedLayers.containsKey(idUser) 
+				? loadedLayers.get(idUser) 
+						: new ConcurrentHashMap<Long, LayerDto>(); 
+		if(layers.containsKey(idLayer)){
+			layers.remove(idLayer);
+		}
+		loadedLayers.put(idUser, layers);
+		return layers;
+	}
+	
+	@Override
+	public Boolean clearTemporalElements(){
+		loadedFeatures.clear();
+		loadedLayers.clear();
+		return true;
 	}
 
 }
