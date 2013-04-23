@@ -270,8 +270,10 @@ public class RestUserAdminController implements Serializable{
 		UserDto user = null;
 		try{
 			// Secure with logged user
-			String userLogged = ((UserDetails) SecurityContextHolder.getContext()
-					.getAuthentication().getPrincipal()).getUsername();
+			Object principal = SecurityContextHolder.getContext()
+					.getAuthentication().getPrincipal();
+			String userLogged = (principal instanceof String) ? (String) principal :
+				((UserDetails) principal).getUsername();
 			if(userLogged != null){
 				user = userAdminService.obtenerUsuario(userLogged);
 				if (user != null) {
