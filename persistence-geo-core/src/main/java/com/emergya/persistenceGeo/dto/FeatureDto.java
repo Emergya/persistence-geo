@@ -45,6 +45,7 @@ public class FeatureDto implements Serializable{
 	private static final long serialVersionUID = -1326342852422412803L;
 	
 	private Long id;
+	private String jsonFeature;
 
 	/**
 	 * @return the id
@@ -58,6 +59,14 @@ public class FeatureDto implements Serializable{
 	 */
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getJsonFeature() {
+		return jsonFeature;
+	}
+
+	public void setJsonFeature(String jsonFeature) {
+		this.jsonFeature = jsonFeature;
 	}
 
 }

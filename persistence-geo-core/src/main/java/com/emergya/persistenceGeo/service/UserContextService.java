@@ -96,5 +96,11 @@ public interface UserContextService{
 	 * @return Map of stored layers by user
 	 */	
 	public Map<Long, LayerDto> removeLayer(Long idLayer, Long idUser);
+	
+	/**
+	 * Remove all temporal elements
+	 * 
+	 */
+	public Boolean clearTemporalElements();
     
 }

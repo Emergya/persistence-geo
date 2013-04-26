@@ -288,5 +288,38 @@ public class RestUserAdminController implements Serializable{
 
 		return result;
 	}
+	
+	/**
+	 * Obtain user logged info
+	 *
+	 * @return json with user info or null if is not logged 
+	 */
+	@RequestMapping(value = "/persistenceGeo/getUserInfoById/{idUser}",
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	public @ResponseBody
+	Map<String, Object> getUserInfoById(@PathVariable String idUser){
+		Map<String, Object> result = new HashMap<String, Object>();
+		UserDto user = null;
+		try{
+			user = userAdminService.obtenerUsuario(idUser);
+			if(user != null){
+				if(user.getPassword() != null){
+					// Protegemos el pass del usuario
+					user.setPassword(null);
+				}
+				result.put(SUCCESS, true);
+			}else{
+				result.put(SUCCESS, false);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			result.put(SUCCESS, false);
+		}
+		
+		result.put(RESULTS, user != null ? 1: 0);
+		result.put(ROOT, user);
+
+		return result;
+	}
 
 }
