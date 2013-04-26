@@ -704,4 +704,9 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 		
 		layerDao.delete(layerId);
 	}
+
+	@Override
+	public List<LayerDto> getUnassignedLayers() {
+		return (List<LayerDto>) entitiesToDtos(layerDao.getUnassignedLayers());
+	}
 }

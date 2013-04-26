@@ -36,6 +36,7 @@ import javax.annotation.Resource;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -122,6 +123,7 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 	 */
 	public AbstractUserEntity findByLayer(Long layerID) {
 		AbstractLayerEntity entity = findById(layerID, false);
+		
 		return entity.getUser();
 	}
 
@@ -132,6 +134,11 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 						.createAlias("user", "user")
 						.add(Restrictions.eq("user.id", id));
 		
+		
+		criteria.addOrder(Order.asc("order"));
+		criteria.addOrder(Order.asc("layerTitle"));
+		criteria.addOrder(Order.asc("name"));
+		
 		return criteria.list();
 	}
 
@@ -140,6 +147,11 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 		Criteria criteria = getSession().createCriteria(persistentClass)
 						.createAlias("auth", "auth")
 						.add(Restrictions.eq("auth.id", id));
+		
+		
+		criteria.addOrder(Order.asc("order"));
+		criteria.addOrder(Order.asc("layerTitle"));
+		criteria.addOrder(Order.asc("name"));
 		
 		return criteria.list();
 	}
@@ -170,6 +182,11 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 			criteria.add(dis);
 		}
 		
+		
+		criteria.addOrder(Order.asc("order"));
+		criteria.addOrder(Order.asc("layerTitle"));
+		criteria.addOrder(Order.asc("name"));
+		
 		return criteria.list();
 	}
 
@@ -179,6 +196,11 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 				.createAlias("folder", "folder")
 				.add(Restrictions.eq("folder.id", folderId));
 
+		
+		criteria.addOrder(Order.asc("order"));
+		criteria.addOrder(Order.asc("layerTitle"));
+		criteria.addOrder(Order.asc("name"));
+		
 		return criteria.list();
 	}
 	
@@ -205,6 +227,12 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 			dis.add(Restrictions.eq("isChannel", isChannel));
 			criteria.add(dis);
 		}
+		
+		
+		criteria.addOrder(Order.asc("order"));
+		criteria.addOrder(Order.asc("layerTitle"));
+		criteria.addOrder(Order.asc("name"));
+		
 		return criteria.list();
 	}
 	
@@ -242,6 +270,25 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 			criteria.add(dis);
 		}
 		
+		
+		criteria.addOrder(Order.asc("order"));
+		criteria.addOrder(Order.asc("layerTitle"));
+		criteria.addOrder(Order.asc("name"));
+		
+		return criteria.list();
+	}
+	
+	@Override
+	public List<AbstractLayerEntity> getUnassignedLayers() {
+		Criteria criteria = getSession().createCriteria(persistentClass);
+		
+		criteria.add(Restrictions.isNull("folder"));
+		criteria.add(Restrictions.eq("enabled", true));
+		
+		criteria.addOrder(Order.asc("order"));
+		criteria.addOrder(Order.asc("layerTitle"));
+		criteria.addOrder(Order.asc("name"));
+		
 		return criteria.list();
 	}
 
@@ -249,6 +296,11 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 	public List<AbstractLayerEntity> getPublicLayers() {
 		Criteria crit = getSession().createCriteria(persistentClass);
 		crit.add(Restrictions.eq("publicized", true));
+		
+		crit.addOrder(Order.asc("order"));
+		crit.addOrder(Order.asc("layerTitle"));
+		crit.addOrder(Order.asc("name"));
+		
 		return crit.list();
 	}
 
