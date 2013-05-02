@@ -135,9 +135,7 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 						.add(Restrictions.eq("user.id", id));
 		
 		
-		criteria.addOrder(Order.asc("order"));
-		criteria.addOrder(Order.asc("layerTitle"));
-		criteria.addOrder(Order.asc("name"));
+		addLayerSorting(criteria);
 		
 		return criteria.list();
 	}
@@ -149,9 +147,7 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 						.add(Restrictions.eq("auth.id", id));
 		
 		
-		criteria.addOrder(Order.asc("order"));
-		criteria.addOrder(Order.asc("layerTitle"));
-		criteria.addOrder(Order.asc("name"));
+		addLayerSorting(criteria);
 		
 		return criteria.list();
 	}
@@ -183,9 +179,7 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 		}
 		
 		
-		criteria.addOrder(Order.asc("order"));
-		criteria.addOrder(Order.asc("layerTitle"));
-		criteria.addOrder(Order.asc("name"));
+		addLayerSorting(criteria);
 		
 		return criteria.list();
 	}
@@ -197,9 +191,7 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 				.add(Restrictions.eq("folder.id", folderId));
 
 		
-		criteria.addOrder(Order.asc("order"));
-		criteria.addOrder(Order.asc("layerTitle"));
-		criteria.addOrder(Order.asc("name"));
+		addLayerSorting(criteria);
 		
 		return criteria.list();
 	}
@@ -227,11 +219,8 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 			dis.add(Restrictions.eq("isChannel", isChannel));
 			criteria.add(dis);
 		}
-		
-		
-		criteria.addOrder(Order.asc("order"));
-		criteria.addOrder(Order.asc("layerTitle"));
-		criteria.addOrder(Order.asc("name"));
+				
+		addLayerSorting(criteria);
 		
 		return criteria.list();
 	}
@@ -271,9 +260,7 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 		}
 		
 		
-		criteria.addOrder(Order.asc("order"));
-		criteria.addOrder(Order.asc("layerTitle"));
-		criteria.addOrder(Order.asc("name"));
+		addLayerSorting(criteria);
 		
 		return criteria.list();
 	}
@@ -284,10 +271,9 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 		
 		criteria.add(Restrictions.isNull("folder"));
 		criteria.add(Restrictions.eq("enabled", true));
+		criteria.add(Restrictions.eq("publicized", true));
 		
-		criteria.addOrder(Order.asc("order"));
-		criteria.addOrder(Order.asc("layerTitle"));
-		criteria.addOrder(Order.asc("name"));
+		addLayerSorting(criteria);
 		
 		return criteria.list();
 	}
@@ -297,11 +283,14 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 		Criteria crit = getSession().createCriteria(persistentClass);
 		crit.add(Restrictions.eq("publicized", true));
 		
-		crit.addOrder(Order.asc("order"));
-		crit.addOrder(Order.asc("layerTitle"));
-		crit.addOrder(Order.asc("name"));
+		addLayerSorting(crit);
 		
 		return crit.list();
 	}
 
+	private void addLayerSorting(Criteria crit) {
+		crit.addOrder(Order.asc("order"));
+		crit.addOrder(Order.asc("layerTitle"));
+		crit.addOrder(Order.asc("name"));
+	}
 }
