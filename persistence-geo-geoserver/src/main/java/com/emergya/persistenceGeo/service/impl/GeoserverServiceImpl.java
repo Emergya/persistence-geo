@@ -28,12 +28,16 @@
  */
 package com.emergya.persistenceGeo.service.impl;
 
+import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
+import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList.RESTShortWorkspace;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.referencing.CRS;
@@ -370,5 +374,16 @@ public class GeoserverServiceImpl implements GeoserverService {
 	@Override
 	public boolean deleteStyle(String styleName) {
 		return gsDao.deleteStyle(styleName);
+	}
+
+	public boolean existsWorkspace(String workspaceName) {
+		RESTWorkspaceList workspaceList = gsDao.getWorkspaceList();
+		for (RESTShortWorkspace workspace : workspaceList) {
+			String currentName = workspace.getName();
+			if (StringUtils.equals(workspaceName, currentName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

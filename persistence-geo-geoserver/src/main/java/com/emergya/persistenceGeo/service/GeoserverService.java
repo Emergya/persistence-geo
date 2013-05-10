@@ -40,9 +40,9 @@ import com.emergya.persistenceGeo.utils.GsLayerDescriptor.GeometryType;
  * 
  */
 public interface GeoserverService {
-	
+
 	public final String DEFAULT_SRS = "EPSG:4326";
-	
+
 	public boolean createGsWorkspaceWithDatastore(String workspaceName);
 
 	public boolean deleteGsWorkspace(String workspaceName);
@@ -50,8 +50,9 @@ public interface GeoserverService {
 	public boolean unpublishGsDbLayer(String workspaceName, String layer);
 
 	/**
-	 * Publishes a vectorial layer with data in a PostGis database with the default 
-	 * styles and given parameters.
+	 * Publishes a vectorial layer with data in a PostGis database with the
+	 * default styles and given parameters.
+	 * 
 	 * @param workspaceName
 	 * @param table_name
 	 * @param layerName
@@ -62,7 +63,7 @@ public interface GeoserverService {
 	 */
 	boolean publishGsDbLayer(String workspaceName, String table_name,
 			String layerName, String title, BoundingBox nativeBoundingBox,
-			GeometryType type);	
+			GeometryType type);
 
 	/**
 	 * Check if a layer with <code>layerName</code> exists in the workspace
@@ -134,58 +135,74 @@ public interface GeoserverService {
 	 *            the world image coordinates system.
 	 * @return <code>true</code> if success.
 	 */
-	public boolean publishWorldImage(String workspaceName,
-			String storeName, File imageFile, String crs);
-	
-	/**
-	 * Gets info about a coverage store.
-	 * @param workspaceName
-	 * @param coverageStoreName
-	 * @return
-	 */
-	public GsCoverageStoreData getCoverageStoreData(
-		String workspaceName, String coverageStoreName);
-	
+	public boolean publishWorldImage(String workspaceName, String storeName,
+			File imageFile, String crs);
 
 	/**
-	 * Unpublishes a layer stored in a coverage store from the geoserver.
-	 * Also, it deletes the 
+	 * Gets info about a coverage store.
+	 * 
 	 * @param workspaceName
 	 * @param coverageStoreName
 	 * @return
 	 */
-	public boolean unpublishGsCoverageLayer(String adminWorkspaceName, String tmpLayerName);
-	
+	public GsCoverageStoreData getCoverageStoreData(String workspaceName,
+			String coverageStoreName);
+
+	/**
+	 * Unpublishes a layer stored in a coverage store from the geoserver. Also,
+	 * it deletes the
+	 * 
+	 * @param workspaceName
+	 * @param coverageStoreName
+	 * @return
+	 */
+	public boolean unpublishGsCoverageLayer(String adminWorkspaceName,
+			String tmpLayerName);
+
 	/**
 	 * Retrieves the details of a coverage store: bbox, projection, etc.
+	 * 
 	 * @param workspaceName
 	 * @param coverageStore
 	 * @param coverageName
 	 * @return
 	 */
-	public GsCoverageDetails getCoverageDetails(
-			String workspaceName, String coverageStore, String coverageName);
+	public GsCoverageDetails getCoverageDetails(String workspaceName,
+			String coverageStore, String coverageName);
 
 	/**
-	 * Copies the style of the source layer with a new name, including the 
-	 * sdl file stored in the server.
+	 * Copies the style of the source layer with a new name, including the sdl
+	 * file stored in the server.
+	 * 
 	 * @param sourceLayerName
 	 * @param newLayerName
 	 * @return
 	 */
 	public boolean copyLayerStyle(String sourceLayerName, String newLayerName);
-	
+
 	/**
 	 * Changes a layer style. The style must exist in geoserver.
+	 * 
 	 * @param workspaceName
 	 * @param layerName
 	 * @param newStyleName
 	 * @return
 	 */
-	public boolean setLayerStyle(String workspaceName, String layerName, String newStyleName);
-	
+	public boolean setLayerStyle(String workspaceName, String layerName,
+			String newStyleName);
+
 	/**
-	 * Removes an style from GeoServer. 
+	 * Removes an style from GeoServer.
 	 */
 	public boolean deleteStyle(String styleName);
+
+	/**
+	 * Checks if a workspace exists on the server.
+	 * 
+	 * @param workspaceName
+	 *            name to check.
+	 * @return <code>true</code> if the workspace exists, <code>false</code> if
+	 *         not.
+	 */
+	public boolean existsWorkspace(String workspaceName);
 }
