@@ -268,4 +268,6 @@ public interface GeoserverDao {
 	 * @return
 	 */
 	boolean deleteStyle(String styleName);
+	
+	boolean reset();
 }

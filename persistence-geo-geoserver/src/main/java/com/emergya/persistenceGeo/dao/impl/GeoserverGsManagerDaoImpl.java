@@ -800,4 +800,17 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 
 		return publisher.removeStyle(styleName, true);
 	}
+	
+	@Override
+	public boolean reset() {
+		GeoServerRESTPublisher publisher;
+		try {
+			publisher = this.getPublisher();
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
+
+		return publisher.reset();
+	}
 }

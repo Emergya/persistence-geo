@@ -375,6 +375,11 @@ public class GeoserverServiceImpl implements GeoserverService {
 	public boolean deleteStyle(String styleName) {
 		return gsDao.deleteStyle(styleName);
 	}
+	
+	@Override
+	public boolean reset() {
+		return gsDao.reset();
+	}
 
 	public boolean existsWorkspace(String workspaceName) {
 		RESTWorkspaceList workspaceList = gsDao.getWorkspaceList();
