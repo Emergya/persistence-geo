@@ -103,5 +103,10 @@ public interface Instancer {
 	 * @return new folder type entity
 	 */
 	public AbstractFolderTypeEntity createFolderType();
-	
+
+	/**
+	 * @return new source tool entity
+	 */
+    public AbstractSourceToolEntity createSourceToolEntity();
+
 }

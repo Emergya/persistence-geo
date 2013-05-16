@@ -38,7 +38,9 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.emergya.persistenceGeo.dao.AuthorityEntityDao;
 import com.emergya.persistenceGeo.dao.PermissionEntityDao;
+import com.emergya.persistenceGeo.metaModel.AbstractAuthorityTypeEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
 
@@ -54,6 +56,9 @@ public class PermissionEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Ab
 
 	@Resource
 	private Instancer instancer;
+	
+	@Resource
+	private AuthorityEntityDao authorityDao;
 
 	@Autowired
     public void init(SessionFactory sessionFactory) {
@@ -96,6 +101,16 @@ public class PermissionEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Ab
 		AbstractPermissionEntity permissionEntity = findById(permissionID, false);
 		if(permissionEntity != null){
 			getHibernateTemplate().delete(permissionEntity);
+		}
+	}
+
+	@Override
+	public List<AbstractPermissionEntity> getPermissionsByAuthorithy(Long authorithyId) {
+		if(authorithyId != null){
+			AbstractAuthorityTypeEntity authorityType = authorityDao.findById(authorithyId, false).getAuthType();
+			return authorityType.getPermissionList();
+		}else{
+			return findByCriteria(Restrictions.isEmpty("authTypeList"));
 		}
 	}
 

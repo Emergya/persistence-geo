@@ -31,6 +31,7 @@ package com.emergya.persistenceGeo.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Dto de usuario
@@ -62,6 +63,8 @@ public class UserDto implements Serializable {
     private String authority;
     private Long authorityId;
 	private Long authorityZoneId;
+	
+	private Map<String, ToolPermissionDto> permissions;
 	
 	public Long getAuthorityId() {
 		return authorityId;
@@ -155,6 +158,19 @@ public class UserDto implements Serializable {
 	
 	public void setAuthorityZoneId(Long authorityZoneId) {
 		this.authorityZoneId = authorityZoneId;
+	}
+	
+	/**
+	 * @return the permissions
+	 */
+	public Map<String, ToolPermissionDto> getPermissions() {
+		return permissions;
+	}
+	/**
+	 * @param permissions the permissions to set
+	 */
+	public void setPermissions(Map<String, ToolPermissionDto> permissions) {
+		this.permissions = permissions;
 	}
 
 }

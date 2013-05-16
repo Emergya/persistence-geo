@@ -1,9 +1,5 @@
 /*
- * AbstractPermissionEntity.java
- * 
- * Copyright (C) 2011
- * 
- * This file is part of Proyecto persistenceGeo
+ * AbstractSourceToolEntity.java Copyright (C) 2013. This file is part of persistenceGeo project
  * 
  * This software is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General public abstract License as published by the Free
@@ -25,64 +21,37 @@
  * however invalidate any other reasons why the executable file might be covered
  * by the GNU General public abstract License.
  * 
- * Authors:: Moisés Arcos Santiago (mailto:marcos@emergya.com)
+ * Authors:: Alejandro Diaz Torres (mailto:adiaz@emergya.com)
  */
 package com.emergya.persistenceGeo.metaModel;
 
-import java.util.Date;
-import java.util.List;
 
 /**
- * Entidad de permisos
+ * Source tool entity
  * 
- * @author <a href="mailto:marcos@emergya.com">marcos</a>
+ * @author <a href="mailto:adiaz@emergya.com">Alejandro Diaz</a>
  *
  */
-@SuppressWarnings("rawtypes")
-public abstract class AbstractPermissionEntity extends AbstractToolEntity {
-
+public abstract class AbstractSourceToolEntity extends AbstractToolEntity {
+	
 	/**
 	 * 
 	 */
-	protected static final long serialVersionUID = 8185264482816302475L;
+	private static final long serialVersionUID = -8018539904698841688L;
 	
-	protected Date createDate;
-	protected Date updateDate;
-	
-	protected String filter;
-	
-	protected List authTypeList;
-
-	public AbstractPermissionEntity(){
-		
-	}
-	
-	public AbstractPermissionEntity(String permissionName){
-		name = permissionName;
-	}
-	
-	/**
-	 * @return the authTypeList
-	 */
-	public abstract List getAuthTypeList();
+	protected String url;
 
 	/**
-	 * @return the filter
+	 * @return the url
 	 */
-	public abstract String getFilter();
+	public abstract String getUrl();
 
 	/**
-	 * @param filter the filter to set
+	 * @param url the url to set
 	 */
-	public void setFilter(String filter) {
-		this.filter = filter;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
-	/**
-	 * @param authTypeList the authTypeList to set
-	 */
-	public void setAuthTypeList(List authTypeList) {
-		this.authTypeList = authTypeList;
-	}
 
 }

@@ -1,9 +1,5 @@
 /*
- * AbstractPermissionEntity.java
- * 
- * Copyright (C) 2011
- * 
- * This file is part of Proyecto persistenceGeo
+ * SourceToolDto.java Copyright (C) 2013. This file is part of persistenceGeo project
  * 
  * This software is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General public abstract License as published by the Free
@@ -25,64 +21,34 @@
  * however invalidate any other reasons why the executable file might be covered
  * by the GNU General public abstract License.
  * 
- * Authors:: Moisés Arcos Santiago (mailto:marcos@emergya.com)
+ * Authors:: Alejandro Diaz Torres (mailto:adiaz@emergya.com)
  */
-package com.emergya.persistenceGeo.metaModel;
+package com.emergya.persistenceGeo.dto;
 
-import java.util.Date;
-import java.util.List;
+import java.io.Serializable;
+
 
 /**
- * Entidad de permisos
+ * Source tool DTO
  * 
- * @author <a href="mailto:marcos@emergya.com">marcos</a>
+ * @author <a href="mailto:adiaz@emergya.com">Alejandro Diaz</a>
  *
  */
-@SuppressWarnings("rawtypes")
-public abstract class AbstractPermissionEntity extends AbstractToolEntity {
-
+public class SourceToolDto extends ToolDto implements Serializable{
+	
 	/**
 	 * 
 	 */
-	protected static final long serialVersionUID = 8185264482816302475L;
+	private static final long serialVersionUID = -6484531471632560719L;
 	
-	protected Date createDate;
-	protected Date updateDate;
-	
-	protected String filter;
-	
-	protected List authTypeList;
+	protected String url;
 
-	public AbstractPermissionEntity(){
-		
-	}
-	
-	public AbstractPermissionEntity(String permissionName){
-		name = permissionName;
-	}
-	
-	/**
-	 * @return the authTypeList
-	 */
-	public abstract List getAuthTypeList();
-
-	/**
-	 * @return the filter
-	 */
-	public abstract String getFilter();
-
-	/**
-	 * @param filter the filter to set
-	 */
-	public void setFilter(String filter) {
-		this.filter = filter;
+	public String getUrl() {
+		return url;
 	}
 
-	/**
-	 * @param authTypeList the authTypeList to set
-	 */
-	public void setAuthTypeList(List authTypeList) {
-		this.authTypeList = authTypeList;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 }
