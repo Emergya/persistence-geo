@@ -49,7 +49,7 @@ public class GeoserverUtils {
 	 */
 	public static String createName(String text) {
 		if(StringUtils.isEmpty(text)) {
-			return text;
+			throw new IllegalArgumentException("A geoserver name cannot be empty!");
 		}
 		
 		String name = text.replaceAll("[\\W ]", "_");
