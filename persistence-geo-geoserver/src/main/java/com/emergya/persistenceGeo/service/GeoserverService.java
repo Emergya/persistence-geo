@@ -95,15 +95,15 @@ public interface GeoserverService {
 	 * 
 	 * @param workspace
 	 *            workspace to use.
-	 * @param storeName
-	 *            the store name to be used or created.
+	 * @param layerName
+	 *            the layer name to be created.
 	 * @param geotiff
 	 *            the GeoTIFF file.
 	 * @param crs
 	 *            the image native SRS.
 	 * @return <code>true</code> if success.
 	 */
-	public boolean publishGeoTIFF(String workspace, String storeName,
+	public boolean publishGeoTIFF(String workspace, String layerName,
 			File geotiff, String crs);
 
 	/**
@@ -111,15 +111,16 @@ public interface GeoserverService {
 	 * 
 	 * @param workspaceName
 	 *            workspace to use.
-	 * @param storeName
-	 *            the store name to be used or created.
+	 * @param layerName
+	 *            the store name to be created. It will also be the created 
+	 *            coverage store
 	 * @param imageFile
 	 *            a ZIP file with an image mosaic.
 	 * @param crs
 	 *            the image mosaic coordinates system.
 	 * @return <code>true</code> if success.
 	 */
-	public boolean publishImageMosaic(String workspaceName, String storeName,
+	public boolean publishImageMosaic(String workspaceName, String layerName,
 			File imageFile, String crs);
 
 	/**
@@ -127,15 +128,15 @@ public interface GeoserverService {
 	 * 
 	 * @param workspaceName
 	 *            workspace to use.
-	 * @param storeName
-	 *            the store name to be used or created.
+	 * @param layerName
+	 *            the layer name to be created.
 	 * @param imageFile
 	 *            a ZIP file with an World Image.
 	 * @param crs
 	 *            the world image coordinates system.
 	 * @return <code>true</code> if success.
 	 */
-	public boolean publishWorldImage(String workspaceName, String storeName,
+	public boolean publishWorldImage(String workspaceName, String layerName,
 			File imageFile, String crs);
 
 	/**
@@ -153,11 +154,11 @@ public interface GeoserverService {
 	 * it deletes the
 	 * 
 	 * @param workspaceName
-	 * @param coverageStoreName
+	 * @param layerName
 	 * @return
 	 */
 	public boolean unpublishGsCoverageLayer(String adminWorkspaceName,
-			String tmpLayerName);
+			String layerName);
 
 	/**
 	 * Retrieves the details of a coverage store: bbox, projection, etc.

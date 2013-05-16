@@ -59,7 +59,7 @@ public class GeoserverUtils {
 			name = "_"+name;
 		}
 		
-		return name;
+		return name.toLowerCase();
 	}
 	
 	/**

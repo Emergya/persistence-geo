@@ -67,6 +67,7 @@ import com.emergya.persistenceGeo.exceptions.GeoserverException;
 import com.emergya.persistenceGeo.service.GeoserverService;
 import com.emergya.persistenceGeo.utils.BoundingBox;
 import com.emergya.persistenceGeo.utils.GSFeatureTypeNativeNameEncoder;
+import com.emergya.persistenceGeo.utils.GeoserverUtils;
 import com.emergya.persistenceGeo.utils.GsCoverageDetails;
 import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
@@ -206,9 +207,10 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			LOG.debug("Creating workspace [name=" + name + "].");
 		}
 		boolean result = true;
+		String sanitizedName = GeoserverUtils.createName(name);
 		try {
 			GeoServerRESTPublisher publisher = getPublisher();
-			result = publisher.createWorkspace(name);
+			result = publisher.createWorkspace(sanitizedName);
 		} catch (IllegalArgumentException e) {
 			result = false;
 		} catch (MalformedURLException e) {
@@ -270,9 +272,11 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		}
 		boolean result = false;
 		GeoServerRESTPublisher publisher;
+		
+		String sanitizedPrefix = GeoserverUtils.createName(prefix);
 		try {
 			publisher = getPublisher();
-			result = publisher.createNamespace(prefix, uri);
+			result = publisher.createNamespace(sanitizedPrefix, uri);
 
 		} catch (MalformedURLException e) {
 			LOG.error("Malformed Geoserver REST API URL", e);
@@ -293,10 +297,13 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 
 		boolean result = false;
 		GeoServerRESTStoreManager dsManager;
+		
+		String sanitizedName = GeoserverUtils.createName(datastoreName);
+		
 		try {
 			dsManager = getDatastoreManager();
-			GSPostGISDatastoreEncoder properties = new GSPostGISDatastoreEncoder(
-					datastoreName);
+			GSPostGISDatastoreEncoder properties = 
+					new GSPostGISDatastoreEncoder(sanitizedName);
 			properties.setHost(gsConfiguration.getDbHost());
 			properties.setPort(gsConfiguration.getDbPort());
 			properties.setDatabase(gsConfiguration.getDbName());
@@ -325,10 +332,11 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 
 		boolean result = false;
 		GeoServerRESTStoreManager dsManager;
+		String sanitizedName = GeoserverUtils.createName(datastoreName);
 		try {
 			dsManager = getDatastoreManager();
-			GSPostGISDatastoreEncoder properties = new GSPostGISDatastoreEncoder(
-					datastoreName);
+			GSPostGISDatastoreEncoder properties = 
+					new GSPostGISDatastoreEncoder(sanitizedName);
 
 			properties.setDatabaseType(gsConfiguration.getDbType());
 			if (gsConfiguration.getDbSchema() != null
@@ -486,19 +494,21 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	}
 
 	@Override
-	public boolean publishGeoTIFF(String workspace, String storeName,
+	public boolean publishGeoTIFF(String workspace, String layerName,
 			File geotiff, String crs) {
 		GeoServerRESTPublisher gsPublisher;
+		
+		layerName = GeoserverUtils.createName(layerName);
 		boolean result = false;
 		try {
 			gsPublisher = getPublisher();
 			// result = gsPublisher.publishGeoTIFF(workspace, storeName,
 			// geotiff);
-			result = gsPublisher.publishGeoTIFF(workspace, storeName,
-					storeName, geotiff, crs, ProjectionPolicy.FORCE_DECLARED,
+			result = gsPublisher.publishGeoTIFF(workspace, layerName,
+					layerName, geotiff, crs, ProjectionPolicy.FORCE_DECLARED,
 					DEFAULT_RASTER_STYLE, null);
 			if (result) {
-				result = configureCoverage(workspace, storeName, crs, gsPublisher);
+				result = configureCoverage(workspace, layerName, crs, gsPublisher);
 			}
 
 		} catch (FileNotFoundException e) {
@@ -512,18 +522,21 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	}
 
 	@Override
-	public boolean publishImageMosaic(String workspaceName, String storeName,
+	public boolean publishImageMosaic(String workspaceName, String layerName,
 			File zipFile, String crs) {
 		boolean result = false;
 		GeoServerRESTPublisher gsPublisher;
+		
+		layerName = GeoserverUtils.createName(layerName);
+		
 		try {
 			gsPublisher = getPublisher();
 			NameValuePair paramName = new NameValuePair("coverageName",
-					storeName);
-			result = gsPublisher.publishImageMosaic(workspaceName, storeName,
+					layerName);
+			result = gsPublisher.publishImageMosaic(workspaceName, layerName,
 					zipFile, ParameterConfigure.FIRST, paramName);
 			if (result) {
-				result = configureCoverage(workspaceName, storeName, crs, gsPublisher);
+				result = configureCoverage(workspaceName, layerName, crs, gsPublisher);
 			}
 		} catch (FileNotFoundException e) {
 			LOG.error("File not found", e);
@@ -537,24 +550,25 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	}
 
 	@Override
-	public boolean publishWorldImage(String workspaceName, String storeName,
+	public boolean publishWorldImage(String workspaceName, String layerName,
 			File zipFile, String crs) {
 		boolean result = false;
 		GeoServerRESTPublisher gsPublisher;
 
+		layerName = GeoserverUtils.createName(layerName);
+		
 		try {
 			gsPublisher = getPublisher();
 			NameValuePair paramName = new NameValuePair("coverageName",
-					storeName);
-			result = gsPublisher.publishWorldImage(workspaceName, storeName,
+					layerName);
+			result = gsPublisher.publishWorldImage(workspaceName, layerName,
 					zipFile, ParameterConfigure.FIRST, paramName);
 
 			// If coverage has been created configure the layer with the SRS
 			// passed.
 			if (result) {
-				result = configureCoverage(workspaceName, storeName, crs,
+				result = configureCoverage(workspaceName, layerName, crs,
 						gsPublisher);
-
 			}
 		} catch (FileNotFoundException e) {
 			LOG.error("File not found", e);
@@ -759,8 +773,10 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			LOG.error("Malformed Geoserver REST API URL", e);
 			throw new GeoserverException("Malformed Geoserver REST API URL", e);
 		}
-
-		return publisher.publishStyle(layerSDLContent, newStyleName);
+		
+		// The name is sanitized.
+		String newStyleNameSanitized = GeoserverUtils.createName(newStyleName);
+		return publisher.publishStyle(layerSDLContent, newStyleNameSanitized);
 	}
 
 	/*
@@ -778,8 +794,9 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			LOG.debug("### Setting layer style using " + url);
 		}
 
-		String payload = String.format(SET_LAYER_STYLE_PAYLOAD,
-				newLayerStyleName);
+		// The name is sanitized.
+		String newStyleNameSanitized = GeoserverUtils.createName(newLayerStyleName);
+		String payload = String.format(SET_LAYER_STYLE_PAYLOAD, newStyleNameSanitized);
 
 		return this.put(url, payload) != null;
 	}

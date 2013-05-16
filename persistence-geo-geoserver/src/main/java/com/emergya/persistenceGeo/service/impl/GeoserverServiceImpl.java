@@ -309,24 +309,24 @@ public class GeoserverServiceImpl implements GeoserverService {
 	}
 
 	@Override
-	public boolean publishGeoTIFF(String workspace, String storeName,
+	public boolean publishGeoTIFF(String workspace, String layerName,
 			File geotiff, String crs) {
-		return gsDao.publishGeoTIFF(workspace, storeName, geotiff, crs);
+		return gsDao.publishGeoTIFF(workspace, layerName, geotiff, crs);
 	}
 
 	@Override
-	public boolean publishImageMosaic(String workspaceName, String storeName,
+	public boolean publishImageMosaic(String workspaceName, String layerName,
 			File imageFile, String crs) {
-		return gsDao.publishImageMosaic(workspaceName, storeName, imageFile,
+		return gsDao.publishImageMosaic(workspaceName, layerName, imageFile,
 				crs);
 	}
 
 	@Override
-	public boolean publishWorldImage(String workspaceName, String storeName,
+	public boolean publishWorldImage(String workspaceName, String layerName,
 			File imageFile, String crs) {
 
 		return gsDao
-				.publishWorldImage(workspaceName, storeName, imageFile, crs);
+				.publishWorldImage(workspaceName, layerName, imageFile, crs);
 	}
 
 	@Override

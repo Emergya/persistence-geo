@@ -26,6 +26,12 @@ public class GeoserverUtilsTest {
 		assertFalse(
 				"The result contains non bad characters! "+ resultName, 
 				resultName.matches("\\w"));	
+		
+		
+		String resanitizedName = GeoserverUtils.createName(resultName);
+		assertEquals(
+				String.format("Resanitizing a string modifies it! %s -> %s ", resultName, resanitizedName),
+				resultName, resanitizedName);
 	}
 
 	@Test
