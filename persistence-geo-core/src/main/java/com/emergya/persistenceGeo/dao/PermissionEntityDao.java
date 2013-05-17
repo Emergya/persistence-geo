@@ -68,11 +68,20 @@ public interface PermissionEntityDao extends GenericDAO<AbstractPermissionEntity
 	public void deletePermission(Long permissionID);
 	
 	/**
-	 * Get a permissions list by authorithy 
+	 * Get a permissions list by authority 
 	 * 
-	 * @param <code>authorithyId</code> if this parameter is nulll search permissions without authority type
+	 * @param <code>authorithyId</code> if this parameter is null search permissions without authority type
 	 * 
 	 * @return Entities list associated with the authorithyId name or null if not found 
 	 */
 	public List<AbstractPermissionEntity> getPermissionsByAuthorithy(Long authorithyId);
+	
+	/**
+	 * Get a permissions list by authority type 
+	 * 
+	 * @param <code>authorithyTypeId</code> 
+	 * 
+	 * @return Entities list associated with the authorithyTypeId name or null if not found 
+	 */
+	public List<AbstractPermissionEntity> getPermissionsByAuthorithyType(Long authorithyTypeId);
 }

@@ -40,8 +40,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.emergya.persistenceGeo.dao.GenericDAO;
 import com.emergya.persistenceGeo.dao.PermissionEntityDao;
+import com.emergya.persistenceGeo.dao.UserEntityDao;
 import com.emergya.persistenceGeo.dto.ToolPermissionDto;
 import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
 import com.emergya.persistenceGeo.service.ToolPermissionService;
 
@@ -60,12 +62,20 @@ public class ToolPermissionServiceImpl extends AbstractServiceImpl<ToolPermissio
 	private Instancer instancer;
 	@Resource
 	private PermissionEntityDao dao;
+	@Resource
+	private UserEntityDao userDao;
 	
 	public ToolPermissionServiceImpl(){
 		super();
 	}
 
-	@Override
+	/**
+	 * Obtain permissions by authority
+	 * 
+	 * @param authorityId
+	 * 
+	 * @return permissions for the authority
+	 */
 	public Map<String, ToolPermissionDto> getPermissionsByAuthority(
 			Long authorityId) {
 		Map<String, ToolPermissionDto> result = null;
@@ -78,12 +88,26 @@ public class ToolPermissionServiceImpl extends AbstractServiceImpl<ToolPermissio
 		}
 		return result;
 	}
-
-	@Override
+	
+	/**
+	 * Permissions for an user
+	 * 
+	 * @param userId
+	 * 
+	 * @return permissions for an user
+	 */
 	public Map<String, ToolPermissionDto> getPermissionsByUser(Long userId) {
-		// TODO: Store and get permissions by user
+		Long authorithyTypeId = CITIZEN_AUTHORITY_TYPE_ID;
+		if(userId != null){
+			AbstractUserEntity user = userDao.findById(userId, false);
+			if(user != null){
+				authorithyTypeId = (Long) (user.getAdmin() ? ADMIN_AUTHORITY_TYPE_ID: 
+					user.getAuthority() != null && user.getAuthority().getAuthType() != null ? 
+							user.getAuthority().getAuthType().getId() : CITIZEN_AUTHORITY_TYPE_ID);  
+			}
+		}
 		Map<String, ToolPermissionDto> result = null;
-		List<AbstractPermissionEntity> permissions = dao.getPermissionsByAuthorithy(null);
+		List<AbstractPermissionEntity> permissions = dao.getPermissionsByAuthorithyType(authorithyTypeId);
 		if(permissions != null){
 			result = new HashMap<String, ToolPermissionDto>();
 			for(AbstractPermissionEntity permission: permissions){
@@ -93,7 +117,6 @@ public class ToolPermissionServiceImpl extends AbstractServiceImpl<ToolPermissio
 		return result;
 	}
 
-	@Override
 	protected GenericDAO<AbstractPermissionEntity, Long> getDao() {
 		return dao;
 	}

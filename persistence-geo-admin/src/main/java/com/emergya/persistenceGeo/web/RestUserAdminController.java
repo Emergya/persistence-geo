@@ -281,10 +281,19 @@ public class RestUserAdminController implements Serializable{
 				user = userAdminService.obtenerUsuario(userLogged);
 				if (user != null) {
 					user.setPassword("");
-					// save user permissions. always by 
-					user.setPermissions(toolPermissionService.getPermissionsByAuthority(user.getAuthorityId())); 
+					// save user permissions. always by user
+					user.setPermissions(toolPermissionService.getPermissionsByUser(user.getId())); 
 				}
 			}
+			
+			if(user == null){
+				user = new UserDto();
+				user.setUsername(userLogged);
+				user.setAdmin(false);
+				// save user permissions. default permissions
+				user.setPermissions(toolPermissionService.getPermissionsByUser(null));
+			}
+			
 			result.put(SUCCESS, true);
 		}catch (Exception e){
 			e.printStackTrace();

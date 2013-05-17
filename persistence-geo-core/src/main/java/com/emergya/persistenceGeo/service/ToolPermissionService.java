@@ -40,6 +40,16 @@ import com.emergya.persistenceGeo.dto.ToolPermissionDto;
  *
  */
 public interface ToolPermissionService extends AbstractService{
+	
+	/**
+	 * Authority type id to store citizen permissions
+	 */
+	public static final Long CITIZEN_AUTHORITY_TYPE_ID = new Long(4);
+	
+	/**
+	 * Authority type id to store admin permissions
+	 */
+	public static final Long ADMIN_AUTHORITY_TYPE_ID = new Long(5);
 
 	/**
 	 * Obtain permissions by authority

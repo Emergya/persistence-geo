@@ -97,7 +97,7 @@ public class RestSourceToolController extends RestPersistenceGeoController
 	public @ResponseBody
 	Map<String, Object> saveSourceTool(@RequestParam("name") String name,
 			@RequestParam("ptype") String ptype,
-			@RequestParam("url") String url,
+			@RequestParam("sourceUrl") String url,
 			@RequestParam("config") String config){
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(isAdmin(Boolean.TRUE)){
@@ -168,7 +168,7 @@ public class RestSourceToolController extends RestPersistenceGeoController
 	Map<String, Object> updateSourceTool(@PathVariable("id") String id,
 			@RequestParam("name") String name,
 			@RequestParam("ptype") String ptype,
-			@RequestParam("url") String url,
+			@RequestParam("sourceUrl") String url,
 			@RequestParam("config") String config){
 		Map<String, Object> result = new HashMap<String, Object>();
 		
