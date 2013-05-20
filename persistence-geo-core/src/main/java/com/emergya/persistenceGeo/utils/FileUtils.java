@@ -6,13 +6,17 @@ package com.emergya.persistenceGeo.utils;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.FileCopyUtils;
 
 import com.emergya.persistenceGeo.exceptions.MultipleFilesWithSameExtension;
 import com.google.common.io.ByteStreams;
@@ -191,6 +195,38 @@ public class FileUtils {
 			isZip = false;
 		}
 		return isZip;
+	}
+	
+	/**
+	 * Creates a zip file from a supplied directory.
+	 * 
+	 * @param sourceDirectory
+	 * @return
+	 * @throws IOException
+	 */
+	public static File createTmpDirectoryZip(File sourceDirectory, String namePrefix) throws IOException {
+		if(!sourceDirectory.isDirectory()) {
+			throw new IllegalArgumentException("Supplied file is not directory!");
+		}	
+		
+		if(StringUtils.isEmpty(namePrefix)) {
+			throw new IllegalArgumentException("The namePrefix argument cannot be empty!");
+		}
+		
+		File zipFile = File.createTempFile(namePrefix,".zip");
+		ZipOutputStream zipOutput = new ZipOutputStream(new FileOutputStream(zipFile));
+		
+		for(File file :sourceDirectory.listFiles()) {
+			zipOutput.putNextEntry(new ZipEntry(file.getName()));			
+			
+			// copyToByteArray closes the input stream so we don't need to worry
+			zipOutput.write(FileCopyUtils.copyToByteArray(new FileInputStream(file)));
+			zipOutput.closeEntry();
+		}
+		
+		zipOutput.close();
+		
+		return zipFile;
 	}
 
 }
