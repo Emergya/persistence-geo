@@ -34,6 +34,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.emergya.persistenceGeo.dto.AbstractDto;
 
 /**
@@ -263,6 +265,19 @@ public class LayerDto extends AbstractDto implements Serializable, Cloneable {
 	}
 	public void setTypeId(Long typeId) {
 		this.typeId = typeId;
+	}
+	
+	public String getNameWithoutWorkspace() {
+		int colonIdx = this.name.indexOf(':');
+		return name.substring(colonIdx+1);
+	}
+	
+	public String getLayerLabel() {
+		if(StringUtils.isEmpty(layerTitle)) {
+			return this.getNameWithoutWorkspace();
+		}
+		
+		return this.layerTitle;
 	}
 
 }

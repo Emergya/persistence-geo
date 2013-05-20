@@ -634,7 +634,7 @@ public class RestFoldersAdminController implements Serializable {
 		List<LayerDto> previusLayers = layerAdminService
 				.getLayersByFolder(folderId, isChannel, Boolean.TRUE);
 		for (LayerDto subRes : previusLayers) {
-			tree.add(new TreeNode(subRes, true));
+			tree.add(new TreeNode(subRes));
 		}
 	}
 
