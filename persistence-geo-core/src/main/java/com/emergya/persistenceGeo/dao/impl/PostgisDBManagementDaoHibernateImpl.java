@@ -63,7 +63,7 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport imp
 	 */
 	public long getTableSize(String table_name){
 		
-        String sql = "SELECT "+getSize+"(\""+table_name+"\");";
+        String sql = "SELECT "+getSize+"(\'"+table_name+"\');";
         
         
         Long result;
@@ -83,7 +83,7 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport imp
 	 */
 	public String getTableSizeText(String table_name){
 		
-        String sql = "SELECT "+getSizeText+"("+getSize+"(\""+table_name+"\"));";
+        String sql = "SELECT "+getSizeText+"("+getSize+"(\'"+table_name+"\'));";
         
         String result;
         try{
