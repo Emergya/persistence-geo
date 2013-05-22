@@ -29,9 +29,7 @@
  */
 package com.emergya.persistenceGeo.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -76,15 +74,13 @@ public class ToolPermissionServiceImpl extends AbstractServiceImpl<ToolPermissio
 	 * 
 	 * @return permissions for the authority
 	 */
-	public Map<String, ToolPermissionDto> getPermissionsByAuthority(
+	@SuppressWarnings("unchecked")
+	public List<ToolPermissionDto> getPermissionsByAuthority(
 			Long authorityId) {
-		Map<String, ToolPermissionDto> result = null;
+		List<ToolPermissionDto> result = null;
 		List<AbstractPermissionEntity> permissions = dao.getPermissionsByAuthorithy(authorityId);
 		if(permissions != null){
-			result = new HashMap<String, ToolPermissionDto>();
-			for(AbstractPermissionEntity permission: permissions){
-				result.put(permission.getName(), entityToDto(permission));
-			}
+			result = (List<ToolPermissionDto>) entitiesToDtos(permissions);
 		}
 		return result;
 	}
@@ -96,7 +92,8 @@ public class ToolPermissionServiceImpl extends AbstractServiceImpl<ToolPermissio
 	 * 
 	 * @return permissions for an user
 	 */
-	public Map<String, ToolPermissionDto> getPermissionsByUser(Long userId) {
+	@SuppressWarnings("unchecked")
+	public List<ToolPermissionDto> getPermissionsByUser(Long userId) {
 		Long authorithyTypeId = CITIZEN_AUTHORITY_TYPE_ID;
 		if(userId != null){
 			AbstractUserEntity user = userDao.findById(userId, false);
@@ -106,13 +103,10 @@ public class ToolPermissionServiceImpl extends AbstractServiceImpl<ToolPermissio
 							user.getAuthority().getAuthType().getId() : CITIZEN_AUTHORITY_TYPE_ID);  
 			}
 		}
-		Map<String, ToolPermissionDto> result = null;
+		List<ToolPermissionDto> result = null;
 		List<AbstractPermissionEntity> permissions = dao.getPermissionsByAuthorithyType(authorithyTypeId);
 		if(permissions != null){
-			result = new HashMap<String, ToolPermissionDto>();
-			for(AbstractPermissionEntity permission: permissions){
-				result.put(permission.getName(), entityToDto(permission));
-			}
+			result = (List<ToolPermissionDto>) entitiesToDtos(permissions);
 		}
 		return result;
 	}

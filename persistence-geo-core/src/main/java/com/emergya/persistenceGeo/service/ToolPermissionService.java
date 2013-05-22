@@ -29,7 +29,7 @@
  */
 package com.emergya.persistenceGeo.service;
 
-import java.util.Map;
+import java.util.List;
 
 import com.emergya.persistenceGeo.dto.ToolPermissionDto;
 
@@ -58,7 +58,7 @@ public interface ToolPermissionService extends AbstractService{
 	 * 
 	 * @return permissions for the authority
 	 */
-	public Map<String, ToolPermissionDto> getPermissionsByAuthority(Long authorityId);
+	public List<ToolPermissionDto> getPermissionsByAuthority(Long authorityId);
 	
 	/**
 	 * Permissions for an user
@@ -67,6 +67,6 @@ public interface ToolPermissionService extends AbstractService{
 	 * 
 	 * @return permissions for an user
 	 */
-	public Map<String, ToolPermissionDto> getPermissionsByUser(Long userId);
+	public List<ToolPermissionDto> getPermissionsByUser(Long userId);
 	
 }
