@@ -758,7 +758,9 @@ public class RestLayersAdminController extends RestPersistenceGeoController
 
 			// Layer properties
 			if (properties != null) {
-				layer.setProperties(getMapFromString(properties));
+				Map<String, String> mapProperties = getMapFromString(properties);
+				layer.setProperties(mapProperties);
+				layer.setLayerTitle((String)mapProperties.get("layerTitle"));
 			}
 			
 			//Only if a file has been saved
