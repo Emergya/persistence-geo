@@ -52,11 +52,21 @@ public class GeoserverUtils {
 			throw new IllegalArgumentException("A geoserver name cannot be empty!");
 		}
 		
+		if(text.matches("^[a-z_][a-z0-9_]*$")) {
+			// Already sanitized
+			return text;
+		}
+		
 		String name = text.replaceAll("[\\W ]", "_");
 		
 		if(StringUtils.isNumeric(name.substring(0, 1))) {
 			// First char is a number.
 			name = "_"+name;
+		}
+		
+		// Fix for #83218, geoserver don't like names too long.
+		if(name.length()>25) {
+			name = name.substring(0, 20);
 		}
 		
 		return name.toLowerCase();
