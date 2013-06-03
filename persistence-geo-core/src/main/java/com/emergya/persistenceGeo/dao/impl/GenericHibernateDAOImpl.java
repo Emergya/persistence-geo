@@ -93,14 +93,24 @@ public abstract class GenericHibernateDAOImpl<T, ID extends Serializable> extend
     }
 
 	@SuppressWarnings("unchecked")
-	public List<T> findByExample(T exampleInstance, String[] excludeProperty) {
-        DetachedCriteria crit = DetachedCriteria.forClass(persistentClass);
-        Example example = Example.create(exampleInstance);
-		for (String exclude : excludeProperty) {
-			example.excludeProperty(exclude);
-		}
-		crit.add(example);
-		return getHibernateTemplate().findByCriteria(crit);
+	public List<T> findByExample(T exampleInstance, String[] excludedProperties) {
+       return this.findByExample(exampleInstance, excludedProperties, false);
+	}
+	
+	public List<T> findByExample(T exampleInstance, String[] excludedProperties, boolean ignoreCase) {
+		 DetachedCriteria crit = DetachedCriteria.forClass(persistentClass);
+	        Example example = Example.create(exampleInstance);
+			for (String exclude : excludedProperties) {
+				example.excludeProperty(exclude);
+			}
+			
+			if(ignoreCase) {
+				crit.add(example.ignoreCase());
+			} else {
+				crit.add(example);
+			}
+			
+			return getHibernateTemplate().findByCriteria(crit);
 	}
 
 	public T makePersistent(T entity) {

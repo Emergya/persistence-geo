@@ -46,6 +46,8 @@ public interface GenericDAO<T, ID extends Serializable> {
     List<T> findAllFromTo(Integer first, Integer last);
 
     List<T> findByExample(T exampleInstance, String[] excludeProperty);
+    
+    List<T> findByExample(T exampleInstance, String[] excludedProperties, boolean ignoreCase);
 
     Long getResults();
 
