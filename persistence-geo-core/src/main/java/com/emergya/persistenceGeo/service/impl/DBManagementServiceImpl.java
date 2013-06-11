@@ -66,48 +66,4 @@ public class DBManagementServiceImpl implements DBManagementService{
 	public String getTableSizeText(String table_name) {
 		return dbManagementDao.getTableSizeText(table_name);
 	}
-
-
-	@Override
-	public List<? extends Serializable> getAll() {
-		return null;
-	}
-
-
-	@Override
-	public List<? extends Serializable> getFromTo(Integer first, Integer last) {
-		return null;
-	}
-
-
-	@Override
-	public Long getResults() {
-		return null;
-	}
-
-
-	@Override
-	public Serializable getById(Long id) {
-		return null;
-	}
-
-
-	@Override
-	public Serializable create(Serializable dto) {
-		return null;
-	}
-
-
-	@Override
-	public Serializable update(Serializable dto) {
-		return null;
-	}
-
-
-	@Override
-	public void delete(Serializable dto) {
-		
-	}
-
-
 }

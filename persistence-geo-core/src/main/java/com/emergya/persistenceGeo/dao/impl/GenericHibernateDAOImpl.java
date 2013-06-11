@@ -37,6 +37,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
@@ -89,6 +90,20 @@ public abstract class GenericHibernateDAOImpl<T, ID extends Serializable> extend
     	Criteria criteria = getSession().createCriteria(persistentClass);
     	criteria.setFirstResult(first);
     	criteria.setMaxResults(last-first);
+		return criteria.list();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<T> findOrdered(Integer first, Integer last, String orderField, boolean ascending) {
+    	Criteria criteria = getSession().createCriteria(persistentClass);
+    	criteria.setFirstResult(first);
+    	criteria.setMaxResults(last-first);
+    	
+    	if(ascending){
+    		criteria.addOrder(Order.asc(orderField));
+    	} else {
+    		criteria.addOrder(Order.desc(orderField));
+    	}
 		return criteria.list();
     }
 

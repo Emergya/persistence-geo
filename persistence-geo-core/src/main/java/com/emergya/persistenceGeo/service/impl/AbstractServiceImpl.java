@@ -44,6 +44,12 @@ public abstract class AbstractServiceImpl<DTO extends Serializable, ENTITY exten
 		List<ENTITY> entities = getDao().findAllFromTo(first, last);
 		return entitiesToDtos(entities);
 	}
+	
+	@Override
+	public List<? extends Serializable> getOrdered(Integer first, Integer last, String fieldName, boolean asc) {
+		List<ENTITY> entities = getDao().findOrdered(first, last, fieldName, asc);
+		return entitiesToDtos(entities);
+	}
 
 	/* (non-Javadoc)
 	 * @see com.emergya.persistenceGeo.service.AbstractService#getResults()

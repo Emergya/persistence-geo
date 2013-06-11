@@ -36,7 +36,7 @@ package com.emergya.persistenceGeo.service;
  * 
  *
  */
-public interface DBManagementService extends AbstractService{
+public interface DBManagementService {
 	 
 	/**
 	 * Calcula cuanto ocupa una tabla en la base de datos
