@@ -62,7 +62,8 @@ public class ShpImporterImpl implements IShpImporter {
 			+ "{4}.{5} | psql -h {6} -p {7} -d {8} -U {9}";
 	private static final String GUESS_PROJECTION_COMMAND = "guessEPSG.py";
 
-	@Resource
+	@Autowired(required = false)
+	@Qualifier(value = "checkForCommandLine")
 	private Boolean checkForCommandLine;
 
 	public ShpImporterImpl() {
