@@ -28,6 +28,8 @@
  */
 package com.emergya.persistenceGeo.service;
 
+import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
+
 import java.io.File;
 
 import com.emergya.persistenceGeo.utils.BoundingBox;
@@ -48,6 +50,22 @@ public interface GeoserverService {
 	public boolean deleteGsWorkspace(String workspaceName);
 
 	public boolean unpublishGsDbLayer(String workspaceName, String layer);
+
+	/**
+	 * Unpublish layer identified by layerName, workspace and workspace
+	 * 
+	 * @param workspaceName
+	 * @param datastoreName
+	 * @param layer
+	 * 
+	 * @return true if can be unpublish and false otherwise
+	 */
+	public boolean unpublishLayer(String workspaceName, String datastoreName, String layerName);
+	
+	public void copyLayer(String workspaceName, String datastoreName,
+			String layerName, String tableName, String title, BoundingBox bbox,
+			GeometryType type, String targetWorkspaceName,
+			String targetDatastoreName, String targetLayerName);
 
 	/**
 	 * Publishes a vectorial layer with data in a PostGis database with the
@@ -207,4 +225,20 @@ public interface GeoserverService {
 	 *         not.
 	 */
 	public boolean existsWorkspace(String workspaceName);
+	
+	/**
+	 * Retrieves a layer's datastore associated with the layer.
+	 * 
+	 * @param layerName
+	 * 
+	 * @return
+	 */
+	public RESTDataStore getDatastore(String layerName);
+	
+	/**
+	 * Retrieves the geoserver url configured.
+	 * 
+	 * @return baseUrl to geoserver
+	 */
+	public String getGeoserverUrl();
 }

@@ -28,6 +28,7 @@
  */
 package com.emergya.persistenceGeo.service.impl;
 
+import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList.RESTShortWorkspace;
 
@@ -266,6 +267,26 @@ public class GeoserverServiceImpl implements GeoserverService {
 		return result;
 	}
 
+	/**
+	 * Unpublish layer identified by layerName, workspace and workspace
+	 * 
+	 * @param workspaceName
+	 * @param datastoreName
+	 * @param layer
+	 * 
+	 * @return true if can be unpublish and false otherwise
+	 */
+	public boolean unpublishLayer(String workspaceName, String datastoreName,
+			String layerName) {
+		if (LOG.isInfoEnabled()) {
+			LOG.info("Unpublishig geoserver layer");
+		}
+		boolean result = false;
+		result = gsDao.deletePostgisFeatureType(workspaceName, datastoreName,
+				layerName);
+		return result;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -274,13 +295,8 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 */
 	@Override
 	public boolean unpublishGsDbLayer(String workspaceName, String layerName) {
-		if (LOG.isInfoEnabled()) {
-			LOG.info("Unpublishig geoserver layer");
-		}
-		boolean result = false;
-		result = gsDao.deletePostgisFeatureType(workspaceName, workspaceName
-				+ DATASTORE_SUFFIX, layerName);
-		return result;
+		return unpublishLayer(workspaceName, workspaceName + DATASTORE_SUFFIX,
+				layerName);
 	}
 
 	/*
@@ -375,7 +391,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	public boolean deleteStyle(String styleName) {
 		return gsDao.deleteStyle(styleName);
 	}
-	
+
 	@Override
 	public boolean reset() {
 		return gsDao.reset();
@@ -390,5 +406,35 @@ public class GeoserverServiceImpl implements GeoserverService {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Retrieves a layer's datastore associated with the layer.
+	 * 
+	 * @param layerName
+	 * 
+	 * @return
+	 */
+	public RESTDataStore getDatastore(String layerName) {
+		return getGsDao().getDatastore(layerName);
+	}
+
+	/**
+	 * Retrieves the geoserver url configured.
+	 * 
+	 * @return baseUrl to geoserver
+	 */
+	public String getGeoserverUrl() {
+		return getGsDao().getGeoserverUrl();
+	}
+
+	public void copyLayer(String workspaceName, String datastoreName,
+			String layerName, String tableName, String title, BoundingBox bbox,
+			GeometryType type, String targetWorkspaceName,
+			String targetDatastoreName, String targetLayerName) {
+		publishGsDbLayer(workspaceName, tableName, targetLayerName, title,
+				bbox, type);
+		copyLayerStyle(layerName, targetLayerName);
+		setLayerStyle(workspaceName, targetLayerName, targetLayerName);
 	}
 }

@@ -28,6 +28,7 @@
  */
 package com.emergya.persistenceGeo.dao;
 
+import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 
 import java.io.File;
@@ -121,8 +122,8 @@ public interface GeoserverDao {
 	 * @return <code>true</code> if the feature type has been successfully
 	 *         deleted. Otherwise return <code>false</code>.
 	 */
-	boolean deletePostgisFeatureType(String workspaceName, String datastoreName,
-			String layerName);
+	boolean deletePostgisFeatureType(String workspaceName,
+			String datastoreName, String layerName);
 
 	/**
 	 * Check if a layer with <code>layerName</code> exists in the workspace
@@ -203,14 +204,14 @@ public interface GeoserverDao {
 	/**
 	 * Retrieves info about a coverage store.
 	 * 
-	 * @param workspaceName 
-	 * 				The workspace the store is associated to.
-	 * @param coverageStoreName 
-	 * 				The name of the coverage store whose info we want to retrieve.
+	 * @param workspaceName
+	 *            The workspace the store is associated to.
+	 * @param coverageStoreName
+	 *            The name of the coverage store whose info we want to retrieve.
 	 * @return A {@link GsCoverageStoreData} object if succesful or null if not.
 	 */
-	GsCoverageStoreData getCoverageStoreData(
-			String workspaceName, String coverageStoreName);
+	GsCoverageStoreData getCoverageStoreData(String workspaceName,
+			String coverageStoreName);
 
 	/**
 	 * Removes a coverage store from the geoserver.
@@ -223,6 +224,7 @@ public interface GeoserverDao {
 
 	/**
 	 * Unpublishes a coverage layer from the geoserver.
+	 * 
 	 * @param workspaceName
 	 * @param coverageLayer
 	 * @return
@@ -231,16 +233,18 @@ public interface GeoserverDao {
 
 	/**
 	 * Gets the details of a coverage layer.
+	 * 
 	 * @param workspaceName
 	 * @param coverageStoreName
 	 * @param coverageName
 	 * @return
 	 */
-	GsCoverageDetails getCoverageDetails(
-			String workspaceName, String coverageStoreName, String coverageName); 
-	
+	GsCoverageDetails getCoverageDetails(String workspaceName,
+			String coverageStoreName, String coverageName);
+
 	/**
 	 * Retrieves a layer's style associated SDL file's contents.
+	 * 
 	 * @param layerName
 	 * @return
 	 */
@@ -248,6 +252,7 @@ public interface GeoserverDao {
 
 	/**
 	 * Creates a new style with the given name and contents.
+	 * 
 	 * @param newLayerName
 	 * @param layerSDLContent
 	 * @return true if the style creation was successful.
@@ -256,18 +261,37 @@ public interface GeoserverDao {
 
 	/**
 	 * Sets a layer's style.
+	 * 
 	 * @param workspaceName
 	 * @param layerName
 	 * @param newLayerStyleName
 	 */
-	boolean setLayerStyle(String workspaceName, String layerName, String newLayerStyleName);
-	
+	boolean setLayerStyle(String workspaceName, String layerName,
+			String newLayerStyleName);
+
 	/**
 	 * Removes a style.
+	 * 
 	 * @param styleName
 	 * @return
 	 */
 	boolean deleteStyle(String styleName);
-	
+
 	boolean reset();
+
+	/**
+	 * Retrieves a layer's datastore associated with the layer.
+	 * 
+	 * @param layerName
+	 * 
+	 * @return
+	 */
+	RESTDataStore getDatastore(String layerName);
+
+	/**
+	 * Retrieves the geoserver url configured.
+	 * 
+	 * @return baseUrl to geoserver
+	 */
+	public String getGeoserverUrl();
 }
