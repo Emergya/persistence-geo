@@ -31,6 +31,7 @@ package com.emergya.persistenceGeo.service;
 import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 
 import java.io.File;
+import java.util.List;
 
 import com.emergya.persistenceGeo.utils.BoundingBox;
 import com.emergya.persistenceGeo.utils.GsCoverageDetails;
@@ -241,4 +242,37 @@ public interface GeoserverService {
 	 * @return baseUrl to geoserver
 	 */
 	public String getGeoserverUrl();
+	
+	/**
+	 * Retrieves all layers' names in geoserver
+	 * 
+	 * @return layers' names
+	 */
+	public List<String> getLayersNames();
+
+	/**
+	 * Obtain native name of a layerName 
+	 * 
+	 * @param layerName
+	 * 
+	 * @return native name of the layer 
+	 */
+	public String getNativeName(String layerName);
+	
+	/**
+	 * Retrieves all styles' names in geoserver
+	 * 
+	 * @return styles' names
+	 */
+	public List<String> getStyleNames();
+
+	
+	/**
+	 * Clean styles unused in style list 
+	 * 
+	 * @param styleNames name of styles to be deleted
+	 * 
+	 * @return list of deleted styles
+	 */
+	public List<String> cleanUnusedStyles(List<String> styleNames);
 }

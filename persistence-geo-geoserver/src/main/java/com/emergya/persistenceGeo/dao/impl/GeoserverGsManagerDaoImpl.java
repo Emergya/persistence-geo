@@ -50,6 +50,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.httpclient.NameValuePair;
@@ -859,6 +861,21 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 					+ layerName + "'", np);
 		}
 	}
+	
+	/**
+	 * Retrieves all layers' name in geoserver
+	 * 
+	 * @return
+	 */
+	public List<String> getLayersNames(){
+		try {
+			return getReader().getLayers().getNames();
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
+	}
+	
 
 	/**
 	 * Retrieves the geoserver url configured.
@@ -867,5 +884,105 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	 */
 	public String getGeoserverUrl() {
 		return getGsConfiguration().getServerUrl();
+	}
+
+	/**
+	 * Obtain native name of a layerName 
+	 * 
+	 * @param layerName
+	 * 
+	 * @return native name of the layer 
+	 */
+	public String getNativeName(String layerName){
+		GeoServerRESTReader reader;
+		try {
+			reader = getReader();
+			return reader.getFeatureType(reader.getLayer(layerName)).getNativeName();
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		} catch (NullPointerException np) {
+			LOG.error("Incorrect Geoserver layer '" + layerName + "'", np);
+			throw new GeoserverException("Incorrect Geoserver layer '"
+					+ layerName + "'", np);
+		}
+	}
+	
+	/**
+	 * Retrieves all styles' names in geoserver
+	 * 
+	 * @return styles' names
+	 */
+	public List<String> getStyleNames(){
+		try {
+			return getReader().getStyles().getNames();
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
+	}
+	
+	private String [] DEAFAULT_STYLES = {"line", "polygon", "point"};
+	
+	/**
+	 * Retrieves all styles' names in geoserver
+	 * 
+	 * @return styles' names removed
+	 */
+	public List<String> cleanUnusedStyles(){
+		return cleanUnusedStyles(getStyleNames());
+	}
+	
+	/**
+	 * Clean styles unused in style list 
+	 * 
+	 * @param styleNames name of styles to be deleted
+	 * 
+	 * @return list of deleted styles
+	 */
+	public List<String> cleanUnusedStyles(List<String> styleNames){
+		GeoServerRESTReader reader;
+		GeoServerRESTManager manager;
+		GeoServerRESTPublisher publisher;
+		List<String> removedStyles = new LinkedList<String>();
+		try {
+			manager = new GeoServerRESTManager(new URL(
+					gsConfiguration.getServerUrl()),
+					gsConfiguration.getAdminUsername(),
+					gsConfiguration.getAdminPassword());
+			reader = manager.getReader();
+			publisher = manager.getPublisher();
+			for(String style: styleNames){
+				if(canRemove(style, reader)
+						&& removeStyle(style, publisher)){
+					removedStyles.add(style);
+				}
+			}
+			return removedStyles;
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
+	}
+
+	private boolean removeStyle(String style, GeoServerRESTPublisher publisher) {
+		return publisher.removeStyle(style);
+	}
+
+	private boolean canRemove(String style, GeoServerRESTReader reader) {
+		// we can't remove default styles
+		for(String defaultStyle: DEAFAULT_STYLES){
+			if(defaultStyle.equals(style)){
+				return false;
+			}
+		}
+		// we can't remove used styles
+		for(String layerName: reader.getLayers().getNames()){
+			RESTLayer layer = reader.getLayer(layerName);
+			if(style.equals(layer.getDefaultStyle())){
+				return false;
+			}
+		}
+		return true;
 	}
 }
