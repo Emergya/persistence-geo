@@ -320,6 +320,22 @@ public class FoldersAdminServiceImpl extends
 		return (List<FolderDto>) entitiesToDtos(folderDao.getChannelFolders(
 				inZone, idZone, isEnabled));
 	}
+	
+	/**
+	 * Get all channel folders filterd
+	 * 
+	 * @param inZone indicates if obtain channel folders with a zone. If this parameter is null only obtain not zoned channels
+	 * @param idZone filter by zone. Obtain only channels of the zone identified by <code>idZone</code>
+	 * @param isEnabled
+	 * @param folderType folder type to obtain
+	 * 
+	 * @return folder list
+	 */
+	@SuppressWarnings("unchecked")
+	public List<FolderDto> getChannelFolders(Boolean inZone, Long idZone, Boolean isEnabled, Long folderType){
+		return (List<FolderDto>) entitiesToDtos(folderDao.getChannelFolders(
+				inZone, idZone, isEnabled, folderType));
+	}
 
 	/**
 	 * Get a folders list by zones. If zoneId is NULL returns all the folder not
@@ -567,6 +583,25 @@ public class FoldersAdminServiceImpl extends
 		if (entityList != null) {
 			for (AbstractFolderTypeEntity e : entityList) {
 				dtoList.add(entityToDto(e));
+			}
+		}
+		return dtoList;
+	}
+	
+	/**
+	 * @param <code>typeId</code>
+	 * 
+	 * @return List<FolderTypeDto>
+	 * 			Devuelve la lista de todos los folder types que tenga el mismo type id y no tengan padre
+	 */
+	public List<FolderDto> rootFoldersByType(Long typeId){
+
+		List<FolderDto> dtoList = new LinkedList<FolderDto>();
+		List<AbstractFolderEntity> dtoTemp = new LinkedList<AbstractFolderEntity>();
+		if (typeId != null) {
+			dtoTemp = folderDao.rootFoldersByType(typeId);
+			for (AbstractFolderEntity f : dtoTemp) {
+				dtoList.add(entityToDto(f));
 			}
 		}
 		return dtoList;

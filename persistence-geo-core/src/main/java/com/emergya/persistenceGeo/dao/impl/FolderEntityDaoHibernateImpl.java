@@ -249,33 +249,7 @@ public class FolderEntityDaoHibernateImpl extends
 	 */
 	public List<AbstractFolderEntity> getChannelFolders(Boolean inZone,
 			Long idZone, Boolean isEnable) {
-		Criteria criteria = getSession().createCriteria(persistentClass);
-		// FIXME: remove this fixme when merge
-		if (inZone != null) {
-			if (inZone) {
-				criteria.add(Restrictions.isNotNull(ZONE));
-			} else {
-				criteria.add(Restrictions.isNull(ZONE));
-			}
-		}
-		if (idZone != null) {
-			criteria.createAlias(ZONE, ZONE).add(
-					Restrictions.eq(ZONE + ".id", idZone));
-		}
-		if (isEnable != null && isEnable) {
-			criteria.add(Restrictions.eq("enabled", isEnable));
-		} else if (isEnable != null) {
-			Disjunction dis = Restrictions.disjunction();
-			dis.add(Restrictions.isNull("enabled"));
-			dis.add(Restrictions.eq("enabled", Boolean.FALSE));
-			criteria.add(dis);
-		}
-		// only parent folders
-		criteria.add(Restrictions.isNull(PARENT));
-		criteria.addOrder(Order.asc("name"));
-
-		return criteria.list();
-
+		return getChannelFolders(inZone, idZone, isEnable, null);
 	}
 
 	/**
@@ -355,15 +329,86 @@ public class FolderEntityDaoHibernateImpl extends
     	List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
     	Criteria criteria = getSession().createCriteria(persistentClass);
     	if(typeId != null){
-        	List<Long> typeAndSubTypes = new LinkedList<Long>();
-        	typeAndSubTypes.add(typeId);
-        	for (AbstractFolderTypeEntity folderType : folderTypeEntityDao.getFolderTypes(typeId)){
-        		typeAndSubTypes.add(folderType.getId());
-        	}
-    		criteria.add(Restrictions.in("folderType.id", typeAndSubTypes));
+    		criteria.add(Restrictions.in("folderType.id", getTypeAndChildrenIds(typeId)));
     	}
     	folderList.addAll(criteria.list());
     	return folderList;
     }
+	
+	/**
+	 * Get all channel folders filterd
+	 * 
+	 * @param inZone indicates if obtain channel folders with a zone. If this parameter is null only obtain not zoned channels
+	 * @param idZone filter by zone. Obtain only channels of the zone identified by <code>idZone</code>
+	 * @param isEnabled
+	 * @param folderType folder type to obtain
+	 * 
+	 * @return folder list
+	 */
+	public List<AbstractFolderEntity> getChannelFolders(Boolean inZone, Long idZone, Boolean isEnabled, Long folderType){
+
+		Criteria criteria = getSession().createCriteria(persistentClass);
+		if (inZone != null) {
+			if (inZone) {
+				criteria.add(Restrictions.isNotNull(ZONE));
+			} else {
+				criteria.add(Restrictions.isNull(ZONE));
+			}
+		}
+		if (idZone != null) {
+			criteria.createAlias(ZONE, ZONE).add(
+					Restrictions.eq(ZONE + ".id", idZone));
+		}
+		if (isEnabled != null && isEnabled) {
+			criteria.add(Restrictions.eq("enabled", isEnabled));
+		} else if (isEnabled != null) {
+			Disjunction dis = Restrictions.disjunction();
+			dis.add(Restrictions.isNull("enabled"));
+			dis.add(Restrictions.eq("enabled", Boolean.FALSE));
+			criteria.add(dis);
+		}
+		if(folderType != null){
+			// folders by type and subtypes 
+    		criteria.add(Restrictions.in("folderType.id", getTypeAndChildrenIds(folderType)));
+		}
+		// only parent folders
+		criteria.add(Restrictions.isNull(PARENT));
+		criteria.addOrder(Order.asc("name"));
+
+		return criteria.list();
+	}
+    
+    /**
+     * Obtain all ids of a folder type and subtypes
+     * 
+     * @param typeId 
+     * 
+     * @return ids
+     */
+    private List<Long> getTypeAndChildrenIds(Long typeId){
+    	List<Long> typeAndSubTypes = new LinkedList<Long>();
+    	typeAndSubTypes.add(typeId);
+    	for (AbstractFolderTypeEntity folderType : folderTypeEntityDao.getFolderTypes(typeId)){
+    		typeAndSubTypes.add(folderType.getId());
+    	}
+    	return typeAndSubTypes;
+    }
+	
+	/**
+	 * @param <code>typeId</code>
+	 * 
+	 * @return List<AbstractFolderEntity>
+	 * 			Devuelve la lista de todos los folder types que tenga el mismo type id y no tengan padre
+	 */
+	public List<AbstractFolderEntity> rootFoldersByType(Long typeId){
+    	List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
+    	Criteria criteria = getSession().createCriteria(persistentClass);
+    	if(typeId != null){
+    		criteria.add(Restrictions.in("folderType.id", getTypeAndChildrenIds(typeId)));
+    	}
+    	criteria.add(Restrictions.isNull(PARENT));
+    	folderList.addAll(criteria.list());
+    	return folderList;
+	}
 
 }
