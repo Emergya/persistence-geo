@@ -173,10 +173,9 @@ public interface FolderEntityDao extends GenericDAO<AbstractFolderEntity, Long> 
 	/**
      * Get a folders list by types.
      *
-     * @param <code>zoneId</code>
-     * @param <code>isEnabled</code>
+     * @param <code>typeId</code>
      *
-     * @return Entities list associated with the zoneId or null if not found
+     * @return Entities list associated with the typeId and sub types of the type
      */
     public List<AbstractFolderEntity> findByType(Long typeId);
 }

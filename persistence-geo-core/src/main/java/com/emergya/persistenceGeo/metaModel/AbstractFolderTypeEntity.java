@@ -43,9 +43,9 @@ public abstract class AbstractFolderTypeEntity extends AbstractEntity {
 	private static final long serialVersionUID = 4950765436808392406L;
 	
 	protected Long id;
-	
 	protected String type;
-	
+	protected AbstractFolderTypeEntity parent;
+
 	public AbstractFolderTypeEntity(){
 		
 	}
@@ -54,6 +54,11 @@ public abstract class AbstractFolderTypeEntity extends AbstractEntity {
 	 * @return the id
 	 */
 	public abstract Long getId();
+	
+	/**
+	 * @return the parent
+	 */
+	public abstract AbstractFolderTypeEntity getParent();
 	
 	/**
 	 * @return the type
@@ -72,6 +77,13 @@ public abstract class AbstractFolderTypeEntity extends AbstractEntity {
 	 */
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(AbstractFolderTypeEntity parent) {
+		this.parent = parent;
 	}
 
 }

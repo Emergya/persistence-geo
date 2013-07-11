@@ -43,7 +43,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.FolderEntityDao;
+import com.emergya.persistenceGeo.dao.FolderTypeEntityDao;
 import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractFolderTypeEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
 
 /**
@@ -60,6 +62,9 @@ public class FolderEntityDaoHibernateImpl extends
 
 	@Resource
 	private Instancer instancer;
+
+	@Resource
+	private FolderTypeEntityDao folderTypeEntityDao;
 
 	@Autowired
 	public void init(SessionFactory sessionFactory) {
@@ -342,16 +347,20 @@ public class FolderEntityDaoHibernateImpl extends
     /**
      * Get a folders list by types.
      *
-     * @param <code>zoneId</code>
-     * @param <code>isEnabled</code>
+     * @param <code>typeId</code>
      *
-     * @return Entities list associated with the zoneId or null if not found
+     * @return Entities list associated with the typeId and sub types of the type
      */
     public List<AbstractFolderEntity> findByType(Long typeId){
     	List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
     	Criteria criteria = getSession().createCriteria(persistentClass);
     	if(typeId != null){
-    		criteria.add(Restrictions.eq("folderType.id", typeId));
+        	List<Long> typeAndSubTypes = new LinkedList<Long>();
+        	typeAndSubTypes.add(typeId);
+        	for (AbstractFolderTypeEntity folderType : folderTypeEntityDao.getFolderTypes(typeId)){
+        		typeAndSubTypes.add(folderType.getId());
+        	}
+    		criteria.add(Restrictions.in("folderType.id", typeAndSubTypes));
     	}
     	folderList.addAll(criteria.list());
     	return folderList;

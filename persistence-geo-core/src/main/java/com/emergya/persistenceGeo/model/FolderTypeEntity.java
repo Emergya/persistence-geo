@@ -31,11 +31,15 @@ package com.emergya.persistenceGeo.model;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -45,7 +49,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractFolderTypeEntity;
  * Entidad de tipo de carpeta
  * 
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
- *
+ * 
  */
 @Entity
 @Table(name = "gis_folder_type")
@@ -55,15 +59,15 @@ public class FolderTypeEntity extends AbstractFolderTypeEntity {
 	 * 
 	 */
 	private static final long serialVersionUID = 7923892247763841955L;
-	
-	public FolderTypeEntity(){
-		
+
+	public FolderTypeEntity() {
+
 	}
 
 	@Id
-    @Column(name = "id")
+	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "gis_folder_type_seq")
-    @SequenceGenerator(name="gis_folder_type_seq", sequenceName = "gis_folder_type_seq", initialValue=100)
+	@SequenceGenerator(name = "gis_folder_type_seq", sequenceName = "gis_folder_type_seq", initialValue = 100)
 	public Long getId() {
 		return id;
 	}
@@ -71,6 +75,12 @@ public class FolderTypeEntity extends AbstractFolderTypeEntity {
 	@Column(name = "folder_type")
 	public String getType() {
 		return type;
+	}
+
+	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+	@JoinColumn(name = "folder_type_parent_id")
+	public FolderTypeEntity getParent() {
+		return (FolderTypeEntity) parent;
 	}
 
 	@Override
