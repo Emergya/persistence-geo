@@ -544,6 +544,8 @@ public class FoldersAdminServiceImpl extends
 			dto = new FolderTypeDto();
 			dto.setId(folderType.getId());
 			dto.setType(folderType.getType());
+			dto.setTitle(folderType.getTitle());
+			dto.setParent(folderType.getParent().getId());
 		}
 		return dto;
 	}

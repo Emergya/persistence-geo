@@ -77,6 +77,11 @@ public class FolderTypeEntity extends AbstractFolderTypeEntity {
 		return type;
 	}
 
+	@Column(name = "title")
+	public String getTitle() {
+		return title;
+	}
+
 	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 	@JoinColumn(name = "folder_type_parent_id")
 	public FolderTypeEntity getParent() {

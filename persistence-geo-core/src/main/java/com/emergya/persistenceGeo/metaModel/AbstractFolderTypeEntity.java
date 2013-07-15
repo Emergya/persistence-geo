@@ -44,6 +44,7 @@ public abstract class AbstractFolderTypeEntity extends AbstractEntity {
 	
 	protected Long id;
 	protected String type;
+	protected String title;
 	protected AbstractFolderTypeEntity parent;
 
 	public AbstractFolderTypeEntity(){
@@ -66,6 +67,11 @@ public abstract class AbstractFolderTypeEntity extends AbstractEntity {
 	public abstract String getType();
 	
 	/**
+	 * @return the title
+	 */
+	public abstract String getTitle();
+	
+	/**
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
@@ -84,6 +90,13 @@ public abstract class AbstractFolderTypeEntity extends AbstractEntity {
 	 */
 	public void setParent(AbstractFolderTypeEntity parent) {
 		this.parent = parent;
+	}
+
+	/**
+	 * @param title the title to set
+	 */
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 }

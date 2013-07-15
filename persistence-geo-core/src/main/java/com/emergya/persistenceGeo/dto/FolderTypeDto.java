@@ -41,6 +41,7 @@ public class FolderTypeDto implements Serializable, Cloneable {
 	protected Long id;
 	protected String type;
 	protected Long parent;
+	protected String title;
 
 	public Long getId() {
 		return id;
@@ -64,6 +65,14 @@ public class FolderTypeDto implements Serializable, Cloneable {
 
 	public void setParent(Long parent) {
 		this.parent = parent;
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+	
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 }

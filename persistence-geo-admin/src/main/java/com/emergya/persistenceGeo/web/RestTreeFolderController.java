@@ -30,7 +30,6 @@
 package com.emergya.persistenceGeo.web;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -83,9 +82,6 @@ public class RestTreeFolderController extends RestPersistenceGeoController
 
 	// TODO: Those constants should be defined in a more concrete implementation
 	// of the tree service.
-	private static final String NODE_TYPE_ZONE = "zone";
-	private static final String NODE_TYPE_CHANNELS_ROOT = "channelsRoot";
-	private static final String NODE_TYPE_CHANNELS_BY_ZONE = "zonesRoot";
 	private static final String SHOW_UNASSIGNED_FOLDER_FILTER = "SHOW_UNASSIGNED_FOLDER";
 
 	/**
@@ -140,21 +136,21 @@ public class RestTreeFolderController extends RestPersistenceGeoController
 		List<Treeable> nodes = new LinkedList<Treeable>();
 
 		try {
-			// TODO: Use only type id!!
+
+			Long typeId = FoldersAdminService.DEFAULT_FOLDER_TYPE;
 			if (!StringUtils.isEmpty(type) && StringUtils.isNumeric(type)) {
-				nodes.addAll(getFoldersByType(Long.decode(type), filter, true));
-			} else if (NODE_TYPE_ZONE.equals(type)) {
-				nodes = (List<Treeable>) restFoldersAdminController
-						.loadFoldersByZone(nodeId, null).get(ROOT);
-			} else if (NODE_TYPE_CHANNELS_ROOT.equals(type)) {
-				nodes.addAll(getFoldersByType(
-						FoldersAdminService.DEFAULT_FOLDER_TYPE, filter));
-			} else if (NODE_TYPE_CHANNELS_BY_ZONE.equals(type)) {
-				nodes.addAll(getFoldersByZone(filter));
-			} else {
+				typeId = Long.decode(type);
+			}
+
+			if (!StringUtils.isEmpty(nodeId)
+					&& (StringUtils.isNumeric(nodeId) || RestFoldersAdminController.UNASSIGNED_LAYERS_VIRTUAL_FOLDER_ID
+							.toString().equals(typeId))) {
 				// The rest of types are consider like folders
 				nodes = (List<Treeable>) restFoldersAdminController
 						.loadFoldersById(nodeId, filter).get(ROOT);
+			} else {
+				// get root folder types
+				nodes.addAll(getFoldersByType(typeId, filter));
 			}
 
 		} catch (Exception e) {
@@ -297,55 +293,5 @@ public class RestTreeFolderController extends RestPersistenceGeoController
 			folders.add(folder);
 		}
 		return folders;
-	}
-
-	/**
-	 * Obtain folders by zone
-	 * 
-	 * @param filter
-	 *            to apply
-	 * 
-	 * @return folders in the filter
-	 */
-	protected Collection<? extends Treeable> getFoldersByZone(String filter) {
-		// TODO: Remove this method and generalize by folderType
-		return getFoldersByZone(
-				filter,
-				filter.contains(RestFoldersAdminController.HIDE_IPT_CHANNELS) ? FoldersAdminService.DEFAULT_FOLDER_TYPE
-						: null);
-	}
-
-	/**
-	 * Obtain folders by zone
-	 * 
-	 * @param filter
-	 *            to apply
-	 * @param folderType
-	 *            to obtain
-	 * 
-	 * @return folders in the filter
-	 */
-	protected Collection<? extends Treeable> getFoldersByZone(String filter,
-			Long folderType) {
-		List<TreeFolderDto> previusFolders;
-		Long idZone = null;
-		if (filter.contains(RestFoldersAdminController.ALL_CHANNEL_IN_ZONES)) {
-			previusFolders = getFolderDecoration(
-					foldersAdminService.getChannelFolders(Boolean.TRUE, null,
-							Boolean.TRUE, folderType),
-					filter != null
-							&& filter
-									.contains(RestFoldersAdminController.SHOW_FOLDER_LAYERS));
-		} else {
-			if (!StringUtils.isEmpty(filter) && StringUtils.isNumeric(filter)) {
-				try {
-					idZone = Long.decode(filter);
-				} catch (Exception e) {
-					LOG.error("Error loading channels in zone");
-				}
-			}
-			previusFolders = getFoldersByZone(idZone, folderType);
-		}
-		return previusFolders;
 	}
 }
