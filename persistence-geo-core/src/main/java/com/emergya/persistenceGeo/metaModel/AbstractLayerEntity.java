@@ -256,8 +256,15 @@ public abstract class AbstractLayerEntity extends AbstractEntity implements Clon
 	/**
 	 * @param properties the properties to set
 	 */
+	@SuppressWarnings("unchecked")
 	public void setProperties(List properties) {
-		this.properties = properties;
+		if(this.properties != null){
+			// Fix an orphan remove error: http://stackoverflow.com/questions/5587482/hibernate-a-collection-with-cascade-all-delete-orphan-was-no-longer-referenc
+			this.properties.clear();
+			this.properties.addAll(properties);
+		}else{
+			this.properties = properties;
+		}
 	}
 	/**
 	 * @param styleList the styleList to set
