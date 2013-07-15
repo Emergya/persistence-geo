@@ -144,7 +144,7 @@ public class RestTreeFolderController extends RestPersistenceGeoController
 
 			if (!StringUtils.isEmpty(nodeId)
 					&& (StringUtils.isNumeric(nodeId) || RestFoldersAdminController.UNASSIGNED_LAYERS_VIRTUAL_FOLDER_ID
-							.toString().equals(typeId))) {
+							.toString().equals(nodeId))) {
 				// The rest of types are consider like folders
 				nodes = (List<Treeable>) restFoldersAdminController
 						.loadFoldersById(nodeId, filter).get(ROOT);
