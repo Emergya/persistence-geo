@@ -262,9 +262,10 @@ public class RestTreeFolderController extends RestPersistenceGeoController
 			unassingedLayersFolder.setName("Otros");
 
 			folders.add(new TreeFolderDto(unassingedLayersFolder));
-			Collections.sort(folders);
+			
 		}
 
+                Collections.sort(folders);
 		return folders;
 	}
 

@@ -56,6 +56,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
 import com.emergya.persistenceGeo.service.FoldersAdminService;
 import com.emergya.persistenceGeo.service.LayerAdminService;
+import org.apache.commons.lang3.BooleanUtils;
 
 /**
  * FoldersAdminService transactional implementation based on daos uses
@@ -109,6 +110,7 @@ public class FoldersAdminServiceImpl extends
 	 * 
 	 * @return saved folder
 	 */
+        @Override
 	public FolderDto saveFolder(FolderDto folder) {
 		AbstractFolderEntity entity = dtoToEntity(folder);
 		return entityToDto(folderDao.makePersistent(entity));
@@ -132,12 +134,10 @@ public class FoldersAdminServiceImpl extends
 		// Remove layers
 		List<AbstractLayerEntity> layers = layerDao.getLayersByFolder(folder
 				.getId());
-		if (layers != null) {
-			if (layers != null) {
-				for (AbstractLayerEntity layer : layers) {
-					layerDao.makeTransient(layer);
-				}
-			}
+		if (layers != null) {			
+                    for (AbstractLayerEntity layer : layers) {
+                            layerDao.makeTransient(layer);
+                    }
 		}
 
 		super.delete(dto);
@@ -155,6 +155,7 @@ public class FoldersAdminServiceImpl extends
 	 *            indicate if target user folders must be maintained
 	 */
 	@Transactional
+        @Override
 	public FolderDto copyUserContext(Long originUserId, Long targetUserId,
 			boolean merge) {
 		FolderDto toCopy = getRootFolder(originUserId);
@@ -171,6 +172,7 @@ public class FoldersAdminServiceImpl extends
 	 * @param userId
 	 *            user's <code>id</code>
 	 */
+        @Override
 	public void deleteUserContext(Long userId) {
 		FolderDto rootFolder = getRootFolder(userId);
 		while (rootFolder != null) {
@@ -187,6 +189,7 @@ public class FoldersAdminServiceImpl extends
 	 * 
 	 * @return copied
 	 */
+        @Override
 	public FolderDto copyFolder(Long targetUserId, FolderDto originFolder) {
 		return copyFolder(targetUserId, originFolder, null);
 	}
@@ -226,16 +229,15 @@ public class FoldersAdminServiceImpl extends
 				AbstractUserEntity user = userDao.findById(targetUserId, false);
 				AbstractFolderEntity folder = folderDao.findById(
 						result.getId(), false);
-				if (layers != null) {
-					// layers copy
-					for (AbstractLayerEntity layer : layers) {
-						AbstractLayerEntity clonedLayer = (AbstractLayerEntity) layer
-								.clone();
-						clonedLayer.setUser(user);
-						clonedLayer.setFolder(folder);
-						layerDao.save(clonedLayer);
-					}
-				}
+				
+                                // layers copy
+                                for (AbstractLayerEntity layer : layers) {
+                                        AbstractLayerEntity clonedLayer = (AbstractLayerEntity) layer
+                                                        .clone();
+                                        clonedLayer.setUser(user);
+                                        clonedLayer.setFolder(folder);
+                                        layerDao.save(clonedLayer);
+                                }
 			}
 
 			return entityToDto(folderDao.findById(result.getId(), false));
@@ -259,6 +261,7 @@ public class FoldersAdminServiceImpl extends
 	 * @return folder list
 	 */
 	@SuppressWarnings("unchecked")
+        @Override
 	public List<FolderDto> getChannelFolders(Boolean inZone, Long idZone) {
 		return (List<FolderDto>) entitiesToDtos(folderDao.getChannelFolders(
 				inZone, idZone));
@@ -272,6 +275,7 @@ public class FoldersAdminServiceImpl extends
 	 * 
 	 * @return Entities list associated with the zoneId or null if not found
 	 */
+        @Override
 	public List<FolderDto> findByZone(Long zoneId) {
 		List<FolderDto> foldersDto = new LinkedList<FolderDto>();
 		List<AbstractFolderEntity> folders = folderDao.findByZone(zoneId);
@@ -291,6 +295,7 @@ public class FoldersAdminServiceImpl extends
 	 * 
 	 * @return Entities list associated with the zoneId or null if not found
 	 */
+        @Override
 	public List<FolderDto> findByZone(Long zoneId, Long parentId) {
 		List<FolderDto> foldersDto = new LinkedList<FolderDto>();
 		List<AbstractFolderEntity> folders = folderDao.findByZone(zoneId,
@@ -315,6 +320,7 @@ public class FoldersAdminServiceImpl extends
 	 * @return folder list
 	 */
 	@SuppressWarnings("unchecked")
+        @Override
 	public List<FolderDto> getChannelFolders(Boolean inZone, Long idZone,
 			Boolean isEnabled) {
 		return (List<FolderDto>) entitiesToDtos(folderDao.getChannelFolders(
@@ -332,6 +338,7 @@ public class FoldersAdminServiceImpl extends
 	 * @return folder list
 	 */
 	@SuppressWarnings("unchecked")
+        @Override
 	public List<FolderDto> getChannelFolders(Boolean inZone, Long idZone, Boolean isEnabled, Long folderType){
 		return (List<FolderDto>) entitiesToDtos(folderDao.getChannelFolders(
 				inZone, idZone, isEnabled, folderType));
@@ -347,6 +354,7 @@ public class FoldersAdminServiceImpl extends
 	 * @return Entities list associated with the zoneId or null if not found
 	 */
 	@SuppressWarnings("unchecked")
+        @Override
 	public List<FolderDto> findByZone(Long zoneId, Boolean isEnabled) {
 		return (List<FolderDto>) entitiesToDtos(folderDao.findByZone(zoneId,
 				isEnabled));
@@ -364,12 +372,14 @@ public class FoldersAdminServiceImpl extends
 	 * @return Entities list associated with the zoneId or null if not found
 	 */
 	@SuppressWarnings("unchecked")
+        @Override
 	public List<FolderDto> findByZone(Long zoneId, Long parentId,
 			Boolean isEnabled) {
 		return (List<FolderDto>) entitiesToDtos(folderDao.findByZone(zoneId,
 				parentId, isEnabled));
 	}
 
+        @Override
 	protected FolderDto entityToDto(AbstractFolderEntity entity) {
 		FolderDto dto = null;
 		if (entity != null) {
@@ -439,6 +449,7 @@ public class FoldersAdminServiceImpl extends
 		return dto;
 	}
 
+        @Override
 	protected AbstractFolderEntity dtoToEntity(FolderDto dto) {
 		AbstractFolderEntity entity = null;
 		if (dto != null) {
@@ -493,6 +504,7 @@ public class FoldersAdminServiceImpl extends
 	/**
 	 * @return List<FolderTypeDto> Devuelve la lista de todos los folder types
 	 */
+        @Override
 	public List<FolderTypeDto> getAllFolderType() {
 		List<FolderTypeDto> dtoList = new LinkedList<FolderTypeDto>();
 		List<AbstractFolderTypeEntity> entityList = folderTypeDao.findAll();
@@ -510,6 +522,7 @@ public class FoldersAdminServiceImpl extends
 	 * @return List<FolderTypeDto> Devuelve la lista de todos los folder types
 	 *         excluyendo los del excluded
 	 */
+        @Override
 	public List<FolderTypeDto> getIPTtFolderType(String[] excluded) {
 		List<FolderTypeDto> dtoList = new LinkedList<FolderTypeDto>();
 		List<AbstractFolderTypeEntity> entityList = folderTypeDao.findAll();
@@ -550,9 +563,10 @@ public class FoldersAdminServiceImpl extends
 		return dto;
 	}
 
+        @Override
 	public List<FolderDto> findFoldersByType(Long typeId) {
 		List<FolderDto> dtoList = new LinkedList<FolderDto>();
-		List<AbstractFolderEntity> dtoTemp = new LinkedList<AbstractFolderEntity>();
+		List<AbstractFolderEntity> dtoTemp;
 		if (typeId != null) {
 			dtoTemp = folderDao.findByType(typeId);
 			for (AbstractFolderEntity f : dtoTemp) {
@@ -565,6 +579,7 @@ public class FoldersAdminServiceImpl extends
 	/**
 	 * @return List<FolderTypeDto> folder types without children
 	 */
+        @Override
 	public List<FolderTypeDto> getNotParentFolderTypes() {
 		List<FolderTypeDto> dtoList = new LinkedList<FolderTypeDto>();
 		List<AbstractFolderTypeEntity> entityList = folderTypeDao
@@ -596,14 +611,17 @@ public class FoldersAdminServiceImpl extends
 	 * @return List<FolderTypeDto>
 	 * 			Devuelve la lista de todos los folder types que tenga el mismo type id y no tengan padre
 	 */
+        @Override
 	public List<FolderDto> rootFoldersByType(Long typeId){
 
 		List<FolderDto> dtoList = new LinkedList<FolderDto>();
-		List<AbstractFolderEntity> dtoTemp = new LinkedList<AbstractFolderEntity>();
+		List<AbstractFolderEntity> dtoTemp;
 		if (typeId != null) {
 			dtoTemp = folderDao.rootFoldersByType(typeId);
 			for (AbstractFolderEntity f : dtoTemp) {
-				dtoList.add(entityToDto(f));
+                                if(BooleanUtils.isTrue(f.getEnabled())) {
+                                    dtoList.add(entityToDto(f));
+                                }
 			}
 		}
 		return dtoList;
