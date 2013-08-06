@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.emergya</groupId>
+		<artifactId>persistence-geo</artifactId>
+		<version>8.5-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>persistence-geo-geonetwork</artifactId>
+	<packaging>jar</packaging>
+	<!-- Project Information -->
+	<licenses>
+		<license>
+			<name>Apache License V2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
+
+	<name>persistence-geo-geonetwork</name>
+	<url>http://www.emergya.es</url>
+	<description>GeoNetwork module for persistence-geo</description>
+
+	<organization>
+		<name>Emergya</name>
+		<url>http://www.emergya.es</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>adiaz</id>
+			<name>Alejandro Diaz Torres</name>
+			<email>adiaz@emergya.com</email>
+			<organization>Emergya Consultoria</organization>
+			<organizationUrl>http://www.emergya.es</organizationUrl>
+			<roles>
+				<role>Analyst</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>marcos</id>
+			<name>Moisés Arcos Santiago</name>
+			<email>marcos@emergya.com</email>
+			<organization>Emergya Consultoria</organization>
+			<organizationUrl>http://www.emergya.es</organizationUrl>
+			<roles>
+				<role>Junior Programmer</role>
+			</roles>
+		</developer>
+	</developers>
+
+
+	<issueManagement>
+		<system>redmine</system>
+		<url>https://redmine.emergya.es/projects/maagya</url>
+	</issueManagement>
+	<ciManagement>
+		<system>jenkins</system>
+		<url>http://jenkins.emergya.es/jenkins/view/maagya/</url>
+	</ciManagement>
+	<inceptionYear>2012</inceptionYear>
+	<!-- Project Information -->
+
+
+	<!-- Environment Information -->
+	<scm>
+		<connection>scm:git:git@github.com:Emergya/persistence-geo.git</connection>
+		<url>scm:git:git@github.com:Emergya/persistence-geo.git</url>
+		<developerConnection>scm:git:git@github.com:Emergya/persistence-geo.git</developerConnection>
+	</scm>
+
+
+	<repositories>
+		<repository>
+			<id>jboss-repo</id>
+			<url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+		</repository>
+		<repository>
+			<id>spring-repo</id>
+			<url>http://maven.springframework.org</url>
+		</repository>
+		<repository>
+			<id>nexus</id>
+			<url>http://nexus.emergya.es/nexus/content/groups/public</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<!-- Internal dependencies -->
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>persistence-geo-core</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<!-- SPRING DEPENDENCIES -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!--Misc dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-epsg-hsql</artifactId>
+		</dependency>
+		  <dependency>
+		    <groupId>it.geosolutions</groupId>
+		    <artifactId>geonetwork-manager</artifactId>
+		    <version>1.1</version>
+		  </dependency>
+	</dependencies>
+
+	<build>
+		<finalName>${project.artifactId}</finalName>
+
+		<filters>
+			<filter>src/main/filters/${filter.profile}</filter>
+		</filters>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+				<targetPath>test-classes</targetPath>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<!-- ================= Profiles to deploy ================= -->
+		<profile>
+			<id>local</id>
+			<properties>
+				<filter.profile>local.properties</filter.profile>
+			</properties>
+		</profile>
+		<profile>
+			<id>first</id>
+			<properties>
+				<!-- Database validate -->
+				<database.hibernate.hbm2ddl.auto>create</database.hibernate.hbm2ddl.auto>
+				<filter.profile>${filterToApply}.properties</filter.profile>
+			</properties>
+		</profile>
+		<profile>
+			<id>test</id>
+			<properties>
+				<filter.profile>test.properties</filter.profile>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+		<profile>
+			<id>devel</id>
+			<properties>
+				<!-- Database validate -->
+				<database.hibernate.hbm2ddl.auto>validate</database.hibernate.hbm2ddl.auto>
+				<filter.profile>devel.properties</filter.profile>
+			</properties>
+		</profile>
+		<profile>
+			<id>oracle</id>
+			<properties>
+				<!-- Database validate -->
+				<database.hibernate.hbm2ddl.auto>validate</database.hibernate.hbm2ddl.auto>
+				<filter.profile>oracle.properties</filter.profile>
+			</properties>
+		</profile>
+	</profiles>
+
+</project>

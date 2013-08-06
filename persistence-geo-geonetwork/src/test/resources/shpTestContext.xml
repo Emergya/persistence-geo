@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+    <context:property-placeholder
+        location="classpath:/shpImporterProperties.properties" />
+    <context:annotation-config />
+    <context:component-scan base-package="com.emergya.persistenceGeo.importer.shp"/>
+    
+    <bean class="java.lang.Boolean" id="checkForCommandLine">
+    	<constructor-arg value="true" />
+    </bean>
+    
+    <bean
+        class="com.emergya.persistenceGeo.utils.GeographicDatabaseConfiguration">
+        <property name="postgresHost" value="${shp.db.host}" />
+        <property name="postgresPort" value="${shp.db.port}" />
+        <property name="databaseName" value="${shp.db.name}" />
+        <property name="postgresUser" value="${shp.db.user}" />
+        <property name="postgresPassword" value="${shp.db.password}" />
+        <property name="geomColumn" value="${shp.db.geomColumn}" />
+        <property name="schema" value="${shp.db.schema}" />
+        <property name="destSrid" value="${shp.db.destSRID}" />
+    </bean>
+</beans>
