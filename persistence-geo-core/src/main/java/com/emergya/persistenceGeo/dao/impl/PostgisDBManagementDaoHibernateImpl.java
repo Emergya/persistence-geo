@@ -32,6 +32,7 @@ package com.emergya.persistenceGeo.dao.impl;
 import java.math.BigInteger;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.GenericJDBCException;
 import org.hibernate.exception.SQLGrammarException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
@@ -48,7 +49,7 @@ import com.emergya.persistenceGeo.dao.DBManagementDao;
 @Repository
 public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport implements DBManagementDao{
 	
-	private final String getSize = "pg_table_size";
+	private final String getSize = "pg_total_relation_size";
 	private final String getSizeText = "pg_size_pretty";
 	
 	@Autowired
@@ -69,7 +70,11 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport imp
         Long result;
         try{
         	result = ((BigInteger) getSession().createSQLQuery(sql).uniqueResult()).longValue();
-        }catch(SQLGrammarException e){
+        }
+        catch(GenericJDBCException ge) {
+        	result = -1L;
+        }
+        catch(SQLGrammarException e){
         	result = -1L;
         }
     	
