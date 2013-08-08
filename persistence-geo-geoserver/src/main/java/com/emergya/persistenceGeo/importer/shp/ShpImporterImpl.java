@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.MessageFormat;
 
-import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
@@ -58,11 +57,12 @@ public class ShpImporterImpl implements IShpImporter {
 	private static final String BASH_COMMAND = "bash";
 	private static final String BASH_COMMAND_FIRST_ARGUMENT = "-c";
 	private static final String DROP_TABLE_OPTION = "-d";
-	private static final String SHP2PGSQL_COMMAND = "shp2pgsql -W LATIN1 {0} -s {1}{2} -g geom -k -i -I {3} "
-			+ "{4}.{5} | psql -h {6} -p {7} -d {8} -U {9}";
+	private static final String SHP2PGSQL_COMMAND = "shp2pgsql -W LATIN1 {0} -s {1}{2} -g geom -k -i -I \"{3}\" "
+			+ "\"{4}.{5}\" | psql -h {6} -p {7} -d {8} -U {9}";
 	private static final String GUESS_PROJECTION_COMMAND = "guessEPSG.py";
 
-	@Resource
+	@Autowired(required = false)
+	@Qualifier(value = "checkForCommandLine")
 	private Boolean checkForCommandLine;
 
 	public ShpImporterImpl() {
@@ -141,8 +141,8 @@ public class ShpImporterImpl implements IShpImporter {
 		}
 		int lastIndexOfSlash = pathToShp.lastIndexOf(File.separatorChar);
 		int lastIndexOfShp = pathToShp.lastIndexOf('.');
-		String path = pathToShp.substring(0, lastIndexOfSlash);
-		String file = pathToShp.substring(lastIndexOfSlash + 1, lastIndexOfShp);
+		String path = getFileSystemPath(pathToShp.substring(0, lastIndexOfSlash));
+		String file = getFileSystemPath(pathToShp.substring(lastIndexOfSlash + 1, lastIndexOfShp));
 		boolean exists = checkIfAllFilesExist(path, file);
 		if (!exists) {
 			throw new ShpImporterException(
@@ -202,7 +202,7 @@ public class ShpImporterImpl implements IShpImporter {
 
 		String command = MessageFormat.format(SHP2PGSQL_COMMAND,
 				dropTableParameter, srcProjection, dbConfig.getDestSrid(),
-				shp.getAbsolutePath(), dbConfig.getSchema(), tableName,
+				getFileSystemPath(shp.getAbsolutePath()), dbConfig.getSchema(), tableName,
 				dbConfig.getPostgresHost(), dbConfig.getPostgresPort(),
 				dbConfig.getDatabaseName(), dbConfig.getPostgresUser());
 		if (LOG.isDebugEnabled()) {
@@ -257,6 +257,17 @@ public class ShpImporterImpl implements IShpImporter {
 
 		return result;
 
+	}
+	
+	/**
+	 * Repair a path with escape white spaces 
+	 * 
+	 * @param path to be escaped
+	 * 
+	 * @return path escaped
+	 */
+	private String getFileSystemPath(String path){
+		return path != null ? path.replaceAll(" ", "\\ ") : path;
 	}
 
 	private void checkForCommandLineUtils() {

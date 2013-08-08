@@ -28,7 +28,10 @@
  */
 package com.emergya.persistenceGeo.service;
 
+import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
+
 import java.io.File;
+import java.util.List;
 
 import com.emergya.persistenceGeo.utils.BoundingBox;
 import com.emergya.persistenceGeo.utils.GsCoverageDetails;
@@ -40,9 +43,9 @@ import com.emergya.persistenceGeo.utils.GsLayerDescriptor.GeometryType;
  * 
  */
 public interface GeoserverService {
-	
+
 	public final String DEFAULT_SRS = "EPSG:4326";
-	
+
 	public boolean createGsWorkspaceWithDatastore(String workspaceName);
 
 	public boolean deleteGsWorkspace(String workspaceName);
@@ -50,8 +53,25 @@ public interface GeoserverService {
 	public boolean unpublishGsDbLayer(String workspaceName, String layer);
 
 	/**
-	 * Publishes a vectorial layer with data in a PostGis database with the default 
-	 * styles and given parameters.
+	 * Unpublish layer identified by layerName, workspace and workspace
+	 * 
+	 * @param workspaceName
+	 * @param datastoreName
+	 * @param layer
+	 * 
+	 * @return true if can be unpublish and false otherwise
+	 */
+	public boolean unpublishLayer(String workspaceName, String datastoreName, String layerName);
+	
+	public void copyLayer(String workspaceName, String datastoreName,
+			String layerName, String tableName, String title, BoundingBox bbox,
+			GeometryType type, String targetWorkspaceName,
+			String targetDatastoreName, String targetLayerName);
+
+	/**
+	 * Publishes a vectorial layer with data in a PostGis database with the
+	 * default styles and given parameters.
+	 * 
 	 * @param workspaceName
 	 * @param table_name
 	 * @param layerName
@@ -62,7 +82,7 @@ public interface GeoserverService {
 	 */
 	boolean publishGsDbLayer(String workspaceName, String table_name,
 			String layerName, String title, BoundingBox nativeBoundingBox,
-			GeometryType type);	
+			GeometryType type);
 
 	/**
 	 * Check if a layer with <code>layerName</code> exists in the workspace
@@ -94,15 +114,15 @@ public interface GeoserverService {
 	 * 
 	 * @param workspace
 	 *            workspace to use.
-	 * @param storeName
-	 *            the store name to be used or created.
+	 * @param layerName
+	 *            the layer name to be created.
 	 * @param geotiff
 	 *            the GeoTIFF file.
 	 * @param crs
 	 *            the image native SRS.
 	 * @return <code>true</code> if success.
 	 */
-	public boolean publishGeoTIFF(String workspace, String storeName,
+	public boolean publishGeoTIFF(String workspace, String layerName,
 			File geotiff, String crs);
 
 	/**
@@ -110,15 +130,16 @@ public interface GeoserverService {
 	 * 
 	 * @param workspaceName
 	 *            workspace to use.
-	 * @param storeName
-	 *            the store name to be used or created.
+	 * @param layerName
+	 *            the store name to be created. It will also be the created 
+	 *            coverage store
 	 * @param imageFile
 	 *            a ZIP file with an image mosaic.
 	 * @param crs
 	 *            the image mosaic coordinates system.
 	 * @return <code>true</code> if success.
 	 */
-	public boolean publishImageMosaic(String workspaceName, String storeName,
+	public boolean publishImageMosaic(String workspaceName, String layerName,
 			File imageFile, String crs);
 
 	/**
@@ -126,66 +147,132 @@ public interface GeoserverService {
 	 * 
 	 * @param workspaceName
 	 *            workspace to use.
-	 * @param storeName
-	 *            the store name to be used or created.
+	 * @param layerName
+	 *            the layer name to be created.
 	 * @param imageFile
 	 *            a ZIP file with an World Image.
 	 * @param crs
 	 *            the world image coordinates system.
 	 * @return <code>true</code> if success.
 	 */
-	public boolean publishWorldImage(String workspaceName,
-			String storeName, File imageFile, String crs);
-	
-	/**
-	 * Gets info about a coverage store.
-	 * @param workspaceName
-	 * @param coverageStoreName
-	 * @return
-	 */
-	public GsCoverageStoreData getCoverageStoreData(
-		String workspaceName, String coverageStoreName);
-	
+	public boolean publishWorldImage(String workspaceName, String layerName,
+			File imageFile, String crs);
 
 	/**
-	 * Unpublishes a layer stored in a coverage store from the geoserver.
-	 * Also, it deletes the 
+	 * Gets info about a coverage store.
+	 * 
 	 * @param workspaceName
 	 * @param coverageStoreName
 	 * @return
 	 */
-	public boolean unpublishGsCoverageLayer(String adminWorkspaceName, String tmpLayerName);
-	
+	public GsCoverageStoreData getCoverageStoreData(String workspaceName,
+			String coverageStoreName);
+
+	/**
+	 * Unpublishes a layer stored in a coverage store from the geoserver. Also,
+	 * it deletes the
+	 * 
+	 * @param workspaceName
+	 * @param layerName
+	 * @return
+	 */
+	public boolean unpublishGsCoverageLayer(String adminWorkspaceName,
+			String layerName);
+
 	/**
 	 * Retrieves the details of a coverage store: bbox, projection, etc.
+	 * 
 	 * @param workspaceName
 	 * @param coverageStore
 	 * @param coverageName
 	 * @return
 	 */
-	public GsCoverageDetails getCoverageDetails(
-			String workspaceName, String coverageStore, String coverageName);
+	public GsCoverageDetails getCoverageDetails(String workspaceName,
+			String coverageStore, String coverageName);
 
 	/**
-	 * Copies the style of the source layer with a new name, including the 
-	 * sdl file stored in the server.
+	 * Copies the style of the source layer with a new name, including the sdl
+	 * file stored in the server.
+	 * 
 	 * @param sourceLayerName
 	 * @param newLayerName
 	 * @return
 	 */
 	public boolean copyLayerStyle(String sourceLayerName, String newLayerName);
-	
+
 	/**
 	 * Changes a layer style. The style must exist in geoserver.
+	 * 
 	 * @param workspaceName
 	 * @param layerName
 	 * @param newStyleName
 	 * @return
 	 */
-	public boolean setLayerStyle(String workspaceName, String layerName, String newStyleName);
-	
+	public boolean setLayerStyle(String workspaceName, String layerName,
+			String newStyleName);
+
 	/**
-	 * Removes an style from GeoServer. 
+	 * Removes an style from GeoServer.
 	 */
 	public boolean deleteStyle(String styleName);
+	
+	public boolean reset();
+	/**
+	 * Checks if a workspace exists on the server.
+	 * 
+	 * @param workspaceName
+	 *            name to check.
+	 * @return <code>true</code> if the workspace exists, <code>false</code> if
+	 *         not.
+	 */
+	public boolean existsWorkspace(String workspaceName);
+	
+	/**
+	 * Retrieves a layer's datastore associated with the layer.
+	 * 
+	 * @param layerName
+	 * 
+	 * @return
+	 */
+	public RESTDataStore getDatastore(String layerName);
+	
+	/**
+	 * Retrieves the geoserver url configured.
+	 * 
+	 * @return baseUrl to geoserver
+	 */
+	public String getGeoserverUrl();
+	
+	/**
+	 * Retrieves all layers' names in geoserver
+	 * 
+	 * @return layers' names
+	 */
+	public List<String> getLayersNames();
+
+	/**
+	 * Obtain native name of a layerName 
+	 * 
+	 * @param layerName
+	 * 
+	 * @return native name of the layer 
+	 */
+	public String getNativeName(String layerName);
+	
+	/**
+	 * Retrieves all styles' names in geoserver
+	 * 
+	 * @return styles' names
+	 */
+	public List<String> getStyleNames();
+
+	
+	/**
+	 * Clean styles unused in style list 
+	 * 
+	 * @param styleNames name of styles to be deleted
+	 * 
+	 * @return list of deleted styles
+	 */
+	public List<String> cleanUnusedStyles(List<String> styleNames);
 }

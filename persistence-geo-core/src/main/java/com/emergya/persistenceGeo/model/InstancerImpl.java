@@ -41,6 +41,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractResourceEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractRuleEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractRulePropertyEntity;
+import com.emergya.persistenceGeo.metaModel.AbstractSourceToolEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
@@ -115,4 +116,9 @@ public class InstancerImpl implements Instancer {
 	public AbstractFolderTypeEntity createFolderType() {
 		return new FolderTypeEntity();
 	}
+
+	public AbstractSourceToolEntity createSourceToolEntity() {
+	        return new SourceToolEntity();
+	}
+
 }

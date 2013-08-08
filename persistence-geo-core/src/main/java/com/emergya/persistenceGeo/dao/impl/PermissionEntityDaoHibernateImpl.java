@@ -38,7 +38,10 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.emergya.persistenceGeo.dao.AuthorityEntityDao;
+import com.emergya.persistenceGeo.dao.AuthorityTypeEntityDao;
 import com.emergya.persistenceGeo.dao.PermissionEntityDao;
+import com.emergya.persistenceGeo.metaModel.AbstractAuthorityTypeEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
 
@@ -54,6 +57,12 @@ public class PermissionEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Ab
 
 	@Resource
 	private Instancer instancer;
+	
+	@Resource
+	private AuthorityEntityDao authorityDao;
+	
+	@Resource
+	private AuthorityTypeEntityDao authorityTypeDao;
 
 	@Autowired
     public void init(SessionFactory sessionFactory) {
@@ -96,6 +105,38 @@ public class PermissionEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Ab
 		AbstractPermissionEntity permissionEntity = findById(permissionID, false);
 		if(permissionEntity != null){
 			getHibernateTemplate().delete(permissionEntity);
+		}
+	}
+
+	/**
+	 * Get a permissions list by authority 
+	 * 
+	 * @param <code>authorithyId</code> if this parameter is null search permissions without authority type
+	 * 
+	 * @return Entities list associated with the authorithyId name or null if not found 
+	 */
+	public List<AbstractPermissionEntity> getPermissionsByAuthorithy(Long authorithyId) {
+		if(authorithyId != null){
+			AbstractAuthorityTypeEntity authorityType = authorityDao.findById(authorithyId, false).getAuthType();
+			return authorityType.getPermissionList();
+		}else{
+			return findByCriteria(Restrictions.isEmpty("authTypeList"));
+		}
+	}
+	
+	/**
+	 * Get a permissions list by authority type 
+	 * 
+	 * @param <code>authorithyTypeId</code> 
+	 * 
+	 * @return Entities list associated with the authorithyTypeId name or null if not found 
+	 */
+	public List<AbstractPermissionEntity> getPermissionsByAuthorithyType(Long authorithyTypeId){
+		if(authorithyTypeId != null){
+			AbstractAuthorityTypeEntity authorityType = authorityTypeDao.findById(authorithyTypeId, false);
+			return authorityType.getPermissionList();
+		}else{
+			return findByCriteria(Restrictions.isEmpty("authTypeList"));
 		}
 	}
 

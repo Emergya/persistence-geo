@@ -37,7 +37,7 @@ import java.util.Date;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  * 
  */
-public class TreeFolderDto extends FolderDto implements Treeable {
+public class TreeFolderDto extends FolderDto implements Treeable, Comparable<TreeFolderDto> {
 
 	/**
 	 * 
@@ -105,6 +105,10 @@ public class TreeFolderDto extends FolderDto implements Treeable {
 
 	public Object getData() {
 		return origin;
+	}
+	
+	public int compareTo(TreeFolderDto other) {
+		return this.name.compareTo(other.name);
 	}
 
 }

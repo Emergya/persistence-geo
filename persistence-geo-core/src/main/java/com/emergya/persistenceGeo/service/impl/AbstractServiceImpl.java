@@ -4,6 +4,7 @@
 package com.emergya.persistenceGeo.service.impl;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,6 +44,12 @@ public abstract class AbstractServiceImpl<DTO extends Serializable, ENTITY exten
 		List<ENTITY> entities = getDao().findAllFromTo(first, last);
 		return entitiesToDtos(entities);
 	}
+	
+	@Override
+	public List<? extends Serializable> getOrdered(Integer first, Integer last, String fieldName, boolean asc) {
+		List<ENTITY> entities = getDao().findOrdered(first, last, fieldName, asc);
+		return entitiesToDtos(entities);
+	}
 
 	/* (non-Javadoc)
 	 * @see com.emergya.persistenceGeo.service.AbstractService#getResults()
@@ -53,7 +60,7 @@ public abstract class AbstractServiceImpl<DTO extends Serializable, ENTITY exten
 	}
 	
 	protected List<? extends Serializable> entitiesToDtos(List<ENTITY> entities) {
-		List<DTO> dtos = new LinkedList<DTO>();
+		List<DTO> dtos = new ArrayList<DTO>(entities.size());
 		for (ENTITY entity: entities){
 			dtos.add(entityToDto(entity));
 		}

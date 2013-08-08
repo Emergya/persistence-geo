@@ -90,6 +90,13 @@ public class RestFoldersAdminController implements Serializable {
 	public static final String LOAD_FOLDERS_BY_GROUP = "group";
 	public static final String LOAD_FOLDERS_STYLE_TREE = "tree";
 	public static final String LOAD_FOLDERS_STYLE_STRING = "string";
+	
+	/**
+	 * The folder Id that must be passed to loadFoldersById so it
+	 * returns the unassigned layers.
+	 * {@link RestFoldersAdminController#loadFoldersById(String)}
+	 */
+	public static final Long UNASSIGNED_LAYERS_VIRTUAL_FOLDER_ID= -1L;
 
 	/**
 	 * Filter to show zone channels in
@@ -586,8 +593,14 @@ public class RestFoldersAdminController implements Serializable {
 			Long folderId = new Long(idFolder);
 			tree = new LinkedList<Treeable>();
 			
-			
-			loadLayersInTree(folderId, isChannel, recursiveLoadMark, tree);
+			if(folderId.equals(UNASSIGNED_LAYERS_VIRTUAL_FOLDER_ID)){
+				List<LayerDto> previusLayers = layerAdminService.getUnassignedLayers();
+				for (LayerDto subRes : previusLayers) {
+					tree.add(new TreeNode(subRes, true));
+				}
+			} else {
+				loadLayersInTree(folderId, isChannel, recursiveLoadMark, tree);
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -621,7 +634,7 @@ public class RestFoldersAdminController implements Serializable {
 		List<LayerDto> previusLayers = layerAdminService
 				.getLayersByFolder(folderId, isChannel, Boolean.TRUE);
 		for (LayerDto subRes : previusLayers) {
-			tree.add(new TreeNode(subRes, true));
+			tree.add(new TreeNode(subRes));
 		}
 	}
 
@@ -688,6 +701,7 @@ public class RestFoldersAdminController implements Serializable {
 				}
 				folders.add(folder);
 			}
+			
 			result.put(SUCCESS, true);
 		} catch (Exception e) {
 			e.printStackTrace();

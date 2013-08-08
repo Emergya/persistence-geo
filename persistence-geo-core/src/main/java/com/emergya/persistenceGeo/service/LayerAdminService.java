@@ -212,4 +212,10 @@ public interface LayerAdminService extends AbstractService {
 	 * @return all stored public layers.
 	 */
 	public List<LayerDto> getPublicLayers();
+
+	/**
+	 * Gets unassigned layers (layers not infolders or channels.
+	 * @return 
+	 */
+	public List<LayerDto> getUnassignedLayers();
 }

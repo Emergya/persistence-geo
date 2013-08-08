@@ -5,7 +5,7 @@
 
 	<groupId>com.emergya</groupId>
 	<artifactId>persistence-geo</artifactId>
-	<version>8.5-SNAPSHOT</version>
+	<version>9.0</version>
 	<packaging>pom</packaging>
 
 	<!-- Project Information -->
@@ -89,8 +89,8 @@
 		<hibernate.version>3.5.1-Final</hibernate.version>
 		<hsqldb.version>1.8.0.7</hsqldb.version>
 		<commons-dbcp.version>1.4</commons-dbcp.version>
-		<maven-compiler-plugin.version>2.3.1</maven-compiler-plugin.version>
-		<maven-resource-plugin.version>2.5</maven-resource-plugin.version>
+		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
+		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 		<maven-jetty-plugin.version>6.1.24</maven-jetty-plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>3.1.2.RELEASE</spring.version>
@@ -193,6 +193,25 @@
 								<Implementation-Build>${buildNumber}</Implementation-Build>
 							</manifestEntries>
 						</archive>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven-compiler-plugin.version}</version>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+						<debug>true</debug>
+						<debuglevel>lines,vars,source</debuglevel>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>${maven-resources-plugin.version}</version>
+					<configuration>
+						<encoding>${project.build.sourceEncoding}</encoding>
 					</configuration>
 				</plugin>
 			</plugins>

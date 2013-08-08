@@ -37,15 +37,17 @@ public class FolderTypeDto implements Serializable, Cloneable {
 	 * 
 	 */
 	private static final long serialVersionUID = -254544776562353970L;
-	
+
 	protected Long id;
 	protected String type;
+	protected Long parent;
+	protected String title;
 
 	public Long getId() {
 		return id;
 	}
-	
-	public String getType(){
+
+	public String getType() {
 		return type;
 	}
 
@@ -55,6 +57,22 @@ public class FolderTypeDto implements Serializable, Cloneable {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public Long getParent() {
+		return parent;
+	}
+
+	public void setParent(Long parent) {
+		this.parent = parent;
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+	
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 }

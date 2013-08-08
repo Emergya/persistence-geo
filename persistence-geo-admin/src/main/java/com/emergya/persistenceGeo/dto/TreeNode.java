@@ -73,6 +73,10 @@ public class TreeNode implements Treeable {
         this.type = type;
         this.leaf = isLeaf;
 	}
+	
+	public TreeNode(LayerDto layerDto) {
+		this(layerDto, layerDto.getId(), layerDto.getLayerLabel(), layerDto.getClass().getSimpleName(), true);
+	}
 
 	public TreeNode(AbstractDto origin, boolean isLeaf, String type) {
 		this(origin, origin.getId(), origin.getName(), type, isLeaf);

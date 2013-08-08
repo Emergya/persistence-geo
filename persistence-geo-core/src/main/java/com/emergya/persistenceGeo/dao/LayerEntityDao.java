@@ -152,4 +152,10 @@ public interface LayerEntityDao extends GenericDAO<AbstractLayerEntity, Long> {
 	 * @return
 	 */
 	public List<AbstractLayerEntity> getPublicLayers();
+
+	/**
+	 * Gets all unassigned layers (layers not assinged to folders or channels).
+	 * @return
+	 */
+	public List<AbstractLayerEntity> getUnassignedLayers();
 }

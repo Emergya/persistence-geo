@@ -34,6 +34,7 @@ import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.ParameterConfigure;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.HTTPUtils;
 import it.geosolutions.geoserver.rest.decoder.RESTCoverageList;
+import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.decoder.utils.NameLinkElem;
@@ -49,6 +50,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.httpclient.NameValuePair;
@@ -67,6 +70,7 @@ import com.emergya.persistenceGeo.exceptions.GeoserverException;
 import com.emergya.persistenceGeo.service.GeoserverService;
 import com.emergya.persistenceGeo.utils.BoundingBox;
 import com.emergya.persistenceGeo.utils.GSFeatureTypeNativeNameEncoder;
+import com.emergya.persistenceGeo.utils.GeoserverUtils;
 import com.emergya.persistenceGeo.utils.GsCoverageDetails;
 import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
@@ -206,9 +210,10 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			LOG.debug("Creating workspace [name=" + name + "].");
 		}
 		boolean result = true;
+		String sanitizedName = GeoserverUtils.createName(name);
 		try {
 			GeoServerRESTPublisher publisher = getPublisher();
-			result = publisher.createWorkspace(name);
+			result = publisher.createWorkspace(sanitizedName);
 		} catch (IllegalArgumentException e) {
 			result = false;
 		} catch (MalformedURLException e) {
@@ -270,9 +275,11 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		}
 		boolean result = false;
 		GeoServerRESTPublisher publisher;
+
+		String sanitizedPrefix = GeoserverUtils.createName(prefix);
 		try {
 			publisher = getPublisher();
-			result = publisher.createNamespace(prefix, uri);
+			result = publisher.createNamespace(sanitizedPrefix, uri);
 
 		} catch (MalformedURLException e) {
 			LOG.error("Malformed Geoserver REST API URL", e);
@@ -293,10 +300,13 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 
 		boolean result = false;
 		GeoServerRESTStoreManager dsManager;
+
+		String sanitizedName = GeoserverUtils.createName(datastoreName);
+
 		try {
 			dsManager = getDatastoreManager();
 			GSPostGISDatastoreEncoder properties = new GSPostGISDatastoreEncoder(
-					datastoreName);
+					sanitizedName);
 			properties.setHost(gsConfiguration.getDbHost());
 			properties.setPort(gsConfiguration.getDbPort());
 			properties.setDatabase(gsConfiguration.getDbName());
@@ -325,10 +335,11 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 
 		boolean result = false;
 		GeoServerRESTStoreManager dsManager;
+		String sanitizedName = GeoserverUtils.createName(datastoreName);
 		try {
 			dsManager = getDatastoreManager();
 			GSPostGISDatastoreEncoder properties = new GSPostGISDatastoreEncoder(
-					datastoreName);
+					sanitizedName);
 
 			properties.setDatabaseType(gsConfiguration.getDbType());
 			if (gsConfiguration.getDbSchema() != null
@@ -486,19 +497,22 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	}
 
 	@Override
-	public boolean publishGeoTIFF(String workspace, String storeName,
+	public boolean publishGeoTIFF(String workspace, String layerName,
 			File geotiff, String crs) {
 		GeoServerRESTPublisher gsPublisher;
+
+		layerName = GeoserverUtils.createName(layerName);
 		boolean result = false;
 		try {
 			gsPublisher = getPublisher();
 			// result = gsPublisher.publishGeoTIFF(workspace, storeName,
 			// geotiff);
-			result = gsPublisher.publishGeoTIFF(workspace, storeName,
-					storeName, geotiff, crs, ProjectionPolicy.FORCE_DECLARED,
+			result = gsPublisher.publishGeoTIFF(workspace, layerName,
+					layerName, geotiff, crs, ProjectionPolicy.FORCE_DECLARED,
 					DEFAULT_RASTER_STYLE, null);
 			if (result) {
-				result = configureCoverage(workspace, storeName, crs, gsPublisher);
+				result = configureCoverage(workspace, layerName, crs,
+						gsPublisher);
 			}
 
 		} catch (FileNotFoundException e) {
@@ -512,18 +526,22 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	}
 
 	@Override
-	public boolean publishImageMosaic(String workspaceName, String storeName,
+	public boolean publishImageMosaic(String workspaceName, String layerName,
 			File zipFile, String crs) {
 		boolean result = false;
 		GeoServerRESTPublisher gsPublisher;
+
+		layerName = GeoserverUtils.createName(layerName);
+
 		try {
 			gsPublisher = getPublisher();
 			NameValuePair paramName = new NameValuePair("coverageName",
-					storeName);
-			result = gsPublisher.publishImageMosaic(workspaceName, storeName,
+					layerName);
+			result = gsPublisher.publishImageMosaic(workspaceName, layerName,
 					zipFile, ParameterConfigure.FIRST, paramName);
 			if (result) {
-				result = configureCoverage(workspaceName, storeName, crs, gsPublisher);
+				result = configureCoverage(workspaceName, layerName, crs,
+						gsPublisher);
 			}
 		} catch (FileNotFoundException e) {
 			LOG.error("File not found", e);
@@ -537,24 +555,25 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	}
 
 	@Override
-	public boolean publishWorldImage(String workspaceName, String storeName,
+	public boolean publishWorldImage(String workspaceName, String layerName,
 			File zipFile, String crs) {
 		boolean result = false;
 		GeoServerRESTPublisher gsPublisher;
 
+		layerName = GeoserverUtils.createName(layerName);
+
 		try {
 			gsPublisher = getPublisher();
 			NameValuePair paramName = new NameValuePair("coverageName",
-					storeName);
-			result = gsPublisher.publishWorldImage(workspaceName, storeName,
+					layerName);
+			result = gsPublisher.publishWorldImage(workspaceName, layerName,
 					zipFile, ParameterConfigure.FIRST, paramName);
 
 			// If coverage has been created configure the layer with the SRS
 			// passed.
 			if (result) {
-				result = configureCoverage(workspaceName, storeName, crs,
+				result = configureCoverage(workspaceName, layerName, crs,
 						gsPublisher);
-
 			}
 		} catch (FileNotFoundException e) {
 			LOG.error("File not found", e);
@@ -760,7 +779,9 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			throw new GeoserverException("Malformed Geoserver REST API URL", e);
 		}
 
-		return publisher.publishStyle(layerSDLContent, newStyleName);
+		// The name is sanitized.
+		String newStyleNameSanitized = GeoserverUtils.createName(newStyleName);
+		return publisher.publishStyle(layerSDLContent, newStyleNameSanitized);
 	}
 
 	/*
@@ -778,8 +799,11 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			LOG.debug("### Setting layer style using " + url);
 		}
 
+		// The name is sanitized.
+		String newStyleNameSanitized = GeoserverUtils
+				.createName(newLayerStyleName);
 		String payload = String.format(SET_LAYER_STYLE_PAYLOAD,
-				newLayerStyleName);
+				newStyleNameSanitized);
 
 		return this.put(url, payload) != null;
 	}
@@ -799,5 +823,166 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		}
 
 		return publisher.removeStyle(styleName, true);
+	}
+
+	@Override
+	public boolean reset() {
+		GeoServerRESTPublisher publisher;
+		try {
+			publisher = this.getPublisher();
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
+
+		return publisher.reset();
+	}
+
+	/**
+	 * Retrieves a layer's datastore associated with the layer.
+	 * 
+	 * @param layerName
+	 * 
+	 * @return
+	 */
+	public RESTDataStore getDatastore(String layerName) {
+		GeoServerRESTReader reader;
+		try {
+			reader = getReader();
+			return getReader().getDatastore(
+					reader.getFeatureType(reader.getLayer(layerName)));
+
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		} catch (NullPointerException np) {
+			LOG.error("Incorrect Geoserver layer '" + layerName + "'", np);
+			throw new GeoserverException("Incorrect Geoserver layer '"
+					+ layerName + "'", np);
+		}
+	}
+	
+	/**
+	 * Retrieves all layers' name in geoserver
+	 * 
+	 * @return
+	 */
+	public List<String> getLayersNames(){
+		try {
+			return getReader().getLayers().getNames();
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
+	}
+	
+
+	/**
+	 * Retrieves the geoserver url configured.
+	 * 
+	 * @return baseUrl to geoserver
+	 */
+	public String getGeoserverUrl() {
+		return getGsConfiguration().getServerUrl();
+	}
+
+	/**
+	 * Obtain native name of a layerName 
+	 * 
+	 * @param layerName
+	 * 
+	 * @return native name of the layer 
+	 */
+	public String getNativeName(String layerName){
+		GeoServerRESTReader reader;
+		try {
+			reader = getReader();
+			return reader.getFeatureType(reader.getLayer(layerName)).getNativeName();
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		} catch (NullPointerException np) {
+			LOG.error("Incorrect Geoserver layer '" + layerName + "'", np);
+			throw new GeoserverException("Incorrect Geoserver layer '"
+					+ layerName + "'", np);
+		}
+	}
+	
+	/**
+	 * Retrieves all styles' names in geoserver
+	 * 
+	 * @return styles' names
+	 */
+	public List<String> getStyleNames(){
+		try {
+			return getReader().getStyles().getNames();
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
+	}
+	
+	private String [] DEAFAULT_STYLES = {"line", "polygon", "point"};
+	
+	/**
+	 * Retrieves all styles' names in geoserver
+	 * 
+	 * @return styles' names removed
+	 */
+	public List<String> cleanUnusedStyles(){
+		return cleanUnusedStyles(getStyleNames());
+	}
+	
+	/**
+	 * Clean styles unused in style list 
+	 * 
+	 * @param styleNames name of styles to be deleted
+	 * 
+	 * @return list of deleted styles
+	 */
+	public List<String> cleanUnusedStyles(List<String> styleNames){
+		GeoServerRESTReader reader;
+		GeoServerRESTManager manager;
+		GeoServerRESTPublisher publisher;
+		List<String> removedStyles = new LinkedList<String>();
+		try {
+			manager = new GeoServerRESTManager(new URL(
+					gsConfiguration.getServerUrl()),
+					gsConfiguration.getAdminUsername(),
+					gsConfiguration.getAdminPassword());
+			reader = manager.getReader();
+			publisher = manager.getPublisher();
+			for(String style: styleNames){
+				if(canRemove(style, reader)
+						&& removeStyle(style, publisher)){
+					removedStyles.add(style);
+				}
+			}
+			return removedStyles;
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
+	}
+
+	private boolean removeStyle(String style, GeoServerRESTPublisher publisher) {
+		return publisher.removeStyle(style);
+	}
+
+	private boolean canRemove(String style, GeoServerRESTReader reader) {
+		// we can't remove default styles
+		for(String defaultStyle: DEAFAULT_STYLES){
+			if(defaultStyle.equals(style)){
+				return false;
+			}
+		}
+		// we can't remove used styles
+		for(String layerName: reader.getLayers().getNames()){
+			RESTLayer layer = reader.getLayer(layerName);
+			if(style.equals(layer.getDefaultStyle())){
+				return false;
+			}
+		}
+		return true;
 	}
 }

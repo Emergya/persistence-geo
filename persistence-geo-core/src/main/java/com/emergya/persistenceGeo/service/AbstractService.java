@@ -55,6 +55,16 @@ public interface AbstractService {
 	public List<? extends Serializable> getFromTo(Integer first, Integer last);
 	
 	/**
+	 * Gets all results from the specified first to the specified last, ordered by the given field.
+	 * @param first
+	 * @param last
+	 * @param fieldName
+	 * @param asc
+	 * @return
+	 */
+	public List<? extends Serializable> getOrdered(Integer first, Integer last, String fieldName, boolean asc);
+	
+	/**
 	 * 
 	 * @return
 	 */
