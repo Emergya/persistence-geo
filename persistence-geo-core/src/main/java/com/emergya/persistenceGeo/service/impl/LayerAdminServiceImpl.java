@@ -275,6 +275,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			dto.setPertenece_a_canal(entity.getIsChannel());
 			dto.setCreateDate(entity.getCreateDate());
 			dto.setUpdateDate(entity.getUpdateDate());
+			dto.setLayerTitle(entity.getLayerTitle());
 			
 			
 			AbstractLayerTypeEntity type = entity.getType();
@@ -363,6 +364,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			entity.setEnabled(dto.getEnabled());
 			entity.setIsChannel(dto.getPertenece_a_canal());
 			entity.setUpdateDate(now);
+			entity.setLayerTitle(dto.getLayerTitle());
 			
 			//Layer type
 			if(dto.getType() != null){
@@ -703,5 +705,10 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 		// Delete the layer properties
 		
 		layerDao.delete(layerId);
+	}
+
+	@Override
+	public List<LayerDto> getUnassignedLayers() {
+		return (List<LayerDto>) entitiesToDtos(layerDao.getUnassignedLayers());
 	}
 }

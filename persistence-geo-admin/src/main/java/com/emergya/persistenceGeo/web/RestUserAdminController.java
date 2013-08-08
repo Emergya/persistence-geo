@@ -51,9 +51,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.emergya.persistenceGeo.dto.AuthorityDto;
 import com.emergya.persistenceGeo.dto.FolderDto;
 import com.emergya.persistenceGeo.dto.UserDto;
-import com.emergya.persistenceGeo.dto.ZoneDto;
 import com.emergya.persistenceGeo.service.FoldersAdminService;
 import com.emergya.persistenceGeo.service.LayerAdminService;
+import com.emergya.persistenceGeo.service.ToolPermissionService;
 import com.emergya.persistenceGeo.service.UserAdminService;
 import com.emergya.persistenceGeo.service.ZoneAdminService;
 import com.google.common.base.Strings;
@@ -82,6 +82,9 @@ public class RestUserAdminController implements Serializable{
 	
 	@Resource
 	private FoldersAdminService foldersAdminService;
+	
+	@Resource
+	private ToolPermissionService toolPermissionService;
 	
 	protected final String RESULTS= "results";
 	protected final String ROOT= "data";
@@ -270,14 +273,27 @@ public class RestUserAdminController implements Serializable{
 		UserDto user = null;
 		try{
 			// Secure with logged user
-			String userLogged = ((UserDetails) SecurityContextHolder.getContext()
-					.getAuthentication().getPrincipal()).getUsername();
+			Object principal = SecurityContextHolder.getContext()
+					.getAuthentication().getPrincipal();
+			String userLogged = (principal instanceof String) ? (String) principal :
+				((UserDetails) principal).getUsername();
 			if(userLogged != null){
 				user = userAdminService.obtenerUsuario(userLogged);
 				if (user != null) {
 					user.setPassword("");
+					// save user permissions. always by user
+					user.setPermissions(toolPermissionService.getPermissionsByUser(user.getId())); 
 				}
 			}
+			
+			if(user == null){
+				user = new UserDto();
+				user.setUsername(userLogged);
+				user.setAdmin(false);
+				// save user permissions. default permissions
+				user.setPermissions(toolPermissionService.getPermissionsByUser(null));
+			}
+			
 			result.put(SUCCESS, true);
 		}catch (Exception e){
 			e.printStackTrace();

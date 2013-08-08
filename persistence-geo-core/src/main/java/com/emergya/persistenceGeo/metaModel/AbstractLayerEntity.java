@@ -34,8 +34,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.Column;
-
 /**
  * Entidad de capa
  * 
@@ -256,9 +254,20 @@ public abstract class AbstractLayerEntity extends AbstractEntity implements Clon
 	/**
 	 * @param properties the properties to set
 	 */
+	@SuppressWarnings("unchecked")
 	public void setProperties(List properties) {
-		this.properties = properties;
+		/* #85692: Changes for orphan removal. 
+		 * @see http://stackoverflow.com/questions/5587482/hibernate-a-collection-with-cascade-all-delete-orphan-was-no-longer-referenc
+		 */
+		if(this.properties != null){
+			// 
+			this.properties.clear();
+			this.properties.addAll(properties);
+		}else{
+			this.properties = properties;
+		}
 	}
+	
 	/**
 	 * @param styleList the styleList to set
 	 */

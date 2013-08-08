@@ -29,6 +29,8 @@
  */
 package com.emergya.persistenceGeo.utils;
 
+import java.util.UUID;
+
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -37,14 +39,53 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class GeoserverUtils {
 
-	public static String generateName(String name) {
-		String workspaceName = name;
-		workspaceName = StringUtils
-				.replaceChars(workspaceName, ".- \t:", "_____");
-		workspaceName = StringUtils.lowerCase(workspaceName);
-		workspaceName = StringUtils.replaceChars(workspaceName,
-				"áéíóúñàèìòùü''\"´", "aeiounaeiouu___");
-		return workspaceName;
+	/**
+	 * Sanitizes a string so its content contains characters that forms a 
+	 * good Geoserver name. This means the resulting string will not contain
+	 * non-ascii characters nor whitespaces and if it starts with a number,
+	 * a "_" will be prefixed.
+	 * @param text
+	 * @return
+	 */
+	public static String createName(String text) {
+		if(StringUtils.isEmpty(text)) {
+			throw new IllegalArgumentException("A geoserver name cannot be empty!");
+		}
+		
+		if(text.matches("^[a-z_][a-z0-9_]*$")) {
+			// Already sanitized
+			return text;
+		}
+		
+		String name = text.replaceAll("[\\W ]", "_");
+		
+		if(StringUtils.isNumeric(name.substring(0, 1))) {
+			// First char is a number.
+			name = "_"+name;
+		}
+		
+		// Fix for #83218, geoserver don't like names too long.
+		if(name.length()>25) {
+			name = name.substring(0, 20);
+		}
+		
+		return name.toLowerCase();
 	}
-
+	
+	/**
+	 * Creates an valid unique Geoserver name by sanitizing the received text and removing 
+	 * non-ascii characters and whitespaces and ensuring that the resulting name doesn't start with
+	 * a number.
+	 * 
+	 * Also, it appends a randomized suffix (created from an UUID).
+	 * 
+	 * NOTE: THE CLIENT CODE MUST CHECK IF THE GENERATED NAME IS ACTUALLY UNIQUE!
+	 * 
+	 * @param text
+	 * @return
+	 */
+	public static String createUniqueName(String text) {
+		UUID uuid = UUID.randomUUID();
+		return createName(text)+"_"+uuid.toString().replaceAll("-", "_");
+	}
 }

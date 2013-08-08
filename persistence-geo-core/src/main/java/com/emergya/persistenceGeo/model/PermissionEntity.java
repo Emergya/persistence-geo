@@ -68,9 +68,12 @@ public class PermissionEntity extends AbstractPermissionEntity {
 		name = permissionName;
 	}
 
-	@Column(name = "name_permission")
-	public String getName() {
-		return name;
+	@Id
+    @Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "gis_permission_seq")
+    @SequenceGenerator(name="gis_permission_seq", sequenceName = "gis_permission_seq", initialValue=100)
+	public Long getId() {
+		return id;
 	}
 
 	@Column(name = "create_date")
@@ -83,12 +86,24 @@ public class PermissionEntity extends AbstractPermissionEntity {
 		return updateDate;
 	}
 
-	@Id
-    @Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "gis_permission_seq")
-    @SequenceGenerator(name="gis_permission_seq", sequenceName = "gis_permission_seq", initialValue=100)
-	public Long getId() {
-		return id;
+	@Column(name = "filter")
+	public String getFilter() {
+		return filter;
+	}
+
+	@Column(name = "name")
+	public String getName() {
+		return name;
+	}
+
+	@Column(name = "ptype")
+	public String getPtype() {
+		return ptype;
+	}
+
+	@Column(name = "config")
+	public String getConfig() {
+		return config;
 	}
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissionList")

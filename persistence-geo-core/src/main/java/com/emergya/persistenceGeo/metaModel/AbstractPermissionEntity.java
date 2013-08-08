@@ -29,7 +29,6 @@
  */
 package com.emergya.persistenceGeo.metaModel;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -40,18 +39,17 @@ import java.util.List;
  *
  */
 @SuppressWarnings("rawtypes")
-public abstract class AbstractPermissionEntity extends AbstractEntity {
+public abstract class AbstractPermissionEntity extends AbstractToolEntity {
 
 	/**
 	 * 
 	 */
 	protected static final long serialVersionUID = 8185264482816302475L;
 	
-	protected Long id;
-	
-	protected String name;
 	protected Date createDate;
 	protected Date updateDate;
+	
+	protected String filter;
 	
 	protected List authTypeList;
 
@@ -62,50 +60,22 @@ public abstract class AbstractPermissionEntity extends AbstractEntity {
 	public AbstractPermissionEntity(String permissionName){
 		name = permissionName;
 	}
-
-	/**
-	 * @return the name
-	 */
-	public abstract String getName();
-	/**
-	 * @return the createDate
-	 */
-	public abstract Date getCreateDate();
-	/**
-	 * @return the updateDate
-	 */
-	public abstract Date getUpdateDate();
+	
 	/**
 	 * @return the authTypeList
 	 */
 	public abstract List getAuthTypeList();
 
 	/**
-	 * @param permission_id the permission_id to set
+	 * @return the filter
 	 */
-	public void setId(Serializable id) {
-		this.id = (Long) id;
-	}
+	public abstract String getFilter();
 
 	/**
-	 * @param name the name to set
+	 * @param filter the filter to set
 	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @param fechaCreacion the createDate to set
-	 */
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
-	/**
-	 * @param fechaActualizacion the updateDate to set
-	 */
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
+	public void setFilter(String filter) {
+		this.filter = filter;
 	}
 
 	/**

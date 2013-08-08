@@ -118,6 +118,18 @@ public interface FoldersAdminService extends AbstractService{
 	 * @return folder list
 	 */
 	public List<FolderDto> getChannelFolders(Boolean inZone, Long idZone, Boolean isEnabled);
+	
+	/**
+	 * Get all channel folders filterd
+	 * 
+	 * @param inZone indicates if obtain channel folders with a zone. If this parameter is null only obtain not zoned channels
+	 * @param idZone filter by zone. Obtain only channels of the zone identified by <code>idZone</code>
+	 * @param isEnabled
+	 * @param folderType folder type to obtain
+	 * 
+	 * @return folder list
+	 */
+	public List<FolderDto> getChannelFolders(Boolean inZone, Long idZone, Boolean isEnabled, Long folderType);
 
     /**
      * Get a folders list by zones. If zoneId is NULL returns all the
@@ -170,6 +182,12 @@ public interface FoldersAdminService extends AbstractService{
 	 * 			Devuelve la lista de todos los folder types
 	 */
 	public List<FolderTypeDto> getAllFolderType();
+    
+    /**
+	 * @return List<FolderTypeDto>
+	 * 			folder types without children
+	 */
+	public List<FolderTypeDto> getNotParentFolderTypes();
 	
 	/**
 	 * @param <code>excluded</code>
@@ -180,11 +198,27 @@ public interface FoldersAdminService extends AbstractService{
 	public List<FolderTypeDto> getIPTtFolderType(String[] excluded);
 	
 	/**
+	 * @param <code>parentId</code>
+	 * 
+	 * @return List<FolderTypeDto>
+	 * 			folder sub types of the folder type identified by <code>parentId</code>  
+	 */
+	public List<FolderTypeDto> getFolderTypes(Long parentId);
+	
+	/**
 	 * @param <code>typeId</code>
 	 * 
 	 * @return List<FolderTypeDto>
 	 * 			Devuelve la lista de todos los folder types que tenga el mismo type id
 	 */
 	public List<FolderDto> findFoldersByType(Long typeId);
+	
+	/**
+	 * @param <code>typeId</code>
+	 * 
+	 * @return List<FolderTypeDto>
+	 * 			Devuelve la lista de todos los folder types que tenga el mismo type id y no tengan padre
+	 */
+	public List<FolderDto> rootFoldersByType(Long typeId);
     
 }

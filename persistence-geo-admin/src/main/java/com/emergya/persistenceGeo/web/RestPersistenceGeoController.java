@@ -74,6 +74,11 @@ public class RestPersistenceGeoController implements Serializable{
 	protected final String SUCCESS= "success";
 	
 	/**
+	 * Access not allowed default message
+	 */
+	public static String NOT_ACCESS_MSG = "User logged cannot access to this function!";
+	
+	/**
 	 * Check if user logged can access to a group
 	 * 
 	 * @param groupId
@@ -92,6 +97,29 @@ public class RestPersistenceGeoController implements Serializable{
 			canAccess = groupId == null
 					|| (groupId.equals(user.getAuthorityId()) || userAdminService
 							.canLoad(user.getId(), user.getAuthorityId()));
+		}
+		return canAccess;
+	}
+	
+	/**
+	 * Check if user logged is admin
+	 * 
+	 * @param groupId
+	 * 
+	 * @return true if <code>secureRestRequest</code> is false or user is admin user
+	 */
+	protected boolean isAdmin(Boolean checkValid){
+		boolean canAccess = false;
+		if(!secureRestRequest){
+			canAccess = true;
+		}else{
+			//Secure with logged user
+			String username = ((UserDetails) SecurityContextHolder.getContext()
+					.getAuthentication().getPrincipal()).getUsername();
+			UserDto user  = userAdminService.obtenerUsuario(username);
+			canAccess = (checkValid != null &&  checkValid == true)? 
+					(user.getValid() && user.getAdmin()) 
+						: user.getAdmin();
 		}
 		return canAccess;
 	}

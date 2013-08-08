@@ -28,12 +28,18 @@
  */
 package com.emergya.persistenceGeo.service.impl;
 
+import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
+import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
+import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList.RESTShortWorkspace;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.referencing.CRS;
@@ -262,6 +268,26 @@ public class GeoserverServiceImpl implements GeoserverService {
 		return result;
 	}
 
+	/**
+	 * Unpublish layer identified by layerName, workspace and workspace
+	 * 
+	 * @param workspaceName
+	 * @param datastoreName
+	 * @param layer
+	 * 
+	 * @return true if can be unpublish and false otherwise
+	 */
+	public boolean unpublishLayer(String workspaceName, String datastoreName,
+			String layerName) {
+		if (LOG.isInfoEnabled()) {
+			LOG.info("Unpublishig geoserver layer");
+		}
+		boolean result = false;
+		result = gsDao.deletePostgisFeatureType(workspaceName, datastoreName,
+				layerName);
+		return result;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -270,13 +296,8 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 */
 	@Override
 	public boolean unpublishGsDbLayer(String workspaceName, String layerName) {
-		if (LOG.isInfoEnabled()) {
-			LOG.info("Unpublishig geoserver layer");
-		}
-		boolean result = false;
-		result = gsDao.deletePostgisFeatureType(workspaceName, workspaceName
-				+ DATASTORE_SUFFIX, layerName);
-		return result;
+		return unpublishLayer(workspaceName, workspaceName + DATASTORE_SUFFIX,
+				layerName);
 	}
 
 	/*
@@ -305,24 +326,24 @@ public class GeoserverServiceImpl implements GeoserverService {
 	}
 
 	@Override
-	public boolean publishGeoTIFF(String workspace, String storeName,
+	public boolean publishGeoTIFF(String workspace, String layerName,
 			File geotiff, String crs) {
-		return gsDao.publishGeoTIFF(workspace, storeName, geotiff, crs);
+		return gsDao.publishGeoTIFF(workspace, layerName, geotiff, crs);
 	}
 
 	@Override
-	public boolean publishImageMosaic(String workspaceName, String storeName,
+	public boolean publishImageMosaic(String workspaceName, String layerName,
 			File imageFile, String crs) {
-		return gsDao.publishImageMosaic(workspaceName, storeName, imageFile,
+		return gsDao.publishImageMosaic(workspaceName, layerName, imageFile,
 				crs);
 	}
 
 	@Override
-	public boolean publishWorldImage(String workspaceName, String storeName,
+	public boolean publishWorldImage(String workspaceName, String layerName,
 			File imageFile, String crs) {
 
 		return gsDao
-				.publishWorldImage(workspaceName, storeName, imageFile, crs);
+				.publishWorldImage(workspaceName, layerName, imageFile, crs);
 	}
 
 	@Override
@@ -370,5 +391,91 @@ public class GeoserverServiceImpl implements GeoserverService {
 	@Override
 	public boolean deleteStyle(String styleName) {
 		return gsDao.deleteStyle(styleName);
+	}
+
+	@Override
+	public boolean reset() {
+		return gsDao.reset();
+	}
+
+	public boolean existsWorkspace(String workspaceName) {
+		RESTWorkspaceList workspaceList = gsDao.getWorkspaceList();
+		for (RESTShortWorkspace workspace : workspaceList) {
+			String currentName = workspace.getName();
+			if (StringUtils.equals(workspaceName, currentName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Retrieves a layer's datastore associated with the layer.
+	 * 
+	 * @param layerName
+	 * 
+	 * @return
+	 */
+	public RESTDataStore getDatastore(String layerName) {
+		return getGsDao().getDatastore(layerName);
+	}
+
+	/**
+	 * Retrieves the geoserver url configured.
+	 * 
+	 * @return baseUrl to geoserver
+	 */
+	public String getGeoserverUrl() {
+		return getGsDao().getGeoserverUrl();
+	}
+
+	public void copyLayer(String workspaceName, String datastoreName,
+			String layerName, String tableName, String title, BoundingBox bbox,
+			GeometryType type, String targetWorkspaceName,
+			String targetDatastoreName, String targetLayerName) {
+		publishGsDbLayer(workspaceName, tableName, targetLayerName, title,
+				bbox, type);
+		copyLayerStyle(layerName, targetLayerName);
+		setLayerStyle(workspaceName, targetLayerName, targetLayerName);
+	}
+	
+	/**
+	 * Retrieves all layers' name in geoserver
+	 * 
+	 * @return
+	 */
+	public List<String> getLayersNames(){
+		return gsDao.getLayersNames();
+	}
+
+	/**
+	 * Obtain native name of a layerName 
+	 * 
+	 * @param layerName
+	 * 
+	 * @return native name of the layer 
+	 */
+	public String getNativeName(String layerName){
+		return gsDao.getNativeName(layerName);
+	}
+	
+	/**
+	 * Retrieves all styles' names in geoserver
+	 * 
+	 * @return styles' names
+	 */
+	public List<String> getStyleNames(){
+		return gsDao.getStyleNames();
+	}
+	
+	/**
+	 * Clean styles unused in style list 
+	 * 
+	 * @param styleNames name of styles to be deleted
+	 * 
+	 * @return list of deleted styles
+	 */
+	public List<String> cleanUnusedStyles(List<String> styleNames){
+		return gsDao.cleanUnusedStyles(styleNames);
 	}
 }

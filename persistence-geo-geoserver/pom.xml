@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.emergya</groupId>
 		<artifactId>persistence-geo</artifactId>
-		<version>8.5-SNAPSHOT</version>
+		<version>9.0</version>
 	</parent>
 
 	<artifactId>persistence-geo-geoserver</artifactId>
@@ -85,7 +85,7 @@
 	<repositories>
 		<repository>
 			<id>jboss-repo</id>
-			<url>http://repository.jboss.org/maven2</url>
+			<url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
 		</repository>
 		<repository>
 			<id>spring-repo</id>
@@ -148,20 +148,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<optimize>true</optimize>
-					<debug>true</debug>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
-				<configuration>
-					<encoding>${project.build.sourceEncoding}</encoding>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
