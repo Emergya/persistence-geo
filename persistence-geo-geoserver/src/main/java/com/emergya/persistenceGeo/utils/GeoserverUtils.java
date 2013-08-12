@@ -88,4 +88,18 @@ public class GeoserverUtils {
 		UUID uuid = UUID.randomUUID();
 		return createName(text)+"_"+uuid.toString().replaceAll("-", "_");
 	}
+	
+	/**
+	 * Sanitizes columns name for use with geoserver.
+	 * @param columnName
+	 * @return
+	 */
+	public static String sanitizeColumnName(String columnName) {
+		String sanitizedName =  columnName.replaceAll("[^\\p{L}\\p{N}]", "_");
+		if(Character.isDigit(sanitizedName.charAt(0))) {
+			sanitizedName = "_"+sanitizedName;
+		}
+		
+		return sanitizedName;
+	}
 }
