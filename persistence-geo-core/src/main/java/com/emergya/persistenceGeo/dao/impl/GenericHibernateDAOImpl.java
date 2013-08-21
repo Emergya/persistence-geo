@@ -115,9 +115,12 @@ public abstract class GenericHibernateDAOImpl<T, ID extends Serializable> extend
 	public List<T> findByExample(T exampleInstance, String[] excludedProperties, boolean ignoreCase) {
 		 DetachedCriteria crit = DetachedCriteria.forClass(persistentClass);
 	        Example example = Example.create(exampleInstance);
+                
+                if(excludedProperties!=null) {
 			for (String exclude : excludedProperties) {
 				example.excludeProperty(exclude);
-			}
+			}                 
+                }
 			
 			if(ignoreCase) {
 				crit.add(example.ignoreCase());
