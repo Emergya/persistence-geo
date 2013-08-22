@@ -81,11 +81,13 @@ public abstract class GenericHibernateDAOImpl<T, ID extends Serializable> extend
 		return entity;
 	}
 
+        @Override
 	public List<T> findAll() {
 		return findByCriteria();
 	}
 
     @SuppressWarnings("unchecked")
+        @Override
 	public List<T> findAllFromTo(Integer first, Integer last){
     	Criteria criteria = getSession().createCriteria(persistentClass);
     	criteria.setFirstResult(first);
@@ -94,6 +96,7 @@ public abstract class GenericHibernateDAOImpl<T, ID extends Serializable> extend
     }
     
     @SuppressWarnings("unchecked")
+        @Override
     public List<T> findOrdered(Integer first, Integer last, String orderField, boolean ascending) {
     	Criteria criteria = getSession().createCriteria(persistentClass);
     	criteria.setFirstResult(first);
@@ -108,10 +111,12 @@ public abstract class GenericHibernateDAOImpl<T, ID extends Serializable> extend
     }
 
 	@SuppressWarnings("unchecked")
+        @Override
 	public List<T> findByExample(T exampleInstance, String[] excludedProperties) {
        return this.findByExample(exampleInstance, excludedProperties, false);
 	}
 	
+        @Override
 	public List<T> findByExample(T exampleInstance, String[] excludedProperties, boolean ignoreCase) {
 		 DetachedCriteria crit = DetachedCriteria.forClass(persistentClass);
 	        Example example = Example.create(exampleInstance);
@@ -131,15 +136,25 @@ public abstract class GenericHibernateDAOImpl<T, ID extends Serializable> extend
 			return getHibernateTemplate().findByCriteria(crit);
 	}
 
+        @Override
 	public T makePersistent(T entity) {
-		getHibernateTemplate().saveOrUpdate(entity);
+            // Fix for #87143 and other "hibernate session contains the object" problems
+            // by checking that, and merging instead of updating in that case.
+            if(getHibernateTemplate().contains(entity)){
+               return  getHibernateTemplate().merge(entity);
+            }else {
+                getHibernateTemplate().saveOrUpdate(entity);
+            }
+                
 		return entity;
 	}
 
+        @Override
 	public void makeTransient(T entity) {
 		getHibernateTemplate().delete(entity);
 	}
 
+        @Override
     public Long getResults(){
     	return (Long) getSession().createCriteria(persistentClass).setProjection(Projections.count("id")).uniqueResult();
     }
