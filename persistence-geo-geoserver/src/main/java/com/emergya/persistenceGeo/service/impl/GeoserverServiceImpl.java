@@ -377,6 +377,10 @@ public class GeoserverServiceImpl implements GeoserverService {
 	@Override
 	public boolean copyLayerStyle(String sourceLayerName, String newStyleName) {
 		String layerSDLContent = gsDao.getLayerStyle(sourceLayerName);
+                
+                if(layerSDLContent==null) {
+                    return false;
+                }
 
 		return gsDao.createStyle(newStyleName, layerSDLContent);
 	}

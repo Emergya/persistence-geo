@@ -761,6 +761,9 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		}
 
 		RESTLayer layer = reader.getLayer(layerName);
+                if(layer==null) {
+                    return null;
+                }
 		return reader.getSLD(layer.getDefaultStyle());
 	}
 
