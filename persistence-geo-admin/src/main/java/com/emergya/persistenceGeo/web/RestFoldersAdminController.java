@@ -596,7 +596,7 @@ public class RestFoldersAdminController implements Serializable {
 			if(folderId.equals(UNASSIGNED_LAYERS_VIRTUAL_FOLDER_ID)){
 				List<LayerDto> previusLayers = layerAdminService.getUnassignedLayers();
 				for (LayerDto subRes : previusLayers) {
-					tree.add(new TreeNode(subRes, true));
+					tree.add(new TreeNode(subRes));
 				}
 			} else {
 				loadLayersInTree(folderId, isChannel, recursiveLoadMark, tree);
