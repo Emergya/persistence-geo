@@ -76,6 +76,11 @@ import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
 import com.emergya.persistenceGeo.utils.GsRestApiConfiguration;
+import com.sun.org.apache.xerces.internal.impl.xs.identity.Selector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Implementación de {@link GeoserverDao} utilizando las clases de
@@ -89,6 +94,7 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	private static final Log LOG = LogFactory
 			.getLog(GeoserverGsManagerDaoImpl.class);
 
+	private static final Pattern LAYER_WORKSPACE_PATTERN = Pattern.compile("^.*/rest/workspaces/(.*)/.*stores/.*$");
 	private static final String GET_COVERAGE_DETAILS_URL = "/rest/workspaces/%s/coveragestores/%s/coverages/%s.xml";
 	private static final String GET_COVERAGE_STORE_DATA_URL = "/rest/workspaces/%s/coveragestores/%s.xml";
 	private static final String SET_LAYER_STYLE_URL = "/rest/layers/%s:%s";
@@ -988,4 +994,39 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		}
 		return true;
 	}
+
+	@Override
+	public String getLayerWorkspace(String layerName) {
+	    String storeUrl;
+	    try {		
+		storeUrl= getReader().getResource(getReader().getLayer(layerName)).getStoreUrl();
+	    } catch (MalformedURLException ex) {
+		LOG.error("Malformed Geoserver REST API URL", ex);
+		throw new GeoserverException("Malformed Geoserver REST API URL", ex);
+	    }
+	  
+	   Matcher m = LAYER_WORKSPACE_PATTERN.matcher(storeUrl);
+	   if(!m.find()){
+	       return null;
+	   }
+	   String workspaceName =  m.group(1);
+	   return workspaceName;
+	}
+
+	/**
+	 * Returns geoserver's info on a layer given its name.
+	 * @param layerName
+	 * @return 
+	 */
+	@Override
+	public RESTLayer getLayerInfo(String layerName) {
+	    try {
+		return getReader().getLayer(layerName);
+	    } catch (MalformedURLException ex) {
+		LOG.error("Malformed Geoserver REST API URL", ex);
+		throw new GeoserverException("Malformed Geoserver REST API URL", ex);
+	    }
+	}
+	
+	
 }

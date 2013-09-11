@@ -58,6 +58,7 @@ import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor.GeometryType;
+import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 
 /**
  * @author <a href="mailto:jlrodriguez@emergya.com">jlrodriguez</a>
@@ -277,6 +278,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * 
 	 * @return true if can be unpublish and false otherwise
 	 */
+	@Override
 	public boolean unpublishLayer(String workspaceName, String datastoreName,
 			String layerName) {
 		if (LOG.isInfoEnabled()) {
@@ -402,6 +404,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 		return gsDao.reset();
 	}
 
+	@Override
 	public boolean existsWorkspace(String workspaceName) {
 		RESTWorkspaceList workspaceList = gsDao.getWorkspaceList();
 		for (RESTShortWorkspace workspace : workspaceList) {
@@ -420,6 +423,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * 
 	 * @return
 	 */
+	@Override
 	public RESTDataStore getDatastore(String layerName) {
 		return getGsDao().getDatastore(layerName);
 	}
@@ -429,10 +433,12 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * 
 	 * @return baseUrl to geoserver
 	 */
+	@Override
 	public String getGeoserverUrl() {
 		return getGsDao().getGeoserverUrl();
 	}
 
+	@Override
 	public void copyLayer(String workspaceName, String datastoreName,
 			String layerName, String tableName, String title, BoundingBox bbox,
 			GeometryType type, String targetWorkspaceName,
@@ -448,6 +454,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * 
 	 * @return
 	 */
+	@Override
 	public List<String> getLayersNames(){
 		return gsDao.getLayersNames();
 	}
@@ -459,6 +466,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * 
 	 * @return native name of the layer 
 	 */
+	@Override
 	public String getNativeName(String layerName){
 		return gsDao.getNativeName(layerName);
 	}
@@ -468,6 +476,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * 
 	 * @return styles' names
 	 */
+	@Override
 	public List<String> getStyleNames(){
 		return gsDao.getStyleNames();
 	}
@@ -479,7 +488,29 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * 
 	 * @return list of deleted styles
 	 */
+	@Override
 	public List<String> cleanUnusedStyles(List<String> styleNames){
 		return gsDao.cleanUnusedStyles(styleNames);
+	}
+
+	/**
+	 * Gets the workspace a layer is in.
+	 * given its name.
+	 * @param layerName
+	 * @return 
+	 */
+	@Override
+	public String getLayerWorkspace(String layerName) {
+	    return gsDao.getLayerWorkspace(layerName);
+	}
+
+	/**
+	 * Gets geoserver's info on a layer given its name.
+	 * @param layerName
+	 * @return 
+	 */
+	@Override
+	public RESTLayer getLayerInfo(String layerName) {
+	    return gsDao.getLayerInfo(layerName);
 	}
 }
