@@ -39,6 +39,7 @@ import com.emergya.persistenceGeo.utils.GsCoverageDetails;
 import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
+import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 
 /**
  * Dao para la consulta y modificación de datos en Geoserver.
@@ -327,4 +328,14 @@ public interface GeoserverDao {
 	 * @return list of deleted styles
 	 */
 	public List<String> cleanUnusedStyles(List<String> styleNames);
+	
+	/**
+	 * Gets the workspace a layer is in.
+	 * given its name.
+	 * @param layerName
+	 * @return 
+	 */
+	public String getLayerWorkspace(String layerName);
+
+    public RESTLayer getLayerInfo(String layerName);
 }

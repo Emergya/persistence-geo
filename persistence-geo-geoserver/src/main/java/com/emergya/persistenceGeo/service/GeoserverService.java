@@ -37,6 +37,7 @@ import com.emergya.persistenceGeo.utils.BoundingBox;
 import com.emergya.persistenceGeo.utils.GsCoverageDetails;
 import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor.GeometryType;
+import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 
 /**
  * @author <a href="mailto:jlrodriguez@emergya.com">jlrodriguez</a>
@@ -176,7 +177,7 @@ public interface GeoserverService {
 	 * @param layerName
 	 * @return
 	 */
-	public boolean unpublishGsCoverageLayer(String adminWorkspaceName,
+	public boolean unpublishGsCoverageLayer(String workspaceName,
 			String layerName);
 
 	/**
@@ -275,4 +276,19 @@ public interface GeoserverService {
 	 * @return list of deleted styles
 	 */
 	public List<String> cleanUnusedStyles(List<String> styleNames);
+
+	/**
+	 * Gets the workspace a layer is in.
+	 * given its name.
+	 * @param layerName
+	 * @return 
+	 */
+	public String getLayerWorkspace(String layerName);
+	
+	/**
+	 * Gets Geoserver's info on the layer given its name.
+	 * @param layerName
+	 * @return 
+	 */
+        public RESTLayer getLayerInfo(String layerName);
 }
