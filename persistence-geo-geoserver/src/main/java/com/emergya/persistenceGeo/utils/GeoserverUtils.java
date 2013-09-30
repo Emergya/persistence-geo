@@ -44,10 +44,13 @@ public class GeoserverUtils {
 	 * good Geoserver name. This means the resulting string will not contain
 	 * non-ascii characters nor whitespaces and if it starts with a number,
 	 * a "_" will be prefixed.
+	 * 
+	 * The generated string might be truncated to the first 20 chars if the parameter is used.
+	 * 
 	 * @param text
 	 * @return
 	 */
-	public static String createName(String text) {
+	public static String createName(String text, boolean justFirst20Chars) {
 		if(StringUtils.isEmpty(text)) {
 			throw new IllegalArgumentException("A geoserver name cannot be empty!");
 		}
@@ -65,11 +68,23 @@ public class GeoserverUtils {
 		}
 		
 		// Fix for #83218, geoserver don't like names too long.
-		if(name.length()>25) {
+		if(justFirst20Chars && name.length()>=20) {
 			name = name.substring(0, 20);
 		}
 		
 		return name.toLowerCase();
+	}
+    
+	/**
+	 * Sanitizes a string so its content contains characters that forms a 
+	 * good Geoserver name. This means the resulting string will not contain
+	 * non-ascii characters nor whitespaces and if it starts with a number,
+	 * a "_" will be prefixed.
+	 * @param text
+	 * @return
+	 */
+	public static String createName(String text) {
+	    return createName(text, false);
 	}
 	
 	/**
@@ -86,7 +101,7 @@ public class GeoserverUtils {
 	 */
 	public static String createUniqueName(String text) {
 		UUID uuid = UUID.randomUUID();
-		return createName(text)+"_"+uuid.toString().replaceAll("-", "_");
+		return createName(text, true)+"_"+uuid.toString().replaceAll("-", "_");
 	}
 	
 	/**
