@@ -256,7 +256,14 @@ public abstract class AbstractLayerEntity extends AbstractEntity implements Clon
 	 */
 	@SuppressWarnings("unchecked")
 	public void setProperties(List properties) {
-	    this.properties = properties;
+	    // Fix for #85692 (orphaned collection persistance) and #89327
+	    if(this.properties!=null && !this.properties.equals(properties)) {
+		this.properties.clear();
+		this.properties.addAll(properties);
+	    } else {
+		this.properties = properties;
+	    }
+	    
 	}
 	
 	/**
