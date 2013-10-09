@@ -83,6 +83,9 @@ public class RestTreeFolderController extends RestPersistenceGeoController
 	// TODO: Those constants should be defined in a more concrete implementation
 	// of the tree service.
 	private static final String SHOW_UNASSIGNED_FOLDER_FILTER = "SHOW_UNASSIGNED_FOLDER";
+    
+	// Used to indicate that we shouldn't discriminate by folder type but retrieve all folders.
+	private static final Long ID_ANY_FOLDER_TYPE = -1L;
 
 	/**
 	 * Returns the node types
@@ -138,7 +141,8 @@ public class RestTreeFolderController extends RestPersistenceGeoController
 		try {
 
 			Long typeId = FoldersAdminService.DEFAULT_FOLDER_TYPE;
-			if (!StringUtils.isEmpty(type) && StringUtils.isNumeric(type)) {
+			if (StringUtils.isNotBlank(type) && 
+				(StringUtils.isNumeric(type) || type.equals(ID_ANY_FOLDER_TYPE.toString()))) {
 				typeId = Long.decode(type);
 			}
 
@@ -239,7 +243,7 @@ public class RestTreeFolderController extends RestPersistenceGeoController
 	 * Obtain folders by type
 	 * 
 	 * @param typeId
-	 *            folder type
+	 *            folder type id. If -1 is received, we don't discriminate by type and return all root folders.
 	 * @param filter
 	 *            to decorate the result
 	 * @param showLayers
@@ -249,8 +253,14 @@ public class RestTreeFolderController extends RestPersistenceGeoController
 	 */
 	protected List<TreeFolderDto> getFoldersByType(Long typeId, String filter,
 			boolean showLayers) {
-		List<FolderDto> serviceFolders = foldersAdminService
-				.rootFoldersByType(typeId);
+	    
+		List<FolderDto> serviceFolders;
+		if(typeId ==null || typeId.equals(ID_ANY_FOLDER_TYPE)) {
+		    serviceFolders = foldersAdminService.rootFolders();
+		} else {
+		    serviceFolders = foldersAdminService.rootFoldersByType(typeId);
+		}	    
+		 
 		List<TreeFolderDto> folders = getFolderDecoration(serviceFolders,
 				showLayers);
 
