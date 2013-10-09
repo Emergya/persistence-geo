@@ -214,6 +214,12 @@ public interface FoldersAdminService extends AbstractService{
 	public List<FolderDto> findFoldersByType(Long typeId);
 	
 	/**
+	 * Returns all root folders.
+	 * @return 
+	 */
+	public List<FolderDto> rootFolders();
+	
+	/**
 	 * @param <code>typeId</code>
 	 * 
 	 * @return List<FolderTypeDto>
