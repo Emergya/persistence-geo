@@ -626,4 +626,22 @@ public class FoldersAdminServiceImpl extends
 		}
 		return dtoList;
 	}
+
+	/**
+	 * Returns all root folders.
+	 * @return 
+	 */
+	@Override
+	public List<FolderDto> rootFolders() {
+	    List<FolderDto> dtoList = new LinkedList<FolderDto>();
+	    
+	    List<AbstractFolderEntity> entList = folderDao.rootFoldersByType(null);
+	    for (AbstractFolderEntity f : entList) {
+		    if(BooleanUtils.isTrue(f.getEnabled())) {
+			dtoList.add(entityToDto(f));
+		    }
+	    }
+	    
+	    return dtoList;
+	}
 }
