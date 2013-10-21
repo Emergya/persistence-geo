@@ -322,6 +322,7 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 		if (entity != null) {
 			dto = new AuthorityDto();
 			dto.setNombre(entity.getName());
+			dto.setWorkspaceName(entity.getWorkspaceName());
 			dto.setId(entity.getId());
 			dto.setParentId(entity.getParent() != null ? entity.getParent()
 					.getId() : null);

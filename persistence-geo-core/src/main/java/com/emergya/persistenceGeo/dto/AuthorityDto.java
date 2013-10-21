@@ -35,88 +35,116 @@ import java.util.List;
 
 /**
  * Dto de grupo de usuarios
- * 
+ *
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
 public class AuthorityDto implements Serializable {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6021644235856556432L;
-	
-	private Long id;
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 6021644235856556432L;
+
+    private Long id;
     private String nombre;
-    
+
     private Date createDate;
     private Date updateDate;
-    
+
     private List<String> usuarios;
     private String authType;
     private List<String> layerList;
     private List<String> privateLayerList;
     private String zone;
     private Long parentId;
-    
-	public Long getParentId() {
-		return parentId;
-	}
-	public void setParentId(Long parentId) {
-		this.parentId = parentId;
-	}
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getNombre() {
-		return nombre;
-	}
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-	public List<String> getUsuarios() {
-		return usuarios;
-	}
-	public void setUsuarios(List<String> usuarios) {
-		this.usuarios = usuarios;
-	}
-	public Date getCreateDate() {
-		return createDate;
-	}
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-	public Date getUpdateDate() {
-		return updateDate;
-	}
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
-	}
-	public String getAuthType() {
-		return authType;
-	}
-	public void setAuthType(String authType) {
-		this.authType = authType;
-	}
-	public List<String> getLayerList() {
-		return layerList;
-	}
-	public void setLayerList(List<String> layerList) {
-		this.layerList = layerList;
-	}
-	public List<String> getPrivateLayerList() {
-		return privateLayerList;
-	}
-	public void setPrivateLayerList(List<String> privateLayerList) {
-		this.privateLayerList = privateLayerList;
-	}
-	public String getZone() {
-		return zone;
-	}
-	public void setZone(String zone) {
-		this.zone = zone;
-	}
+    private String workspaceName;
+
+    public Long getParentId() {
+	return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+	this.parentId = parentId;
+    }
+
+    public Long getId() {
+	return id;
+    }
+
+    public void setId(Long id) {
+	this.id = id;
+    }
+
+    public String getNombre() {
+	return nombre;
+    }
+
+    public void setNombre(String nombre) {
+	this.nombre = nombre;
+    }
+
+    public List<String> getUsuarios() {
+	return usuarios;
+    }
+
+    public void setUsuarios(List<String> usuarios) {
+	this.usuarios = usuarios;
+    }
+
+    public Date getCreateDate() {
+	return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+	this.createDate = createDate;
+    }
+
+    public Date getUpdateDate() {
+	return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+	this.updateDate = updateDate;
+    }
+
+    public String getAuthType() {
+	return authType;
+    }
+
+    public void setAuthType(String authType) {
+	this.authType = authType;
+    }
+
+    public List<String> getLayerList() {
+	return layerList;
+    }
+
+    public void setLayerList(List<String> layerList) {
+	this.layerList = layerList;
+    }
+
+    public List<String> getPrivateLayerList() {
+	return privateLayerList;
+    }
+
+    public void setPrivateLayerList(List<String> privateLayerList) {
+	this.privateLayerList = privateLayerList;
+    }
+
+    public String getZone() {
+	return zone;
+    }
+
+    public void setZone(String zone) {
+	this.zone = zone;
+    }
+
+    public String getWorkspaceName() {
+	return this.workspaceName;
+    }
+
+    public void setWorkspaceName(String workspace) {
+	this.workspaceName = workspace;
+    }
 }
