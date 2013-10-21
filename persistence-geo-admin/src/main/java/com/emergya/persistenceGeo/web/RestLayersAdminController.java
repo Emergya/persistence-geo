@@ -61,8 +61,12 @@ import com.emergya.persistenceGeo.dto.LayerDto;
 import com.emergya.persistenceGeo.dto.MapConfigurationDto;
 import com.emergya.persistenceGeo.dto.SimplePropertyDto;
 import com.emergya.persistenceGeo.dto.UserDto;
+import com.emergya.persistenceGeo.service.GeoserverService;
 import com.emergya.persistenceGeo.service.LayerAdminService;
 import com.emergya.persistenceGeo.service.MapConfigurationAdminService;
+import org.apache.log4j.Logger;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * Rest controller to admin and load layer and layers context
@@ -72,6 +76,8 @@ import com.emergya.persistenceGeo.service.MapConfigurationAdminService;
 @Controller
 public class RestLayersAdminController extends RestPersistenceGeoController
 		implements Serializable {
+    
+	private static final Logger LOG = Logger.getLogger(RestLayersAdminController.class);
 	
 	/**
 	 * 
@@ -80,8 +86,10 @@ public class RestLayersAdminController extends RestPersistenceGeoController
 	@Resource
 	private LayerAdminService layerAdminService;
 	@Resource
-	private MapConfigurationAdminService mapConfigurationAdminService;
-	
+	private MapConfigurationAdminService mapConfigurationAdminService;	
+	@Resource
+	private GeoserverService geoserverService;
+		
 	private Map<Long, File> loadedLayers = new ConcurrentHashMap<Long, File>();
 	private Map<Long, File> loadFiles = new ConcurrentHashMap<Long, File>();
 
@@ -889,7 +897,7 @@ public class RestLayersAdminController extends RestPersistenceGeoController
 			// Save the layer
 			layerAdminService.create(layer);
 		}catch (Exception e){
-			e.printStackTrace();
+		    LOG.error("Error!", e);
 		}
 	}
 	
@@ -897,29 +905,60 @@ public class RestLayersAdminController extends RestPersistenceGeoController
 	public @ResponseBody
 	Map<String, Object> deleteLayerByLayerId(@PathVariable String layerId){
 		Map<String, Object> result = new HashMap<String, Object>();
+		
 		try{
-			/*
-			//TODO: Secure with logged user
-			String username = ((UserDetails) SecurityContextHolder.getContext()
-					.getAuthentication().getPrincipal()).getUsername(); 
-			 */
-			
-			// TODO: Delete layer from geoserver
-			Long idLayer = Long.decode(layerId);
-			layerAdminService.deleteLayerById(idLayer);
-			result.put(SUCCESS, true);
-			result.put(ROOT, new HashMap<String, Object>());
-		}catch (Exception e) {
-			e.printStackTrace();
+		    String username = ((UserDetails) SecurityContextHolder.getContext()
+				    .getAuthentication().getPrincipal()).getUsername(); 
+
+		    UserDto user = userAdminService.obtenerUsuario(username);				
+
+
+
+		    Long idLayer = Long.parseLong(layerId);
+
+		    LayerDto layer = (LayerDto) layerAdminService.getById(idLayer);
+
+		    if(!(user.getAdmin() && layer.getPublicized()
+			    || user.getAuthorityId().equals(layer.getAuthId()))){
+			// The user cannnot delete the layer.
 			result.put(SUCCESS, false);
 			result.put(ROOT, "No se ha podido borrar la capa");
-		}
+			return result;
+		    }
+
+		    String workspace = layer.getName().substring(0,layer.getName().indexOf(":"));
+
+		    if(!geoserverService.deleteGeoServerLayer(
+			    workspace, layer.getNameWithoutWorkspace(),layer.getType(), layer.getTableName())){
+			LOG.debug("Couldn't delete layer '"+layer.getNameWithoutWorkspace()+"' from geoserver, was it already deleted?");
+		    }
+			
+		    layerAdminService.deleteLayerById(idLayer);
+		    result.put(SUCCESS, true);
+		    result.put(ROOT, new HashMap<String, Object>());
+		}catch (Exception e) {
+		    LOG.error("Error!", e);
+		    result.put(SUCCESS, false);
+		    result.put(ROOT, "No se ha podido borrar la capa");
+		}		
+
+		
 		return result;
 	}
 
 	/**
 	 * This method save a temp layer
 	 * 
+     * @param name
+     * @param type
+     * @param properties
+     * @param enabled
+     * @param order_layer
+     * @param is_channel
+     * @param publicized
+     * @param server_resource
+     * @param folderId
+     * @param idFile
 	 * @return JSON file layer information
 	 */
 	@RequestMapping(value = "/persistenceGeo/saveLayerTempLayer", 

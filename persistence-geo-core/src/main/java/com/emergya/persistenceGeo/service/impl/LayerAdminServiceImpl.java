@@ -276,7 +276,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			dto.setCreateDate(entity.getCreateDate());
 			dto.setUpdateDate(entity.getUpdateDate());
 			dto.setLayerTitle(entity.getLayerTitle());
-			
+			dto.setTableName(entity.getTableName());
 			
 			AbstractLayerTypeEntity type = entity.getType();
 			//Layer type
