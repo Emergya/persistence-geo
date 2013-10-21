@@ -178,4 +178,9 @@ public class LayerEntity extends AbstractLayerEntity {
 	public String getLayerTitle() {
 		return layerTitle;
 	}
+	
+	@Column(name="table_name")
+	public String getTableName () {
+	    return tableName;
+	}
 }
