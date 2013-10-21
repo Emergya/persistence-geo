@@ -44,7 +44,7 @@ import it.geosolutions.geoserver.rest.decoder.RESTLayer;
  * 
  */
 public interface GeoserverService {
-	public static final String VECTORIAL_LAYER_TYPE = "Vectorial";
+	public static final String VECTORIAL_LAYER_TYPE = "postgis";
 	public static final String GEOTIFF_LAYER_TYPE_NAME = "geotiff";
 	public static final String IMAGEWORLD_LAYER_TYPE_NAME = "imageworld";
 	public static final String IMAGEMOSAIC_LAYER_TYPE_NAME = "imagemosaic";
@@ -300,8 +300,10 @@ public interface GeoserverService {
         public RESTLayer getLayerInfo(String layerName);
 	
 	
-	
-    
+	/**
+	 * Enumerate type containing result codes for the <c>duplicateGeoServerLayer</c>
+	 * method.
+	 */
 	public enum DuplicationResult {
 	    SUCCESS_VECTORIAL,
 	    SUCCESS_RASTER,
@@ -309,6 +311,20 @@ public interface GeoserverService {
 	    FAILURE
 	}
 
+	/**
+	 * Duplicates an existing layer in geoserver.
+	 * 
+	 * In the future, the source layer's type should be detected automatically.
+	 * 
+	 * @param sourceWorkspace The source layer's workspace.
+	 * @param sourceLayerType The source layer's type description. The new layer's type will be the same.
+	 * @param sourceLayerName The source layer's name in geoserver.
+	 * @param sourceLayerTable The source layer's table backing its data (only needed if the source layer's type is postgis).
+	 * @param targetWorkspace The workspace the new layer will be created in.
+	 * @param newLayerName The new layer's geoserver name.
+	 * @param newLayerTitle The new layer's title.
+	 * @return 
+	 */
 	public DuplicationResult duplicateGeoServerLayer(
 		String sourceWorkspace,
 		String sourceLayerType,
@@ -318,5 +334,16 @@ public interface GeoserverService {
 		String newLayerName,
 		String newLayerTitle);
 
+	/**
+	 * Removes a layer from geoserver, deleting also its backing data.
+	 * 
+	 * In the future, we should try to detect the layer's geoserver type automatically.
+	 * 
+	 * @param workspace The workspace the layer exists in.
+	 * @param layerName The name of the layer in geoserver.
+	 * @param layerType The layer type's description
+	 * @param tableName The layer's table name (only needed if its a postgis layer)
+	 * @return 
+	 */
 	public boolean deleteGeoServerLayer(String workspace, String layerName, String layerType, String tableName);
 }
