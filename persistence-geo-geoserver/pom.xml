@@ -18,7 +18,7 @@
 		</license>
 	</licenses>
 
-	<name>persistence-geo-geoserver</name>
+	<name>persistence-geo - geoserver integration module</name>
 	<url>http://www.emergya.es</url>
 	<description>Geoserver module for persistence-geo</description>
 

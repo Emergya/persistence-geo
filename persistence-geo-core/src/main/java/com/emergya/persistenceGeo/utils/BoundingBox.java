@@ -119,8 +119,8 @@ public class BoundingBox implements Serializable, Cloneable {
 	}
 
 	@Override
-	protected Object clone() {
-		BoundingBox result = new BoundingBox();
+	public Object clone() {
+	    	BoundingBox result = new BoundingBox();
 		result.setMaxx(maxx);
 		result.setMinx(minx);
 		result.setMaxy(maxy);
