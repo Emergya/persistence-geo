@@ -36,7 +36,7 @@ import java.util.List;
 import com.emergya.persistenceGeo.utils.BoundingBox;
 import com.emergya.persistenceGeo.utils.GsCoverageDetails;
 import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
-import com.emergya.persistenceGeo.utils.GsLayerDescriptor.GeometryType;
+import com.emergya.persistenceGeo.utils.GeometryType;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 
 /**
@@ -44,6 +44,11 @@ import it.geosolutions.geoserver.rest.decoder.RESTLayer;
  * 
  */
 public interface GeoserverService {
+	public static final String VECTORIAL_LAYER_TYPE = "Vectorial";
+	public static final String GEOTIFF_LAYER_TYPE_NAME = "geotiff";
+	public static final String IMAGEWORLD_LAYER_TYPE_NAME = "imageworld";
+	public static final String IMAGEMOSAIC_LAYER_TYPE_NAME = "imagemosaic";
+	public static final String WFS_LAYER_TYPE_NAME = "WFS";
 
 	public final String DEFAULT_SRS = "EPSG:4326";
 
@@ -58,7 +63,7 @@ public interface GeoserverService {
 	 * 
 	 * @param workspaceName
 	 * @param datastoreName
-	 * @param layer
+	 * @param layerName
 	 * 
 	 * @return true if can be unpublish and false otherwise
 	 */
@@ -214,6 +219,8 @@ public interface GeoserverService {
 
 	/**
 	 * Removes an style from GeoServer.
+     * @param styleName
+     * @return 
 	 */
 	public boolean deleteStyle(String styleName);
 	
@@ -291,4 +298,25 @@ public interface GeoserverService {
 	 * @return 
 	 */
         public RESTLayer getLayerInfo(String layerName);
+	
+	
+	
+    
+	public enum DuplicationResult {
+	    SUCCESS_VECTORIAL,
+	    SUCCESS_RASTER,
+	    SUCCESS_REMOTE,
+	    FAILURE
+	}
+
+	public DuplicationResult duplicateGeoServerLayer(
+		String sourceWorkspace,
+		String sourceLayerType,
+		String sourceLayerName,
+		String sourceLayerTable,
+		String targetWorkspace,
+		String newLayerName,
+		String newLayerTitle);
+
+	public boolean deleteGeoServerLayer(String workspace, String layerName, String layerType, String tableName);
 }

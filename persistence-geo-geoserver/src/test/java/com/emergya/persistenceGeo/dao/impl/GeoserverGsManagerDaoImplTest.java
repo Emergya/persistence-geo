@@ -21,7 +21,7 @@ import com.emergya.persistenceGeo.dao.GeoserverDao;
 import com.emergya.persistenceGeo.exceptions.GeoserverException;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
-import com.emergya.persistenceGeo.utils.GsLayerDescriptor.GeometryType;
+import com.emergya.persistenceGeo.utils.GeometryType;
 import com.emergya.persistenceGeo.utils.GsRestApiConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)

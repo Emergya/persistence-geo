@@ -42,9 +42,7 @@ public class GsLayerDescriptor implements Serializable {
 	private static final String DEFAULT_STYLE_POLYGON = "polygon";
 	private static final String DEFAULT_WMS_PATH = "/geoserver/wms";
 
-	public static enum GeometryType {
-		POINT, LINESTRING, POLYGON
-	};
+	
 
 	private String wmsPath;
 	private String defaultStyle;
