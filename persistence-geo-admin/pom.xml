@@ -67,6 +67,12 @@
 			<artifactId>persistence-geo-core</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+		<dependency>
+			  <groupId>${project.parent.groupId}</groupId>
+			  <artifactId>persistence-geo-geoserver</artifactId>
+			  <version>${project.parent.version}</version>
+			  <type>jar</type>
+		</dependency>
 		<!-- SPRING DEPENDENCIES -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -171,9 +177,7 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.9</version>
 		</dependency>
-
-
-
+	 
 	</dependencies>
 	<build>
 		<finalName>${project.artifactId}</finalName>
