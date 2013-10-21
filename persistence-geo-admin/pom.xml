@@ -18,7 +18,7 @@
 		</license>
 	</licenses>
 
-	<name>Rest controllers for persistenceGeo admin</name>
+	<name>persistence-geo - management rest controllers</name>
 	<url>http://www.emergya.es</url>
 	<description>Basic controllers for manage persistence-geo using REST</description>
 

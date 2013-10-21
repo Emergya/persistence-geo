@@ -18,7 +18,7 @@
 		</license>
 	</licenses>
 
-	<name>Spring3 MVC View example</name>
+	<name>persistence-geo - rest services webapp</name>
 	<url>http://www.emergya.es</url>
 	<description>Vista basada en spring3-mvc para el proyecto persistence-geo</description>
 
