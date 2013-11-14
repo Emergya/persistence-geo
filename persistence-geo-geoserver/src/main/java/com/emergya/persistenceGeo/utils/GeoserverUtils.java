@@ -54,12 +54,7 @@ public class GeoserverUtils {
 		if(StringUtils.isEmpty(text)) {
 			throw new IllegalArgumentException("A geoserver name cannot be empty!");
 		}
-		
-		if(text.matches("^[a-z_][a-z0-9_]*$")) {
-			// Already sanitized
-			return text;
-		}
-		
+        
 		String name = text.replaceAll("[\\W ]", "_");
 		
 		if(StringUtils.isNumeric(name.substring(0, 1))) {
