@@ -29,6 +29,7 @@
  */
 package com.emergya.persistenceGeo.utils;
 
+import com.google.common.base.Strings;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
@@ -45,12 +46,11 @@ public class GeoserverUtils {
 	 * non-ascii characters nor whitespaces and if it starts with a number,
 	 * a "_" will be prefixed.
 	 * 
-	 * The generated string might be truncated to the first 20 chars if the parameter is used.
-	 * 
-	 * @param text
+	 * @param text The string in which the returned name will be based.
+     * @param maxchars The max number of chars of the returned string.
 	 * @return
 	 */
-	public static String createName(String text, boolean justFirst20Chars) {
+	public static String createName(String text, int maxchars) {
 		if(StringUtils.isEmpty(text)) {
 			throw new IllegalArgumentException("A geoserver name cannot be empty!");
 		}
@@ -63,8 +63,8 @@ public class GeoserverUtils {
 		}
 		
 		// Fix for #83218, geoserver don't like names too long.
-		if(justFirst20Chars && name.length()>=20) {
-			name = name.substring(0, 20);
+		if(maxchars > 0 && name.length() > maxchars) {
+			name = name.substring(0, maxchars);
 		}
 		
 		return name.toLowerCase();
@@ -79,7 +79,7 @@ public class GeoserverUtils {
 	 * @return
 	 */
 	public static String createName(String text) {
-	    return createName(text, false);
+	    return createName(text, -1);
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public class GeoserverUtils {
 	 */
 	public static String createUniqueName(String text) {
 		UUID uuid = UUID.randomUUID();
-		return createName(text, true)+"_"+uuid.toString().replaceAll("-", "_");
+		return createName(text, 20)+"_"+uuid.toString().replaceAll("-", "_");
 	}
 	
 	/**
@@ -105,6 +105,10 @@ public class GeoserverUtils {
 	 * @return
 	 */
 	public static String sanitizeColumnName(String columnName) {
+        if(Strings.isNullOrEmpty(columnName)) {
+            return columnName;
+        }
+        
 		String sanitizedName =  columnName.replaceAll("[^\\p{L}\\p{N}]", "_");
 		if(Character.isDigit(sanitizedName.charAt(0))) {
 			sanitizedName = "_"+sanitizedName;
