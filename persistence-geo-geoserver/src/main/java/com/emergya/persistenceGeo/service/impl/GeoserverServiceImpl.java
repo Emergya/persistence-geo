@@ -60,6 +60,12 @@ import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
 import com.emergya.persistenceGeo.utils.GeometryType;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import org.apache.commons.io.IOUtils;
 import org.hibernate.exception.SQLGrammarException;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -70,7 +76,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class GeoserverServiceImpl implements GeoserverService {
 
     private final static Log LOG = LogFactory
-	    .getLog(GeoserverServiceImpl.class);
+            .getLog(GeoserverServiceImpl.class);
     private final static String DATASTORE_SUFFIX = "_datastore";
 
     @Resource
@@ -85,28 +91,28 @@ public class GeoserverServiceImpl implements GeoserverService {
      * @return the gsDao
      */
     public GeoserverDao getGsDao() {
-	return gsDao;
+        return gsDao;
     }
 
     /**
      * @param gsDao the gsDao to set
      */
     public void setGsDao(GeoserverDao gsDao) {
-	this.gsDao = gsDao;
+        this.gsDao = gsDao;
     }
 
     /**
      * @return the namespaceBaseUrl
      */
     public String getNamespaceBaseUrl() {
-	return namespaceBaseUrl;
+        return namespaceBaseUrl;
     }
 
     /**
      * @param namespaceBaseUrl the namespaceBaseUrl to set
      */
     public void setNamespaceBaseUrl(String namespaceBaseUrl) {
-	this.namespaceBaseUrl = namespaceBaseUrl;
+        this.namespaceBaseUrl = namespaceBaseUrl;
     }
 
     @Resource
@@ -120,58 +126,58 @@ public class GeoserverServiceImpl implements GeoserverService {
      */
     @Override
     public boolean createGsWorkspaceWithDatastore(String workspaceName) {
-	if (LOG.isInfoEnabled()) {
-	    LOG.info("Creating Geoserver workspace [workspaceName="
-		    + workspaceName + "]");
-	}
-	boolean result = false;
-	String nsUrl;
-	if (this.namespaceBaseUrl.endsWith("/")) {
-	    nsUrl = this.namespaceBaseUrl + workspaceName;
-	} else {
-	    nsUrl = this.namespaceBaseUrl + "/" + workspaceName;
-	}
-	URI uri;
-	try {
-	    uri = new URI(nsUrl);
-	    result = gsDao.createNamespace(workspaceName, uri);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Creating Geoserver workspace [workspaceName="
+                    + workspaceName + "]");
+        }
+        boolean result = false;
+        String nsUrl;
+        if (this.namespaceBaseUrl.endsWith("/")) {
+            nsUrl = this.namespaceBaseUrl + workspaceName;
+        } else {
+            nsUrl = this.namespaceBaseUrl + "/" + workspaceName;
+        }
+        URI uri;
+        try {
+            uri = new URI(nsUrl);
+            result = gsDao.createNamespace(workspaceName, uri);
 
-	    if (!result) {
-		// Can't create Namespace. Stop here.
-		if (LOG.isInfoEnabled()) {
-		    LOG.info("Couln't create the namespace and his asocciated "
-			    + "workspace [workspaceName=" + workspaceName + "]");
-		}
-		return result;
-	    }
-	    String datastoreName = workspaceName + DATASTORE_SUFFIX;
-	    result = gsDao.createDatastoreJndi(workspaceName, datastoreName);
-	    if (!result) {
-		// Can't create Datastore. Try to delete workspace.
-		if (LOG.isInfoEnabled()) {
-		    LOG.info("Couln't create the datastore " + datastoreName
-			    + " in workspace " + workspaceName
-			    + ". Trying to delete workspace...");
-		}
-		boolean deleteResult = gsDao.deleteWorkspace(workspaceName);
+            if (!result) {
+                // Can't create Namespace. Stop here.
+                if (LOG.isInfoEnabled()) {
+                    LOG.info("Couln't create the namespace and his asocciated "
+                            + "workspace [workspaceName=" + workspaceName + "]");
+                }
+                return result;
+            }
+            String datastoreName = workspaceName + DATASTORE_SUFFIX;
+            result = gsDao.createDatastoreJndi(workspaceName, datastoreName);
+            if (!result) {
+                // Can't create Datastore. Try to delete workspace.
+                if (LOG.isInfoEnabled()) {
+                    LOG.info("Couln't create the datastore " + datastoreName
+                            + " in workspace " + workspaceName
+                            + ". Trying to delete workspace...");
+                }
+                boolean deleteResult = gsDao.deleteWorkspace(workspaceName);
 
-		if (LOG.isInfoEnabled()) {
-		    if (deleteResult) {
-			LOG.info("Workspace " + workspaceName
-				+ " successfully deleted");
-		    } else {
-			LOG.warn("Couldn't delete workspace " + workspaceName);
-		    }
-		}
-	    }
+                if (LOG.isInfoEnabled()) {
+                    if (deleteResult) {
+                        LOG.info("Workspace " + workspaceName
+                                + " successfully deleted");
+                    } else {
+                        LOG.warn("Couldn't delete workspace " + workspaceName);
+                    }
+                }
+            }
 
-	} catch (URISyntaxException e) {
-	    throw new GeoserverException("Illegal URL syntax detected when"
-		    + "preparing for creating a geoserver workspace [URI="
-		    + nsUrl + "]", e);
-	}
+        } catch (URISyntaxException e) {
+            throw new GeoserverException("Illegal URL syntax detected when"
+                    + "preparing for creating a geoserver workspace [URI="
+                    + nsUrl + "]", e);
+        }
 
-	return result;
+        return result;
     }
 
     /*
@@ -183,11 +189,11 @@ public class GeoserverServiceImpl implements GeoserverService {
      */
     @Override
     public boolean deleteGsWorkspace(String workspaceName) {
-	if (LOG.isInfoEnabled()) {
-	    LOG.info("Deleting Geoserver workspace [workspaceName="
-		    + workspaceName + "]");
-	}
-	return gsDao.deleteWorkspace(workspaceName);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Deleting Geoserver workspace [workspaceName="
+                    + workspaceName + "]");
+        }
+        return gsDao.deleteWorkspace(workspaceName);
     }
 
     /*
@@ -198,80 +204,80 @@ public class GeoserverServiceImpl implements GeoserverService {
      */
     @Override
     public boolean publishGsDbLayer(String workspaceName, String tableName,
-	    String layerName, String title, BoundingBox nativeBoundingBox,
-	    GeometryType geomType) {
-	if (LOG.isInfoEnabled()) {
-	    LOG.info(String.format("Publising geoserver database layer [workspaceName=%s, tableName=%s, layerName=%s, geometryType=%s]",
-		    workspaceName, tableName, layerName, geomType));
-	}
-	boolean result = false;
+            String layerName, String title, BoundingBox nativeBoundingBox,
+            GeometryType geomType) {
+        if (LOG.isInfoEnabled()) {
+            LOG.info(String.format("Publising geoserver database layer [workspaceName=%s, tableName=%s, layerName=%s, geometryType=%s]",
+                    workspaceName, tableName, layerName, geomType));
+        }
+        boolean result = false;
 
-	// Transform native bounding box to EPSG:4326
-	String nativeSrs = nativeBoundingBox.getSrs();
-	BoundingBox declaredBBox = new BoundingBox();
-	declaredBBox.setSrs(DEFAULT_SRS);
-	boolean declaredSrsTransformed = false;
-	try {
-	    CoordinateReferenceSystem nativeCRS = CRS.decode(nativeSrs);
-	    CoordinateReferenceSystem targetCRS = CRS.decode(DEFAULT_SRS);
-	    MathTransform transform = CRS.findMathTransform(nativeCRS,
-		    targetCRS);
-	    double[] sourceCoords = new double[4];
-	    double[] coordTransformed = new double[4];
+        // Transform native bounding box to EPSG:4326
+        String nativeSrs = nativeBoundingBox.getSrs();
+        BoundingBox declaredBBox = new BoundingBox();
+        declaredBBox.setSrs(DEFAULT_SRS);
+        boolean declaredSrsTransformed = false;
+        try {
+            CoordinateReferenceSystem nativeCRS = CRS.decode(nativeSrs);
+            CoordinateReferenceSystem targetCRS = CRS.decode(DEFAULT_SRS);
+            MathTransform transform = CRS.findMathTransform(nativeCRS,
+                    targetCRS);
+            double[] sourceCoords = new double[4];
+            double[] coordTransformed = new double[4];
 
-	    // Fill the array with the bounding box
-	    sourceCoords[0] = nativeBoundingBox.getMinx();
-	    sourceCoords[1] = nativeBoundingBox.getMiny();
-	    sourceCoords[2] = nativeBoundingBox.getMaxx();
-	    sourceCoords[3] = nativeBoundingBox.getMaxy();
-	    transform.transform(sourceCoords, 0, coordTransformed, 0, 2);
+            // Fill the array with the bounding box
+            sourceCoords[0] = nativeBoundingBox.getMinx();
+            sourceCoords[1] = nativeBoundingBox.getMiny();
+            sourceCoords[2] = nativeBoundingBox.getMaxx();
+            sourceCoords[3] = nativeBoundingBox.getMaxy();
+            transform.transform(sourceCoords, 0, coordTransformed, 0, 2);
 
-	    declaredBBox.setMinx(coordTransformed[0]);
-	    declaredBBox.setMiny(coordTransformed[1]);
-	    declaredBBox.setMaxx(coordTransformed[2]);
-	    declaredBBox.setMaxy(coordTransformed[3]);
-	    declaredSrsTransformed = true;
+            declaredBBox.setMinx(coordTransformed[0]);
+            declaredBBox.setMiny(coordTransformed[1]);
+            declaredBBox.setMaxx(coordTransformed[2]);
+            declaredBBox.setMaxy(coordTransformed[3]);
+            declaredSrsTransformed = true;
 
-	} catch (NoSuchAuthorityCodeException e) {
-	    LOG.error(
-		    "No se ha encontrado la autoridad especificada en el Sistema de Referencia Nativo",
-		    e);
-	} catch (FactoryException e) {
-	    LOG.error(
-		    "No se ha podido crear la factoría de SRS en GeoserverServiceImpl",
-		    e);
-	} catch (TransformException e) {
-	    LOG.error(
-		    "Error transformando las coordenadas del nativo al delcarado. Se usará como declarado el mismo que el nativo",
-		    e);
-	}
+        } catch (NoSuchAuthorityCodeException e) {
+            LOG.error(
+                    "No se ha encontrado la autoridad especificada en el Sistema de Referencia Nativo",
+                    e);
+        } catch (FactoryException e) {
+            LOG.error(
+                    "No se ha podido crear la factoría de SRS en GeoserverServiceImpl",
+                    e);
+        } catch (TransformException e) {
+            LOG.error(
+                    "Error transformando las coordenadas del nativo al delcarado. Se usará como declarado el mismo que el nativo",
+                    e);
+        }
 
-	GsFeatureDescriptor fd = new GsFeatureDescriptor();
-	fd.setNativeName(tableName);
-	fd.setTitle(title);
-	fd.setName(layerName);
-	if (nativeBoundingBox != null) {
-	    if (declaredSrsTransformed) {
-		fd.setLatLonBoundingBox(declaredBBox);
+        GsFeatureDescriptor fd = new GsFeatureDescriptor();
+        fd.setNativeName(tableName);
+        fd.setTitle(title);
+        fd.setName(layerName);
+        if (nativeBoundingBox != null) {
+            if (declaredSrsTransformed) {
+                fd.setLatLonBoundingBox(declaredBBox);
 
-				// this is not an error. You should assign the native SRS to the
-		// declared SRS.
-		fd.setSRS(nativeBoundingBox.getSrs());
+                // this is not an error. You should assign the native SRS to the
+                // declared SRS.
+                fd.setSRS(nativeBoundingBox.getSrs());
 
-	    }
-	    fd.setNativeCRS(nativeBoundingBox.getSrs());
-	    fd.setNativeBoundingBox(nativeBoundingBox);
-	}
+            }
+            fd.setNativeCRS(nativeBoundingBox.getSrs());
+            fd.setNativeBoundingBox(nativeBoundingBox);
+        }
 
-	GsLayerDescriptor ld = new GsLayerDescriptor();
+        GsLayerDescriptor ld = new GsLayerDescriptor();
 
-	ld.setType(geomType);
+        ld.setType(geomType);
 
-	String datastoreName = workspaceName + DATASTORE_SUFFIX;
-	result = gsDao
-		.publishPostgisLayer(workspaceName, datastoreName, fd, ld);
+        String datastoreName = workspaceName + DATASTORE_SUFFIX;
+        result = gsDao
+                .publishPostgisLayer(workspaceName, datastoreName, fd, ld);
 
-	return result;
+        return result;
     }
 
     /**
@@ -284,14 +290,14 @@ public class GeoserverServiceImpl implements GeoserverService {
      */
     @Override
     public boolean unpublishLayer(String workspaceName, String datastoreName,
-	    String layerName) {
-	if (LOG.isInfoEnabled()) {
-	    LOG.info("Unpublishig geoserver layer");
-	}
-	
-	boolean result = gsDao.deletePostgisFeatureType(workspaceName, datastoreName,
-		layerName);
-	return result;
+            String layerName) {
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Unpublishig geoserver layer");
+        }
+
+        boolean result = gsDao.deletePostgisFeatureType(workspaceName, datastoreName,
+                layerName);
+        return result;
     }
 
     /*
@@ -302,8 +308,8 @@ public class GeoserverServiceImpl implements GeoserverService {
      */
     @Override
     public boolean unpublishGsDbLayer(String workspaceName, String layerName) {
-	return unpublishLayer(workspaceName, workspaceName + DATASTORE_SUFFIX,
-		layerName);
+        return unpublishLayer(workspaceName, workspaceName + DATASTORE_SUFFIX,
+                layerName);
     }
 
     /*
@@ -315,7 +321,7 @@ public class GeoserverServiceImpl implements GeoserverService {
      */
     @Override
     public boolean existsLayerInWorkspace(String layerName, String workspaceName) {
-	return gsDao.existsLayerInWorkspace(layerName, workspaceName);
+        return gsDao.existsLayerInWorkspace(layerName, workspaceName);
     }
 
     /*
@@ -327,97 +333,97 @@ public class GeoserverServiceImpl implements GeoserverService {
      */
     @Override
     public boolean createDatastoreJndi(String workspaceName,
-	    String datastoreName) {
-	return gsDao.createDatastoreJndi(workspaceName, datastoreName);
+            String datastoreName) {
+        return gsDao.createDatastoreJndi(workspaceName, datastoreName);
     }
 
     @Override
     public boolean publishGeoTIFF(String workspace, String layerName,
-	    File geotiff, String crs) {
-	return gsDao.publishGeoTIFF(workspace, layerName, geotiff, crs);
+            File geotiff, String crs) {
+        return gsDao.publishGeoTIFF(workspace, layerName, geotiff, crs);
     }
 
     @Override
     public boolean publishImageMosaic(String workspaceName, String layerName,
-	    File imageFile, String crs) {
-	return gsDao.publishImageMosaic(workspaceName, layerName, imageFile,
-		crs);
+            File imageFile, String crs) {
+        return gsDao.publishImageMosaic(workspaceName, layerName, imageFile,
+                crs);
     }
 
     @Override
     public boolean publishWorldImage(String workspaceName, String layerName,
-	    File imageFile, String crs) {
+            File imageFile, String crs) {
 
-	return gsDao
-		.publishWorldImage(workspaceName, layerName, imageFile, crs);
+        return gsDao
+                .publishWorldImage(workspaceName, layerName, imageFile, crs);
     }
 
     @Override
     public GsCoverageStoreData getCoverageStoreData(String workspaceName,
-	    String coverageStoreName) {
-	return gsDao.getCoverageStoreData(workspaceName, coverageStoreName);
+            String coverageStoreName) {
+        return gsDao.getCoverageStoreData(workspaceName, coverageStoreName);
     }
 
     @Override
     public boolean unpublishGsCoverageLayer(String workspaceName,
-	    String coverageLayer) {
+            String coverageLayer) {
 
-	if (!gsDao.deleteCoverage(workspaceName, coverageLayer)) {
-	    return false;
-	}
+        if (!gsDao.deleteCoverage(workspaceName, coverageLayer)) {
+            return false;
+        }
 
-	if (!gsDao.deleteGsCoverageStore(workspaceName, coverageLayer)) {
-	    return false;
-	}
+        if (!gsDao.deleteGsCoverageStore(workspaceName, coverageLayer)) {
+            return false;
+        }
 
-	return true;
+        return true;
     }
 
     @Override
     public GsCoverageDetails getCoverageDetails(String workspaceName,
-	    String coverageStore, String coverageName) {
-	return gsDao.getCoverageDetails(workspaceName, coverageStore,
-		coverageName);
+            String coverageStore, String coverageName) {
+        return gsDao.getCoverageDetails(workspaceName, coverageStore,
+                coverageName);
     }
 
     @Override
     public boolean copyLayerStyle(String sourceLayerName, String newStyleName) {
-	String layerSDLContent = gsDao.getLayerStyle(sourceLayerName);
+        String layerSDLContent = gsDao.getLayerStyle(sourceLayerName);
 
-	if (layerSDLContent == null) {
-	    return false;
-	}
+        if (layerSDLContent == null) {
+            return false;
+        }
 
-	return gsDao.createStyle(newStyleName, layerSDLContent);
+        return gsDao.createStyle(newStyleName, layerSDLContent);
     }
 
     @Override
     public boolean setLayerStyle(String workspaceName, String layerName,
-	    String newLayerStyleName) {
+            String newLayerStyleName) {
 
-	return gsDao.setLayerStyle(workspaceName, layerName, newLayerStyleName);
+        return gsDao.setLayerStyle(workspaceName, layerName, newLayerStyleName);
     }
 
     @Override
     public boolean deleteStyle(String styleName) {
-	return gsDao.deleteStyle(styleName);
+        return gsDao.deleteStyle(styleName);
     }
 
     @Override
     public boolean reset() {
-	return gsDao.reset();
+        return gsDao.reset();
     }
 
     @Override
     public boolean existsWorkspace(String workspaceName) {
-	RESTWorkspaceList workspaceList = gsDao.getWorkspaceList();
-	for (RESTShortWorkspace workspace : workspaceList) {
-	    String currentName = workspace.getName();
-	    if (StringUtils.equals(workspaceName, currentName)) {
-		return true;
-	    }
-	}
-	return false;
+        RESTWorkspaceList workspaceList = gsDao.getWorkspaceList();
+        for (RESTShortWorkspace workspace : workspaceList) {
+            String currentName = workspace.getName();
+            if (StringUtils.equals(workspaceName, currentName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -429,7 +435,7 @@ public class GeoserverServiceImpl implements GeoserverService {
      */
     @Override
     public RESTDataStore getDatastore(String layerName) {
-	return getGsDao().getDatastore(layerName);
+        return getGsDao().getDatastore(layerName);
     }
 
     /**
@@ -439,18 +445,18 @@ public class GeoserverServiceImpl implements GeoserverService {
      */
     @Override
     public String getGeoserverUrl() {
-	return getGsDao().getGeoserverUrl();
+        return getGsDao().getGeoserverUrl();
     }
 
     @Override
     public void copyLayer(String workspaceName, String datastoreName,
-	    String layerName, String tableName, String title, BoundingBox bbox,
-	    GeometryType type, String targetWorkspaceName,
-	    String targetDatastoreName, String targetLayerName) {
-	publishGsDbLayer(workspaceName, tableName, targetLayerName, title,
-		bbox, type);
-	copyLayerStyle(layerName, targetLayerName);
-	setLayerStyle(workspaceName, targetLayerName, targetLayerName);
+            String layerName, String tableName, String title, BoundingBox bbox,
+            GeometryType type, String targetWorkspaceName,
+            String targetDatastoreName, String targetLayerName) {
+        publishGsDbLayer(workspaceName, tableName, targetLayerName, title,
+                bbox, type);
+        copyLayerStyle(layerName, targetLayerName);
+        setLayerStyle(workspaceName, targetLayerName, targetLayerName);
     }
 
     /**
@@ -460,7 +466,7 @@ public class GeoserverServiceImpl implements GeoserverService {
      */
     @Override
     public List<String> getLayersNames() {
-	return gsDao.getLayersNames();
+        return gsDao.getLayersNames();
     }
 
     /**
@@ -472,7 +478,7 @@ public class GeoserverServiceImpl implements GeoserverService {
      */
     @Override
     public String getNativeName(String layerName) {
-	return gsDao.getNativeName(layerName);
+        return gsDao.getNativeName(layerName);
     }
 
     /**
@@ -482,7 +488,7 @@ public class GeoserverServiceImpl implements GeoserverService {
      */
     @Override
     public List<String> getStyleNames() {
-	return gsDao.getStyleNames();
+        return gsDao.getStyleNames();
     }
 
     /**
@@ -494,7 +500,7 @@ public class GeoserverServiceImpl implements GeoserverService {
      */
     @Override
     public List<String> cleanUnusedStyles(List<String> styleNames) {
-	return gsDao.cleanUnusedStyles(styleNames);
+        return gsDao.cleanUnusedStyles(styleNames);
     }
 
     /**
@@ -505,7 +511,7 @@ public class GeoserverServiceImpl implements GeoserverService {
      */
     @Override
     public String getLayerWorkspace(String layerName) {
-	return gsDao.getLayerWorkspace(layerName);
+        return gsDao.getLayerWorkspace(layerName);
     }
 
     /**
@@ -516,128 +522,140 @@ public class GeoserverServiceImpl implements GeoserverService {
      */
     @Override
     public RESTLayer getLayerInfo(String layerName) {
-	return gsDao.getLayerInfo(layerName);
+        return gsDao.getLayerInfo(layerName);
     }
 
     @Override
     public DuplicationResult duplicateGeoServerLayer(
-	    String sourceWorkspace, String sourceLayerType,
-	    String sourceLayerName, String sourceLayerTable,
-	    String targetWorkspace, String newLayerName, String newLayerTitle) {
+            String sourceWorkspace, String sourceLayerType,
+            String sourceLayerName, String sourceLayerTable,
+            String targetWorkspace, String newLayerName, String newLayerTitle) {
 
-	if (sourceLayerType.contains(WFS_LAYER_TYPE_NAME)
-		|| sourceLayerType.contains(VECTORIAL_LAYER_TYPE)
-		&& StringUtils.isEmpty(sourceLayerName)) {
-	    // We don't need to do anything for WFS layers or remote WMS layers
-	    // As we don't have data stored neither in the database or
-	    // geoserver.
-	    return DuplicationResult.SUCCESS_REMOTE;
-	}
+        if (sourceLayerType.contains(WFS_LAYER_TYPE_NAME)
+                || sourceLayerType.contains(VECTORIAL_LAYER_TYPE)
+                && StringUtils.isEmpty(sourceLayerName)) {
+            // We don't need to do anything for WFS layers or remote WMS layers
+            // As we don't have data stored neither in the database or
+            // geoserver.
+            return DuplicationResult.SUCCESS_REMOTE;
+        }
 
-	if (!copyLayerStyle(sourceLayerName, newLayerName)) {
-	    return DuplicationResult.FAILURE;
-	}
+        if (!copyLayerStyle(sourceLayerName, newLayerName)) {
+            return DuplicationResult.FAILURE;
+        }
 
-	DuplicationResult result;
-	if (sourceLayerType.contains(VECTORIAL_LAYER_TYPE)) {
-	    result = duplicateVectorLayer(
-		    sourceLayerName,
-		    sourceLayerTable,
-		    targetWorkspace,
-		    newLayerTitle, newLayerName);
-	} else {
-	    result = duplicateRasterLayer(
-		    sourceWorkspace, sourceLayerName, sourceLayerType,
-		    targetWorkspace, newLayerName);
-	}
+        DuplicationResult result;
+        if (sourceLayerType.contains(VECTORIAL_LAYER_TYPE)) {
+            result = duplicateVectorLayer(
+                    sourceLayerName,
+                    sourceLayerTable,
+                    targetWorkspace,
+                    newLayerTitle, newLayerName);
+        } else {
+           
+                result = duplicateRasterLayer(
+                        sourceWorkspace, sourceLayerName, sourceLayerType,
+                        targetWorkspace, newLayerName);
+            
+        }
 
-	if (result == DuplicationResult.FAILURE) {
-	    return result;
-	}
-	// The new created style for the layer is named after the own layer.
-	if (!this.setLayerStyle(
-		targetWorkspace,
-		newLayerName, newLayerName)) {
-	    result = DuplicationResult.FAILURE;
-	}
+        if (result == DuplicationResult.FAILURE) {
+            return result;
+        }
+        // The new created style for the layer is named after the own layer.
+        if (!this.setLayerStyle(
+                targetWorkspace,
+                newLayerName, newLayerName)) {
+            result = DuplicationResult.FAILURE;
+        }
 
-	return result;
+        return result;
     }
-    
+
     private DuplicationResult duplicateRasterLayer(
-	    String sourceWorkspace, String sourceLayerName, String type, String targetWorkspace, String newLayerName) {
+            String sourceWorkspace, String sourceLayerName, String type, String targetWorkspace, String newLayerName){
 
-	// Layers should be in the authority workspace...
-	GsCoverageStoreData coverageStoreData = 
-		getCoverageStoreData(sourceWorkspace, sourceLayerName);
+        // Layers should be in the authority workspace...
+        GsCoverageStoreData coverageStoreData
+                = getCoverageStoreData(sourceWorkspace, sourceLayerName);
 
-	if (coverageStoreData == null) {
-	    return DuplicationResult.FAILURE;
-	}
+        if (coverageStoreData == null) {
+            return DuplicationResult.FAILURE;
+        }
 
-	GsCoverageDetails coverageDetails =
-		getCoverageDetails(sourceWorkspace, sourceLayerName,
-			sourceLayerName);
-	if (coverageDetails == null) {
-	    return DuplicationResult.FAILURE;
-	}
+        GsCoverageDetails coverageDetails
+                = getCoverageDetails(sourceWorkspace, sourceLayerName,
+                        sourceLayerName);
+        if (coverageDetails == null) {
+            return DuplicationResult.FAILURE;
+        }
 
-	String srs = coverageDetails.getDeclaredSRS();
+        String srs = coverageDetails.getDeclaredSRS();
 
-	// So we can retrieve the file's path.
-	String filePath = GEOSERVER_BASE_PATH
-		+ coverageStoreData.getURL().replace("file:", "/");
+        // So we can retrieve the file's path.
+        String filePath = GEOSERVER_BASE_PATH
+                + coverageStoreData.getURL().replace("file:", "/");
 
-	File rasterSourceFile = new File(filePath);
+        File rasterSourceFile = new File(filePath);
 
-	boolean result = false;
-	if (type.contains(GEOTIFF_LAYER_TYPE_NAME)) {
-	    result = publishGeoTIFF(targetWorkspace,newLayerName, rasterSourceFile,srs);
-	} else if (type.contains(IMAGEWORLD_LAYER_TYPE_NAME)) {
-	    result = publishWorldImage(targetWorkspace,newLayerName, rasterSourceFile,srs);
-	} else if (type.contains(IMAGEMOSAIC_LAYER_TYPE_NAME)) {
-	    result = publishImageMosaic(targetWorkspace,newLayerName, rasterSourceFile,srs);
-	} else {
-	    throw new IllegalArgumentException(
-		    "Unsupported publication of raster layers of type: " + type);
-	}
+        // We need to compress the folder containing the files.
+        boolean result = false;
+        if (type.contains(GEOTIFF_LAYER_TYPE_NAME)) {
+            result = publishGeoTIFF(targetWorkspace, newLayerName, rasterSourceFile, srs);
+        } else {
+            File zipFile;
+            try {
+                zipFile = compressSourceFolder(rasterSourceFile.getParentFile());
+            } catch (IOException ex) {
+                LOG.error("Couldn't create zip file!", ex);
+                return DuplicationResult.FAILURE;
+            }
+            if (type.contains(IMAGEWORLD_LAYER_TYPE_NAME)) {
+                result = publishWorldImage(targetWorkspace, newLayerName, zipFile, srs);
+            } else if (type.contains(IMAGEMOSAIC_LAYER_TYPE_NAME)) {
+                result = publishImageMosaic(targetWorkspace, newLayerName, zipFile, srs);
+            } else {
+                throw new IllegalArgumentException(
+                        "Unsupported publication of raster layers of type: " + type);
+            }
+        }
 
-	if (!result) {
-	    return DuplicationResult.FAILURE;
-	}
+        if (!result) {
+            return DuplicationResult.FAILURE;
+        }
 
-	return DuplicationResult.SUCCESS_RASTER;
+        return DuplicationResult.SUCCESS_RASTER;
     }
 
     private DuplicationResult duplicateVectorLayer(
-	    String sourceLayerName,
-	    String sourceLayerTable,
-	    String targetWorkspace,
-	    String layerTitle,
-	    String newLayerName) {
+            String sourceLayerName,
+            String sourceLayerTable,
+            String targetWorkspace,
+            String layerTitle,
+            String newLayerName) {
 
-	if (StringUtils.isEmpty(sourceLayerName)) {
-	    // Its a remote WFS layer, we have to do nothing here.
-	    return DuplicationResult.SUCCESS_REMOTE;
-	}
-	BoundingBox bbox;
-	GeometryType type;
-	// We copy the table with all data include directly in PostGis
-	try {
-	    dbManagementDao.duplicateLayerTable(sourceLayerTable, newLayerName);
-	    bbox = dbManagementDao.getTableBoundingBox(newLayerName);
-	    type = dbManagementDao.getTableGeometryType(newLayerName);
-	} catch (RuntimeException e) {
-	    LOG.error("Error!", e);
-	    return DuplicationResult.FAILURE;
-	}
+        if (StringUtils.isEmpty(sourceLayerName)) {
+            // Its a remote WFS layer, we have to do nothing here.
+            return DuplicationResult.SUCCESS_REMOTE;
+        }
+        BoundingBox bbox;
+        GeometryType type;
+        // We copy the table with all data include directly in PostGis
+        try {
+            dbManagementDao.duplicateLayerTable(sourceLayerTable, newLayerName);
+            bbox = dbManagementDao.getTableBoundingBox(newLayerName);
+            type = dbManagementDao.getTableGeometryType(newLayerName);
+        } catch (RuntimeException e) {
+            LOG.error("Error!", e);
+            return DuplicationResult.FAILURE;
+        }
 
-	// We tell geoserver that a new layer is avalaible.
-	if (!publishGsDbLayer(targetWorkspace,newLayerName, newLayerName,layerTitle, bbox, type)) {
-	    return DuplicationResult.FAILURE;
-	}
+        // We tell geoserver that a new layer is avalaible.
+        if (!publishGsDbLayer(targetWorkspace, newLayerName, newLayerName, layerTitle, bbox, type)) {
+            return DuplicationResult.FAILURE;
+        }
 
-	return DuplicationResult.SUCCESS_VECTORIAL;
+        return DuplicationResult.SUCCESS_VECTORIAL;
     }
 
     /**
@@ -652,79 +670,98 @@ public class GeoserverServiceImpl implements GeoserverService {
     @Override
     public boolean deleteGeoServerLayer(String workspace, String layerName, String layerType, String tableName) {
 
-	if (layerType.contains(WFS_LAYER_TYPE_NAME)
-		|| layerType.contains(VECTORIAL_LAYER_TYPE)
-		&& StringUtils.isEmpty(layerName)) {
-	    // We don't need to do nothing in the database or geoserver for WFS
-	    // or a remote Vectorial layer (which don't have table name)
-	    // layers as we don't store its data, just reference it.
-	    return true;
-	}
+        if (layerType.contains(WFS_LAYER_TYPE_NAME)
+                || layerType.contains(VECTORIAL_LAYER_TYPE)
+                && StringUtils.isEmpty(layerName)) {
+            // We don't need to do nothing in the database or geoserver for WFS
+            // or a remote Vectorial layer (which don't have table name)
+            // layers as we don't store its data, just reference it.
+            return true;
+        }
 
-	if (!existsWorkspace(workspace)) {
-	    return true;
-	}
+        if (!existsWorkspace(workspace)) {
+            return true;
+        }
 
-	// First we delete the current geoserver data
-	if (layerType.contains(VECTORIAL_LAYER_TYPE)) {
-	    // For vectorial layers we need to remove the data table backing the
-	    // layer.
-	    try {
-		dbManagementDao.deleteLayerTable(tableName);
-	    } catch (SQLGrammarException ge) {
-		// This launches if the table was already deleted, not an actual
-		// grammar error.
-	    }
+        // First we delete the current geoserver data
+        if (layerType.contains(VECTORIAL_LAYER_TYPE)) {
+            // For vectorial layers we need to remove the data table backing the
+            // layer.
+            try {
+                dbManagementDao.deleteLayerTable(tableName);
+            } catch (SQLGrammarException ge) {
+                // This launches if the table was already deleted, not an actual
+                // grammar error.
+            }
 
-	    if (!unpublishGsDbLayer(workspace, layerName)) {
-		return false;
-	    }
-	} else {
+            if (!unpublishGsDbLayer(workspace, layerName)) {
+                return false;
+            }
+        } else {
 
-	    if (!deleteCoverageData(workspace, layerName)) {
-		return false;
-	    }
+            if (!deleteCoverageData(workspace, layerName)) {
+                return false;
+            }
 
-	    if (!unpublishGsCoverageLayer(workspace, layerName)) {
-		LOG.error("Coverage store's was already unpublished");
-		return false;
-	    }
-	}
+            if (!unpublishGsCoverageLayer(workspace, layerName)) {
+                LOG.error("Coverage store's was already unpublished");
+                return false;
+            }
+        }
 
-	// We remove the tmp layer's style.
-	return deleteStyle(layerName);
+        // We remove the tmp layer's style.
+        return deleteStyle(layerName);
     }
 
     private boolean deleteCoverageData(String workspace, String layerName) {
-	// Raster layer types. WFS layers don't neede removal of geoserver
-	// data.
-	GsCoverageStoreData coverageStoreData = getCoverageStoreData(workspace, layerName);
+        // Raster layer types. WFS layers don't neede removal of geoserver
+        // data.
+        GsCoverageStoreData coverageStoreData = getCoverageStoreData(workspace, layerName);
 
-	if (coverageStoreData == null) {
-	    return false;
-	}
+        if (coverageStoreData == null) {
+            return false;
+        }
 
-	// So we can retrieve the file's path.
-	String filePath = GEOSERVER_BASE_PATH
-		+ coverageStoreData.getURL().replace("file:", "/");
+        // So we can retrieve the file's path.
+        String filePath = GEOSERVER_BASE_PATH
+                + coverageStoreData.getURL().replace("file:", "/");
 
-	// We remove the file and folder.
-	File file = new File(filePath);
-	File folder = new File(file.getParent());
+        // We remove the file and folder.
+        File file = new File(filePath);
+        File folder = new File(file.getParent());
 
-	for (File folderFile : folder.listFiles()) {
-	    if (!folderFile.delete()) {
-		LOG.error("The coverage's data file couldn't be deleted!");
-		return false;
-	    }
-	}
+        for (File folderFile : folder.listFiles()) {
+            if (!folderFile.delete()) {
+                LOG.error("The coverage's data file couldn't be deleted!");
+                return false;
+            }
+        }
 
-	if (!folder.delete()) {
-	    LOG.error("The coverage's data folder couldn't be deleted!");
-	    return false;
-	}
+        if (!folder.delete()) {
+            LOG.error("The coverage's data folder couldn't be deleted!");
+            return false;
+        }
 
-	return true;
+        return true;
+    }
+
+    private File compressSourceFolder(File folder) throws IOException {
+        File zipFile;
+        ZipOutputStream zipOutput = null;
+
+        zipFile = File.createTempFile("tmpRaster", ".zip");
+        zipOutput = new ZipOutputStream(new FileOutputStream(zipFile));
+
+        for (File f : folder.listFiles()) {
+            zipOutput.putNextEntry(new ZipEntry(f.getName()));
+
+            IOUtils.copy(new FileInputStream(f), zipOutput);
+            zipOutput.closeEntry();
+        }
+
+        zipOutput.close();
+
+        return zipFile;
     }
 
 }
