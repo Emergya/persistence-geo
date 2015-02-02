@@ -28,12 +28,14 @@
  */
 package com.emergya.persistenceGeo.utils;
 
+import org.springframework.beans.factory.annotation.Value;
+
 /**
  * @author <a href="mailto:jlrodriguez@emergya.com">jlrodriguez</a>
  *
  */
 public class GsRestApiConfigurationImpl implements GsRestApiConfiguration {
-	
+
 	@Value("#{webProperties['geoserver.rest.url']}")
 	public String serverUrl;
 
