@@ -1,19 +1,19 @@
 /* GsRestApiConfigurationImpl.java
- * 
+ *
  * Copyright (C) 2012
- * 
+ *
  * This file is part of project persistence-geo-core
- * 
+ *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -23,28 +23,52 @@
  * resulting executable to be covered by the GNU General Public License.
  * This exception does not however invalidate any other reasons why the
  * executable file might be covered by the GNU General Public License.
- * 
+ *
  * Authors:: Juan Luis Rodríguez Ponce (mailto:jlrodriguez@emergya.com)
  */
 package com.emergya.persistenceGeo.utils;
 
 /**
  * @author <a href="mailto:jlrodriguez@emergya.com">jlrodriguez</a>
- * 
+ *
  */
 public class GsRestApiConfigurationImpl implements GsRestApiConfiguration {
-	private String serverUrl;
-	private String adminUsername;
-	private String adminPassword;
-	private String dbHost;
-	private int dbPort;
-	private String dbName;
-	private String dbSchema;
-	private String dbUser;
-	private String dbPassword;
-	private String dbType;
-	private String jndiReferenceName;
-	private String datasourceType;
+	
+	@Value("#{webProperties['geoserver.rest.url']}")
+	public String serverUrl;
+
+	@Value("#{webProperties['geoserver.rest.user']}")
+	public String adminUsername;
+
+	@Value("#{webProperties['geoserver.rest.password']}")
+	public String adminPassword;
+
+	@Value("#{webProperties['geoserver.db.host']}")
+	public String dbHost;
+
+	@Value("#{webProperties['geoserver.db.port']}")
+	public int dbPort;
+
+	@Value("#{webProperties['geoserver.db.name']}")
+	public String dbName;
+
+	@Value("#{webProperties['geoserver.db.schema']}")
+	public String dbSchema;
+
+	@Value("#{webProperties['geoserver.db.user']}")
+	public String dbUser;
+
+	@Value("#{webProperties['geoserver.db.password']}")
+	public String dbPassword;
+
+	@Value("#{webProperties['geoserver.db.type']}")
+	public String dbType;
+
+	@Value("#{webProperties['geoserver.db.jndiReferenceName']}")
+	public String jndiReferenceName;
+
+	@Value("#{webProperties['geoserver.db.datasourceType']}")
+	public String datasourceType;
 
 	/**
 	 * @return the datasourceType
@@ -116,7 +140,7 @@ public class GsRestApiConfigurationImpl implements GsRestApiConfiguration {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.emergya.persistenceGeo.metaModel.GsRestApiConfiguration#getServerUrl
 	 * ()
@@ -128,7 +152,7 @@ public class GsRestApiConfigurationImpl implements GsRestApiConfiguration {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.emergya.persistenceGeo.metaModel.GsRestApiConfiguration#getAdminUsername
 	 * ()
@@ -140,7 +164,7 @@ public class GsRestApiConfigurationImpl implements GsRestApiConfiguration {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.emergya.persistenceGeo.metaModel.GsRestApiConfiguration#getAdminPassword
 	 * ()
