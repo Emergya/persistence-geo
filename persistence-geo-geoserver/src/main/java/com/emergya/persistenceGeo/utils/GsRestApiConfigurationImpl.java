@@ -36,40 +36,17 @@ import org.springframework.beans.factory.annotation.Value;
  */
 public class GsRestApiConfigurationImpl implements GsRestApiConfiguration {
 
-	@Value("#{webProperties['geoserver.rest.url']}")
 	public String serverUrl;
-
-	@Value("#{webProperties['geoserver.rest.user']}")
 	public String adminUsername;
-
-	@Value("#{webProperties['geoserver.rest.password']}")
 	public String adminPassword;
-
-	@Value("#{webProperties['geoserver.db.host']}")
 	public String dbHost;
-
-	@Value("#{webProperties['geoserver.db.port']}")
 	public int dbPort;
-
-	@Value("#{webProperties['geoserver.db.name']}")
 	public String dbName;
-
-	@Value("#{webProperties['geoserver.db.schema']}")
 	public String dbSchema;
-
-	@Value("#{webProperties['geoserver.db.user']}")
 	public String dbUser;
-
-	@Value("#{webProperties['geoserver.db.password']}")
 	public String dbPassword;
-
-	@Value("#{webProperties['geoserver.db.type']}")
 	public String dbType;
-
-	@Value("#{webProperties['geoserver.db.jndiReferenceName']}")
 	public String jndiReferenceName;
-
-	@Value("#{webProperties['geoserver.db.datasourceType']}")
 	public String datasourceType;
 
 	/**
