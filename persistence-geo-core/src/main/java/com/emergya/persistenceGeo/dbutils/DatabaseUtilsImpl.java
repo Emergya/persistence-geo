@@ -43,6 +43,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.collections.iterators.EntrySetMapIterator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.emergya.persistenceGeo.exceptions.DbUtilsException;
@@ -55,6 +56,7 @@ import com.emergya.persistenceGeo.exceptions.DbUtilsException;
 public class DatabaseUtilsImpl implements IDatabaseUtils {
 
 	@Autowired
+	@Qualifier("dataSourceHibernate")
 	private DataSource ds;
 
 	@Override

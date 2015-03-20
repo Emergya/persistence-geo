@@ -40,6 +40,7 @@ import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.emergya.persistenceGeo.dao.GenericDAO;
@@ -54,6 +55,7 @@ public abstract class GenericHibernateDAOImpl<T, ID extends Serializable> extend
 	protected Class<T> persistentClass;
 
 	@Autowired
+	@Qualifier("sessionFactory")
     public void init(SessionFactory sessionFactory) {
         setSessionFactory(sessionFactory);
     }
