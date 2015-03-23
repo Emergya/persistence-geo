@@ -16,7 +16,7 @@
     <bean class="java.lang.String" id="chareacterEncoding">
     	<constructor-arg type="String" value="${source.encoding}" />
     </bean>
-
+    
     <bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="locations">
             <list>

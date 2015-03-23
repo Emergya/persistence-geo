@@ -62,6 +62,7 @@ public abstract class GenericHibernateDAOImpl<T, ID extends Serializable>
 
 	@Autowired
 	@Qualifier("sessionFactory")
+<<<<<<< HEAD
 	public void init(SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);
 	}
@@ -78,6 +79,23 @@ public abstract class GenericHibernateDAOImpl<T, ID extends Serializable>
 					.getActualTypeArguments()[0];
 		}
 	}
+=======
+    public void init(SessionFactory sessionFactory) {
+        setSessionFactory(sessionFactory);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public GenericHibernateDAOImpl() {
+        try {
+            persistentClass = (Class<T>)
+                    ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        } catch (ClassCastException e) {
+            //can be raised when DAO is inherited twice
+            persistentClass = (Class<T>)
+                    ((ParameterizedType) getClass().getSuperclass().getGenericSuperclass()).getActualTypeArguments()[0];
+        }
+    }
+>>>>>>> origin/master
 
 	public T findById(Long id, boolean lock) {
 		T entity;
