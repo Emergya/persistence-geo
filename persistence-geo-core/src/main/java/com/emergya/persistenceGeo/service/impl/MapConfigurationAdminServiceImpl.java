@@ -28,12 +28,11 @@ package com.emergya.persistenceGeo.service.impl;
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
 import com.emergya.persistenceGeo.dao.AbstractGenericDao;
-import com.emergya.persistenceGeo.dao.GenericDAO;
 import com.emergya.persistenceGeo.dao.MapConfigurationEntityDao;
+import com.emergya.persistenceGeo.dao.MultiSirDatabaseGenericDAO;
 import com.emergya.persistenceGeo.dto.MapConfigurationDto;
 import com.emergya.persistenceGeo.metaModel.AbstractMapConfigurationEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
@@ -46,8 +45,7 @@ import com.emergya.persistenceGeo.service.MapConfigurationAdminService;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  * 
  */
-@Repository
-@Transactional
+@Service
 public class MapConfigurationAdminServiceImpl
 		extends
 		AbstractServiceImpl<MapConfigurationDto, AbstractMapConfigurationEntity>
@@ -91,7 +89,7 @@ public class MapConfigurationAdminServiceImpl
 	}
 
 	@Override
-	protected GenericDAO<AbstractMapConfigurationEntity, Long> getDao() {
+	protected MultiSirDatabaseGenericDAO<AbstractMapConfigurationEntity, Long> getDao() {
 		return mapConfigurationDao;
 	}
 

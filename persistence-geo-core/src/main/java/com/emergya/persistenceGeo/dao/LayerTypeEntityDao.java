@@ -40,23 +40,25 @@ import com.emergya.persistenceGeo.metaModel.AbstractLayerTypePropertyEntity;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
-public interface LayerTypeEntityDao extends GenericDAO<AbstractLayerTypeEntity, Long> {
-	
+public interface LayerTypeEntityDao extends
+		MultiSirDatabaseGenericDAO<AbstractLayerTypeEntity, Long> {
+
 	/**
-	 * Get a layer type properties type by the layer type name 
+	 * Get a layer type properties type by the layer type name
 	 * 
 	 * @param <code>layerTypeName</code>
 	 * 
-	 * @return String list associated with the layer type or null if not found 
+	 * @return String list associated with the layer type or null if not found
 	 */
-	public List<AbstractLayerTypePropertyEntity> getLayerTypeProperties(String layerTypeName);
-	
+	public List<AbstractLayerTypePropertyEntity> getLayerTypeProperties(
+			String layerTypeName);
+
 	/**
-	 * Get a layer type type by name 
+	 * Get a layer type type by name
 	 * 
 	 * @param <code>layerTypeName</code>
 	 * 
-	 * @return AbstractLayerTypeEntity by name 
+	 * @return AbstractLayerTypeEntity by name
 	 */
 	public AbstractLayerTypeEntity getLayerType(String layerTypeName);
 }

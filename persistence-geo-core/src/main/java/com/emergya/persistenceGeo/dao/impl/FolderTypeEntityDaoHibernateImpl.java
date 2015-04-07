@@ -55,8 +55,8 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
 @SuppressWarnings("unchecked")
 @Repository("folderTypeEntityDao")
 public class FolderTypeEntityDaoHibernateImpl extends
-		GenericHibernateDAOImpl<AbstractFolderTypeEntity, Long> implements
-		FolderTypeEntityDao {
+		MultiSirDatabaseGenericHibernateDAOImpl<AbstractFolderTypeEntity, Long>
+		implements FolderTypeEntityDao {
 
 	private static final String PARENT = "parent";
 	private static final String CHILD = "child";

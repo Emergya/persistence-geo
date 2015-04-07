@@ -53,63 +53,63 @@ import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 @Table(name = "gis_user")
 public class UserEntity extends AbstractUserEntity {
 
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6272520927189358861L;
 
-    public UserEntity() {
+	public UserEntity() {
 
-    }
+	}
 
-    public UserEntity(String name) {
-        username = name;
-    }
+	public UserEntity(String name) {
+		username = name;
+	}
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "gis_user_seq")
-    @SequenceGenerator(name="gis_user_seq", sequenceName = "gis_user_seq", initialValue=100)
-    public Long getId() {
-        return id;
-    }
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "gis_user_seq")
+	@SequenceGenerator(name = "gis_user_seq", sequenceName = "gis_user_seq", initialValue = 100)
+	public Long getId() {
+		return id;
+	}
 
-    @Column(name = "username", nullable = false)
-    public String getUsername() {
-        return username;
-    }
+	@Column(name = "username", nullable = false)
+	public String getUsername() {
+		return username;
+	}
 
-    @Column(name = "password", nullable = false)
-    public String getPassword() {
+	@Column(name = "password", nullable = false)
+	public String getPassword() {
 		return password;
 	}
-    
+
 	@Column(name = "nombreCompleto")
 	public String getNombreCompleto() {
 		return nombreCompleto;
 	}
 
-    @Column(name = "apellidos")
+	@Column(name = "apellidos")
 	public String getApellidos() {
 		return apellidos;
 	}
 
-    @Column(name = "email")
+	@Column(name = "email")
 	public String getEmail() {
 		return email;
 	}
 
-    @Column(name = "telefono")
+	@Column(name = "telefono")
 	public String getTelefono() {
 		return telefono;
 	}
 
-    @Column(name = "admin_user")
+	@Column(name = "admin_user")
 	public Boolean getAdmin() {
 		return admin;
 	}
 
-    @Column(name = "valid_user")
+	@Column(name = "valid_user")
 	public Boolean getValid() {
 		return valid;
 	}
@@ -123,9 +123,9 @@ public class UserEntity extends AbstractUserEntity {
 	public Date getUpdateDate() {
 		return updateDate;
 	}
-	
-    @ManyToOne
-    @JoinColumn(name = "user_authority_id")
+
+	@ManyToOne
+	@JoinColumn(name = "user_authority_id")
 	public AuthorityEntity getAuthority() {
 		return (AuthorityEntity) authority;
 	}

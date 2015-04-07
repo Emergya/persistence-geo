@@ -33,6 +33,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractSourceToolEntity;
  * @author <a href="mailto:adiaz@emergya.com">Alejandro Diaz</a>
  *
  */
-public interface SourceToolEntityDao extends GenericDAO<AbstractSourceToolEntity, Long> {
-	
+public interface SourceToolEntityDao extends
+		MultiSirDatabaseGenericDAO<AbstractSourceToolEntity, Long> {
+
 }

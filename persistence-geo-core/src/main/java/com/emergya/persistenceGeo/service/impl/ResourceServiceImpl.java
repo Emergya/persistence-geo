@@ -34,11 +34,10 @@ import java.io.File;
 import javax.annotation.Resource;
 
 import org.apache.commons.io.FileUtils;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
 import com.emergya.persistenceGeo.dao.AbstractGenericDao;
-import com.emergya.persistenceGeo.dao.GenericDAO;
+import com.emergya.persistenceGeo.dao.MultiSirDatabaseGenericDAO;
 import com.emergya.persistenceGeo.dao.ResourceEntityDao;
 import com.emergya.persistenceGeo.dto.ResourceDto;
 import com.emergya.persistenceGeo.metaModel.AbstractResourceEntity;
@@ -52,22 +51,22 @@ import com.emergya.persistenceGeo.service.ResourceService;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  * 
  */
-@Repository
-@Transactional
-public class ResourceServiceImpl extends AbstractServiceImpl<ResourceDto, AbstractResourceEntity>
-		implements ResourceService {
+@Service
+public class ResourceServiceImpl extends
+		AbstractServiceImpl<ResourceDto, AbstractResourceEntity> implements
+		ResourceService {
 
 	@Resource
 	private Instancer instancer;
 	@Resource
 	private ResourceEntityDao resourceDao;
-	
-	public ResourceServiceImpl(){
+
+	public ResourceServiceImpl() {
 		super();
 	}
 
 	@Override
-	protected GenericDAO<AbstractResourceEntity, Long> getDao() {
+	protected MultiSirDatabaseGenericDAO<AbstractResourceEntity, Long> getDao() {
 		return resourceDao;
 	}
 
@@ -83,7 +82,7 @@ public class ResourceServiceImpl extends AbstractServiceImpl<ResourceDto, Abstra
 
 	protected ResourceDto entityToDto(AbstractResourceEntity entity) {
 		ResourceDto dto = null;
-		if(entity != null){
+		if (entity != null) {
 			dto = new ResourceDto();
 			// Add own parameters
 			dto.setId((Long) entity.getId());
@@ -91,18 +90,20 @@ public class ResourceServiceImpl extends AbstractServiceImpl<ResourceDto, Abstra
 			dto.setSize(entity.getSize());
 			dto.setType(entity.getType());
 			dto.setAccessId(entity.getAccessId());
-			
-			if(entity.getData() != null){
+
+			if (entity.getData() != null) {
 				try {
 					String extension = "png";
-					if(entity.getType() != null){
-						if(entity.getType().split("/").length > 0){
-							extension = entity.getType().split("/")[entity.getType().split("/").length-1];
-						}else{
+					if (entity.getType() != null) {
+						if (entity.getType().split("/").length > 0) {
+							extension = entity.getType().split("/")[entity
+									.getType().split("/").length - 1];
+						} else {
 							extension = entity.getType();
 						}
 					}
-					File file = com.emergya.persistenceGeo.utils.FileUtils.createFileTemp(entity.getName(), extension);
+					File file = com.emergya.persistenceGeo.utils.FileUtils
+							.createFileTemp(entity.getName(), extension);
 					FileUtils.writeByteArrayToFile(file, entity.getData());
 					dto.setData(file);
 				} catch (Exception e) {
@@ -116,20 +117,21 @@ public class ResourceServiceImpl extends AbstractServiceImpl<ResourceDto, Abstra
 
 	protected AbstractResourceEntity dtoToEntity(ResourceDto dto) {
 		AbstractResourceEntity entity = null;
-		if(dto != null){
-			if(dto.getId() != null && dto.getId() > 0){
-				entity = (AbstractResourceEntity) resourceDao.findById(dto.getId(), false);
-			}else{
-				entity =  instancer.createResourceEntity();
+		if (dto != null) {
+			if (dto.getId() != null && dto.getId() > 0) {
+				entity = (AbstractResourceEntity) resourceDao.findById(
+						dto.getId(), false);
+			} else {
+				entity = instancer.createResourceEntity();
 			}
 			// Add own parameters
 			entity.setName(dto.getName());
 			entity.setSize(dto.getSize());
 			entity.setType(dto.getType());
 			entity.setAccessId(dto.getAccessId());
-			
-			//Layer data
-			if(dto.getData() != null){
+
+			// Layer data
+			if (dto.getData() != null) {
 				try {
 					entity.setData(FileUtils.readFileToByteArray(dto.getData()));
 				} catch (Exception e) {

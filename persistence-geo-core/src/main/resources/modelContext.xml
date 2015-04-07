@@ -1,48 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-    <context:annotation-config/>
-    <context:component-scan base-package="com.emergya"/>
-        
-    <bean class="java.lang.Boolean" id="checkForCommandLine">
-    	<constructor-arg value="false" />
-    </bean>
-    
-    <bean class="java.lang.String" id="chareacterEncoding">
-    	<constructor-arg type="String" value="${source.encoding}" />
-    </bean>
+	<context:annotation-config />
+	<context:component-scan base-package="com.emergya" />
 
-    <bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="locations">
-            <list>
-                <value>classpath:application.properties</value>
-            </list>
-        </property>
-    </bean>
+	<bean class="java.lang.Boolean" id="checkForCommandLine">
+		<constructor-arg value="false" />
+	</bean>
 
-    <bean id="testProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="locations">
-            <list>
-                <value>classpath:test.properties</value>
-            </list>
-        </property>
-    </bean>
-    
-    <!-- ============================== -->
-    <!-- ==========  DAO layer ======== -->
-    <!-- ============================== -->
+	<bean class="java.lang.String" id="chareacterEncoding">
+		<constructor-arg type="String" value="${source.encoding}" />
+	</bean>
+
+	<bean id="properties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<list>
+				<value>classpath:application.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="testProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<list>
+				<value>classpath:test.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- ============================== -->
+	<!-- ========== DAO layer ======== -->
+	<!-- ============================== -->
 
 	<!-- Persistence geo instancer -->
-    <bean id="instancer" class="com.emergya.persistenceGeo.model.InstancerImpl" />
+	<bean id="instancer" class="com.emergya.persistenceGeo.model.InstancerImpl" />
+
+	<!-- Hibernate -->
+	<tx:annotation-driven />
 	
-    <!-- Hibernate -->
-    <tx:annotation-driven/>
-    <bean id="dataSourceHibernate" class="org.apache.commons.dbcp.BasicDataSource"
+	<!--  
+	<bean id="dataSourceHibernate" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="${database.jdbc.driverClass}" />
 		<property name="url" value="${database.jdbc.url}" />
@@ -51,25 +55,203 @@
 		<property name="removeAbandonedTimeout" value="1" />
 		<property name="removeAbandoned" value="true" />
 	</bean>
-    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-        <property name="dataSource" ref="dataSourceHibernate"/>
-        <property name="packagesToScan">
-        	<list>
-                <value>com.emergya.persistenceGeo.model</value>
-            </list>
-        </property>
-        <property name="hibernateProperties">
-            <props>
-            	<prop key="hibernate.dialect">${database.hibernate.dialect}</prop>
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceHibernate" />
+		<property name="packagesToScan">
+			<list>
+				<value>com.emergya.persistenceGeo.model</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${database.hibernate.dialect}</prop>
 				<prop key="hibernate.hbm2ddl.auto">${database.hibernate.hbm2ddl.auto}</prop>
-				<!-- <prop key="hibernate.default_schema">${database.schema}</prop> -->
+				<prop key="hibernate.default_schema">${database.schema}</prop> 
 				<prop key="hibernate.show_sql">${database.showsql}</prop>
 				<prop key="hibernate.connection.characterEncoding">${database.characterEncoding}</prop>
-            </props>
-        </property>
-    </bean>
+			</props>
+		</property>
+	</bean>
+	-->
+	<!-- ============================== -->
+	<!-- =========== MUltiSIR ========= -->
+	<!-- ============================== -->
+
+	<!-- MultiSIR databases connections -->
+	<bean id="parentSIRDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close" abstract="true">
+		<property name="driverClassName" value="${database.jdbc.driverClass}" />
+	</bean>
+
+	<!-- DEFAULT -->
+	<bean id="defaultSIRDataSource" parent="parentSIRDataSource">
+		<property name="url" value="${multiSirRegionsDatabases.multisir.jdbc.url}" />
+		<property name="username" value="${multiSirRegionsDatabases.multisir.jdbc.user}" />
+		<property name="password" value="${multiSirRegionsDatabases.multisir.jdbc.password}" />
+	</bean>
+
+	<!-- ARICA -->
+	<bean id="aricaSIRDataSource" parent="parentSIRDataSource">
+		<property name="url" value="${multiSirRegionsDatabases.arica.jdbc.url}" />
+		<property name="username" value="${multiSirRegionsDatabases.arica.jdbc.user}" />
+		<property name="password" value="${multiSirRegionsDatabases.arica.jdbc.password}" />
+	</bean>
+	
+	<!-- OHIGGINS -->
+	<bean id="ohigginsSIRDataSource" parent="parentSIRDataSource">
+		<property name="url" value="${multiSirRegionsDatabases.ohiggins.jdbc.url}" />
+		<property name="username" value="${multiSirRegionsDatabases.ohiggins.jdbc.user}" />
+		<property name="password" value="${multiSirRegionsDatabases.ohiggins.jdbc.password}" />
+	</bean>
+	
+	<!-- TARAPACA -->
+	<bean id="tarapacaSIRDataSource" parent="parentSIRDataSource">
+		<property name="url" value="${multiSirRegionsDatabases.tarapaca.jdbc.url}" />
+		<property name="username" value="${multiSirRegionsDatabases.tarapaca.jdbc.user}" />
+		<property name="password" value="${multiSirRegionsDatabases.tarapaca.jdbc.password}" />
+	</bean>
+	
+	<!-- ANTOFAGASTA -->
+	<bean id="antofagastaSIRDataSource" parent="parentSIRDataSource">
+		<property name="url" value="${multiSirRegionsDatabases.antofagasta.jdbc.url}" />
+		<property name="username" value="${multiSirRegionsDatabases.antofagasta.jdbc.user}" />
+		<property name="password" value="${multiSirRegionsDatabases.antofagasta.jdbc.password}" />
+	</bean>
+	
+	<!-- ATACAMA -->
+	<bean id="atacamaSIRDataSource" parent="parentSIRDataSource">
+		<property name="url" value="${multiSirRegionsDatabases.atacama.jdbc.url}" />
+		<property name="username" value="${multiSirRegionsDatabases.atacama.jdbc.user}" />
+		<property name="password" value="${multiSirRegionsDatabases.atacama.jdbc.password}" />
+	</bean>
+	
+	<!-- COQUIMBO -->
+	<bean id="coquimboSIRDataSource" parent="parentSIRDataSource">
+		<property name="url" value="${multiSirRegionsDatabases.coquimbo.jdbc.url}" />
+		<property name="username" value="${multiSirRegionsDatabases.coquimbo.jdbc.user}" />
+		<property name="password" value="${multiSirRegionsDatabases.coquimbo.jdbc.password}" />
+	</bean>
+	
+	<!-- VALPARAISO -->
+	<bean id="valparaisoSIRDataSource" parent="parentSIRDataSource">
+		<property name="url" value="${multiSirRegionsDatabases.valparaiso.jdbc.url}" />
+		<property name="username" value="${multiSirRegionsDatabases.valparaiso.jdbc.user}" />
+		<property name="password" value="${multiSirRegionsDatabases.valparaiso.jdbc.password}" />
+	</bean>
+	
+	<!-- MAULE -->
+	<bean id="mauleSIRDataSource" parent="parentSIRDataSource">
+		<property name="url" value="${multiSirRegionsDatabases.maule.jdbc.url}" />
+		<property name="username" value="${multiSirRegionsDatabases.maule.jdbc.user}" />
+		<property name="password" value="${multiSirRegionsDatabases.maule.jdbc.password}" />
+	</bean>
+	
+	<!-- BIOBIO -->
+	<bean id="biobioSIRDataSource" parent="parentSIRDataSource">
+		<property name="url" value="${multiSirRegionsDatabases.biobio.jdbc.url}" />
+		<property name="username" value="${multiSirRegionsDatabases.biobio.jdbc.user}" />
+		<property name="password" value="${multiSirRegionsDatabases.biobio.jdbc.password}" />
+	</bean>
+	
+	<!-- ARAUCANIA -->
+	<bean id="araucaniaSIRDataSource" parent="parentSIRDataSource">
+		<property name="url" value="${multiSirRegionsDatabases.araucania.jdbc.url}" />
+		<property name="username" value="${multiSirRegionsDatabases.araucania.jdbc.user}" />
+		<property name="password" value="${multiSirRegionsDatabases.araucania.jdbc.password}" />
+	</bean>
+	
+	<!-- RIOS -->
+	<bean id="riosSIRDataSource" parent="parentSIRDataSource">
+		<property name="url" value="${multiSirRegionsDatabases.rios.jdbc.url}" />
+		<property name="username" value="${multiSirRegionsDatabases.rios.jdbc.user}" />
+		<property name="password" value="${multiSirRegionsDatabases.rios.jdbc.password}" />
+	</bean>
+	
+	<!-- LAGOS -->
+	<bean id="lagosSIRDataSource" parent="parentSIRDataSource">
+		<property name="url" value="${multiSirRegionsDatabases.lagos.jdbc.url}" />
+		<property name="username" value="${multiSirRegionsDatabases.lagos.jdbc.user}" />
+		<property name="password" value="${multiSirRegionsDatabases.lagos.jdbc.password}" />
+	</bean>
+	
+	<!-- AISEN -->
+	<bean id="aisenSIRDataSource" parent="parentSIRDataSource">
+		<property name="url" value="${multiSirRegionsDatabases.aisen.jdbc.url}" />
+		<property name="username" value="${multiSirRegionsDatabases.aisen.jdbc.user}" />
+		<property name="password" value="${multiSirRegionsDatabases.aisen.jdbc.password}" />
+	</bean>
+
+	<!-- MAGALLANES -->
+	<bean id="magallanesSIRDataSource" parent="parentSIRDataSource">
+		<property name="url" value="${multiSirRegionsDatabases.magallanes.jdbc.url}" />
+		<property name="username" value="${multiSirRegionsDatabases.magallanes.jdbc.user}" />
+		<property name="password" value="${multiSirRegionsDatabases.magallanes.jdbc.password}" />
+	</bean>
+
+	<!-- SANTIAGO -->
+	<bean id="santiagoSIRDataSource" parent="parentSIRDataSource">
+		<property name="url" value="${multiSirRegionsDatabases.santiago.jdbc.url}" />
+		<property name="username" value="${multiSirRegionsDatabases.santiago.jdbc.user}" />
+		<property name="password" value="${multiSirRegionsDatabases.santiago.jdbc.password}" />
+	</bean>
+
+	<bean id="multiSIRDataSource" class="com.emergya.persistenceGeo.dao.impl.MultiSirRoutinDataSource">
+		<property name="targetDataSources">
+			<map key-type="com.emergya.persistenceGeo.dao.MultiSirRegionDatabase">
+				<entry key="ARICA" value-ref="aricaSIRDataSource"/>
+				<entry key="OHIGGINS" value-ref="ohigginsSIRDataSource" />
+				<entry key="TARAPACA" value-ref="tarapacaSIRDataSource" />
+				<entry key="ANTOFAGASTA" value-ref="antofagastaSIRDataSource" />
+				<entry key="ATACAMA" value-ref="atacamaSIRDataSource" />
+				<entry key="COQUIMBO" value-ref="coquimboSIRDataSource" />
+				<entry key="VALPARAISO" value-ref="valparaisoSIRDataSource" />
+				<entry key="MAULE" value-ref="mauleSIRDataSource" />
+				<entry key="BIOBIO" value-ref="biobioSIRDataSource" />
+				<entry key="ARAUCANIA" value-ref="araucaniaSIRDataSource" />
+				<entry key="RIOS" value-ref="riosSIRDataSource" />
+				<entry key="LAGOS" value-ref="lagosSIRDataSource" />
+				<entry key="AISEN" value-ref="aisenSIRDataSource" />
+				<entry key="MAGALLANES" value-ref="magallanesSIRDataSource" />
+				<entry key="SANTIAGO" value-ref="santiagoSIRDataSource" />
+			</map>
+		</property>
+		<property name="defaultTargetDataSource" ref="defaultSIRDataSource" />
+	</bean>
+
+	<bean id="sessionFactoryMultiSIRDataSource"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="multiSIRDataSource" />
+		<property name="packagesToScan">
+			<list>
+				<value>com.emergya.persistenceGeo.model</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${database.hibernate.dialect}</prop>
+				<prop key="hibernate.default_schema">${database.hibernate.default_schema}</prop>
+				<prop key="hibernate.show_sql">${database.hibernate.show_sql}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${database.hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.connection.characterEncoding">${database.hibernate.connection.characterEncoding}
+				</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.max_fetch_depth">4</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.region.factory_class">net.sf.ehcache.hibernate.EhCacheRegionFactory
+				</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="multiSIRDatabaseTransactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactoryMultiSIRDataSource" />
+	</bean>
 
 </beans>

@@ -40,7 +40,7 @@ import com.emergya.persistenceGeo.metaModel.AbstractFolderTypeEntity;
  * 
  */
 public interface FolderTypeEntityDao extends
-		GenericDAO<AbstractFolderTypeEntity, Long> {
+		MultiSirDatabaseGenericDAO<AbstractFolderTypeEntity, Long> {
 
 	/**
 	 * @return List<AbstractFolderTypeEntity> folder types without children

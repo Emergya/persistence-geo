@@ -53,23 +53,26 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
  */
 @SuppressWarnings("unchecked")
 @Repository("permissionEntityDao")
-public class PermissionEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractPermissionEntity, Long> implements PermissionEntityDao {
+public class PermissionEntityDaoHibernateImpl extends
+		MultiSirDatabaseGenericHibernateDAOImpl<AbstractPermissionEntity, Long>
+		implements PermissionEntityDao {
 
 	@Resource
 	private Instancer instancer;
-	
+
 	@Resource
 	private AuthorityEntityDao authorityDao;
-	
+
 	@Resource
 	private AuthorityTypeEntityDao authorityTypeDao;
 
 	@Autowired
-    public void init(SessionFactory sessionFactory) {
-        super.init(sessionFactory);
-		this.persistentClass = (Class<AbstractPermissionEntity>) instancer.createPermission().getClass();
-    }
-	
+	public void init(SessionFactory sessionFactory) {
+		super.init(sessionFactory);
+		this.persistentClass = (Class<AbstractPermissionEntity>) instancer
+				.createPermission().getClass();
+	}
+
 	/**
 	 * Create a new permission in the system
 	 * 
@@ -78,64 +81,74 @@ public class PermissionEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Ab
 	 * @return Entity from the created permission
 	 */
 	public AbstractPermissionEntity createPermission(String permission) {
-		AbstractPermissionEntity permissionEntity = instancer.createPermission();
+		AbstractPermissionEntity permissionEntity = instancer
+				.createPermission();
 		permissionEntity.setName(permission);
 		getHibernateTemplate().save(permissionEntity);
 		return permissionEntity;
 	}
 
 	/**
-	 * Get a permissions list by the permission name 
+	 * Get a permissions list by the permission name
 	 * 
 	 * @param <code>permissionName</code>
 	 * 
-	 * @return Entities list associated with the permission name or null if not found 
+	 * @return Entities list associated with the permission name or null if not
+	 *         found
 	 */
 	public List<AbstractPermissionEntity> getPermissions(String permissionName) {
 		return findByCriteria(Restrictions.eq("name", permissionName));
 	}
 
 	/**
-	 * Delete a permission by the permission identifier 
+	 * Delete a permission by the permission identifier
 	 * 
 	 * @param <code>permissionID</code>
 	 * 
 	 */
 	public void deletePermission(Long permissionID) {
-		AbstractPermissionEntity permissionEntity = findById(permissionID, false);
-		if(permissionEntity != null){
+		AbstractPermissionEntity permissionEntity = findById(permissionID,
+				false);
+		if (permissionEntity != null) {
 			getHibernateTemplate().delete(permissionEntity);
 		}
 	}
 
 	/**
-	 * Get a permissions list by authority 
+	 * Get a permissions list by authority
 	 * 
-	 * @param <code>authorithyId</code> if this parameter is null search permissions without authority type
+	 * @param <code>authorithyId</code> if this parameter is null search
+	 *        permissions without authority type
 	 * 
-	 * @return Entities list associated with the authorithyId name or null if not found 
+	 * @return Entities list associated with the authorithyId name or null if
+	 *         not found
 	 */
-	public List<AbstractPermissionEntity> getPermissionsByAuthorithy(Long authorithyId) {
-		if(authorithyId != null){
-			AbstractAuthorityTypeEntity authorityType = authorityDao.findById(authorithyId, false).getAuthType();
+	public List<AbstractPermissionEntity> getPermissionsByAuthorithy(
+			Long authorithyId) {
+		if (authorithyId != null) {
+			AbstractAuthorityTypeEntity authorityType = authorityDao.findById(
+					authorithyId, false).getAuthType();
 			return authorityType.getPermissionList();
-		}else{
+		} else {
 			return findByCriteria(Restrictions.isEmpty("authTypeList"));
 		}
 	}
-	
+
 	/**
-	 * Get a permissions list by authority type 
+	 * Get a permissions list by authority type
 	 * 
-	 * @param <code>authorithyTypeId</code> 
+	 * @param <code>authorithyTypeId</code>
 	 * 
-	 * @return Entities list associated with the authorithyTypeId name or null if not found 
+	 * @return Entities list associated with the authorithyTypeId name or null
+	 *         if not found
 	 */
-	public List<AbstractPermissionEntity> getPermissionsByAuthorithyType(Long authorithyTypeId){
-		if(authorithyTypeId != null){
-			AbstractAuthorityTypeEntity authorityType = authorityTypeDao.findById(authorithyTypeId, false);
+	public List<AbstractPermissionEntity> getPermissionsByAuthorithyType(
+			Long authorithyTypeId) {
+		if (authorithyTypeId != null) {
+			AbstractAuthorityTypeEntity authorityType = authorityTypeDao
+					.findById(authorithyTypeId, false);
 			return authorityType.getPermissionList();
-		}else{
+		} else {
 			return findByCriteria(Restrictions.isEmpty("authTypeList"));
 		}
 	}

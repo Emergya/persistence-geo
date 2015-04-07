@@ -39,7 +39,8 @@ import com.emergya.persistenceGeo.metaModel.AbstractFolderEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public interface FolderEntityDao extends GenericDAO<AbstractFolderEntity, Long> {
+public interface FolderEntityDao extends
+		MultiSirDatabaseGenericDAO<AbstractFolderEntity, Long> {
 
 	/**
 	 * Create a new folder in the system
@@ -49,153 +50,174 @@ public interface FolderEntityDao extends GenericDAO<AbstractFolderEntity, Long> 
 	 * @return Entity from the created folder
 	 */
 	public AbstractFolderEntity createFolder(String nameFolder);
-	
+
 	/**
-	 * Get a folders list by the folder name 
+	 * Get a folders list by the folder name
 	 * 
 	 * @param <code>folderName</code>
 	 * 
-	 * @return Entities list associated with the folder name or null if not found 
+	 * @return Entities list associated with the folder name or null if not
+	 *         found
 	 */
 	public List<AbstractFolderEntity> getFolders(String folderName);
-	
+
 	/**
-	 * Get a folders list by the parentFolder 
+	 * Get a folders list by the parentFolder
 	 * 
 	 * @param <code>parentFolder</code>
 	 * 
-	 * @return Entities list associated with the folder parentFolder or null if not found 
+	 * @return Entities list associated with the folder parentFolder or null if
+	 *         not found
 	 */
 	public List<AbstractFolderEntity> getFolders(Long parentFolder);
-	
+
 	/**
-	 * Delete a folder by the folder identifier 
+	 * Delete a folder by the folder identifier
 	 * 
 	 * @param <code>folderID</code>
 	 * 
 	 */
 	public void deleteFolder(Long folderID);
-	
+
 	/**
 	 * Get a folders list by the names folders list
 	 * 
 	 * @param <code>names</code>
 	 * 
-	 * @return Entities list associated with the names folders list or null if not found 
+	 * @return Entities list associated with the names folders list or null if
+	 *         not found
 	 */
 	public List<AbstractFolderEntity> findByName(List<String> names);
-	
+
 	/**
 	 * Get a folders root for a user
 	 * 
 	 * @param <code>idUser</code>
 	 * 
-	 * @return Entity without parent folder for the user 
+	 * @return Entity without parent folder for the user
 	 */
 	public AbstractFolderEntity findRootByUser(Long idUser);
-	
+
 	/**
 	 * Get a folders root for a group
 	 * 
 	 * @param <code>idGroup</code>
 	 * 
-	 * @return Entity without parent folder for the group 
+	 * @return Entity without parent folder for the group
 	 */
 	public AbstractFolderEntity findRootByGroup(Long idGroup);
 
 	/**
 	 * Get all channel folders filtered
 	 * 
-	 * @param inZone indicates if obtain channel folders with a zone. If this parameter is null only obtain not zoned channels
-	 * @param idZone filter by zone. Obtain only channels of the zone identified by <code>idZone</code>
+	 * @param inZone
+	 *            indicates if obtain channel folders with a zone. If this
+	 *            parameter is null only obtain not zoned channels
+	 * @param idZone
+	 *            filter by zone. Obtain only channels of the zone identified by
+	 *            <code>idZone</code>
 	 * 
 	 * @return folder list
 	 */
-	public List<AbstractFolderEntity> getChannelFolders(Boolean inZone, Long idZone);
+	public List<AbstractFolderEntity> getChannelFolders(Boolean inZone,
+			Long idZone);
 
-    /**
-     * Get a folders list by zones. If zoneId is NULL returns all the
-     * folder not associated to any zone.
-     *
-     * @params <code>zoneId</code>
-     *
-     * @return Entities list associated with the zoneId or null if not found
-     */
-    public List<AbstractFolderEntity> findByZone(Long zoneId);
+	/**
+	 * Get a folders list by zones. If zoneId is NULL returns all the folder not
+	 * associated to any zone.
+	 *
+	 * @params <code>zoneId</code>
+	 *
+	 * @return Entities list associated with the zoneId or null if not found
+	 */
+	public List<AbstractFolderEntity> findByZone(Long zoneId);
 
-    /**
-     * Get a folders list by zones with an specific parent. If zoneId is NULL
-     * returns all the folder not associated to any zone. If parentId is NULL
-     * the returned folders are root folders.
-     *
-     * @params <code>zoneId</code>
-     * @params <code>parentId</code>
-     *
-     * @return Entities list associated with the zoneId or null if not found
-     */
-    public List<AbstractFolderEntity> findByZone(Long zoneId, Long parentId);
+	/**
+	 * Get a folders list by zones with an specific parent. If zoneId is NULL
+	 * returns all the folder not associated to any zone. If parentId is NULL
+	 * the returned folders are root folders.
+	 *
+	 * @params <code>zoneId</code>
+	 * @params <code>parentId</code>
+	 *
+	 * @return Entities list associated with the zoneId or null if not found
+	 */
+	public List<AbstractFolderEntity> findByZone(Long zoneId, Long parentId);
 
-    /**
-     * Get a folders list by zones with an specific parent. If zoneId is NULL
-     * returns all the folder not associated to any zone. If parentId is NULL
-     * the returned folders are root folders.
-     *
-     * @param <code>zoneId</code>
-     * @param <code>parentId</code>
-     * @param <code>isEnabled</code>
-     *
-     * @return Entities list associated with the zoneId or null if not found
-     */
-    public List<AbstractFolderEntity> findByZone(Long zoneId, Long parentId, Boolean isEnable);
+	/**
+	 * Get a folders list by zones with an specific parent. If zoneId is NULL
+	 * returns all the folder not associated to any zone. If parentId is NULL
+	 * the returned folders are root folders.
+	 *
+	 * @param <code>zoneId</code>
+	 * @param <code>parentId</code>
+	 * @param <code>isEnabled</code>
+	 *
+	 * @return Entities list associated with the zoneId or null if not found
+	 */
+	public List<AbstractFolderEntity> findByZone(Long zoneId, Long parentId,
+			Boolean isEnable);
 
-    /**
-     * Get a folders list by zones. If zoneId is NULL returns all the
-     * folder not associated to any zone.
-     *
-     * @param <code>zoneId</code>
-     * @param <code>isEnabled</code>
-     *
-     * @return Entities list associated with the zoneId or null if not found
-     */
-    public List<AbstractFolderEntity> findByZone(Long zoneId, Boolean isEnable);
+	/**
+	 * Get a folders list by zones. If zoneId is NULL returns all the folder not
+	 * associated to any zone.
+	 *
+	 * @param <code>zoneId</code>
+	 * @param <code>isEnabled</code>
+	 *
+	 * @return Entities list associated with the zoneId or null if not found
+	 */
+	public List<AbstractFolderEntity> findByZone(Long zoneId, Boolean isEnable);
 
 	/**
 	 * Get all channel folders filtered
 	 * 
-	 * @param inZone indicates if obtain channel folders with a zone. If this parameter is null only obtain not zoned channels
-	 * @param idZone filter by zone. Obtain only channels of the zone identified by <code>idZone</code>
-     * @param <code>isEnabled</code>
+	 * @param inZone
+	 *            indicates if obtain channel folders with a zone. If this
+	 *            parameter is null only obtain not zoned channels
+	 * @param idZone
+	 *            filter by zone. Obtain only channels of the zone identified by
+	 *            <code>idZone</code>
+	 * @param <code>isEnabled</code>
 	 * 
 	 * @return folder list
 	 */
-	public List<AbstractFolderEntity> getChannelFolders(Boolean inZone, Long idZone, Boolean isEnable);
-	
+	public List<AbstractFolderEntity> getChannelFolders(Boolean inZone,
+			Long idZone, Boolean isEnable);
+
 	/**
 	 * Get all channel folders filterd
 	 * 
-	 * @param inZone indicates if obtain channel folders with a zone. If this parameter is null only obtain not zoned channels
-	 * @param idZone filter by zone. Obtain only channels of the zone identified by <code>idZone</code>
+	 * @param inZone
+	 *            indicates if obtain channel folders with a zone. If this
+	 *            parameter is null only obtain not zoned channels
+	 * @param idZone
+	 *            filter by zone. Obtain only channels of the zone identified by
+	 *            <code>idZone</code>
 	 * @param isEnabled
-	 * @param folderType folder type to obtain
+	 * @param folderType
+	 *            folder type to obtain
 	 * 
 	 * @return folder list
 	 */
-	public List<AbstractFolderEntity> getChannelFolders(Boolean inZone, Long idZone, Boolean isEnabled, Long folderType);
-	
+	public List<AbstractFolderEntity> getChannelFolders(Boolean inZone,
+			Long idZone, Boolean isEnabled, Long folderType);
+
 	/**
-     * Get a folders list by types.
-     *
-     * @param <code>typeId</code>
-     *
-     * @return Entities list associated with the typeId and sub types of the type
-     */
-    public List<AbstractFolderEntity> findByType(Long typeId);
-	
+	 * Get a folders list by types.
+	 *
+	 * @param <code>typeId</code>
+	 *
+	 * @return Entities list associated with the typeId and sub types of the
+	 *         type
+	 */
+	public List<AbstractFolderEntity> findByType(Long typeId);
+
 	/**
 	 * @param <code>typeId</code>
 	 * 
-	 * @return List<AbstractFolderEntity>
-	 * 			Devuelve la lista de todos los folder types que tenga el mismo type id y no tengan padre
+	 * @return List<AbstractFolderEntity> Devuelve la lista de todos los folder
+	 *         types que tenga el mismo type id y no tengan padre
 	 */
 	public List<AbstractFolderEntity> rootFoldersByType(Long typeId);
 }

@@ -47,24 +47,27 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
  */
 @SuppressWarnings("unchecked")
 @Repository("authorityTypeEntityDao")
-public class AuthorityTypeEntityDaoHibernateImpl extends
-		GenericHibernateDAOImpl<AbstractAuthorityTypeEntity, Long> implements AuthorityTypeEntityDao {
+public class AuthorityTypeEntityDaoHibernateImpl
+		extends
+		MultiSirDatabaseGenericHibernateDAOImpl<AbstractAuthorityTypeEntity, Long>
+		implements AuthorityTypeEntityDao {
 
 	@Resource
 	private Instancer instancer;
 
 	@Autowired
-    public void init(SessionFactory sessionFactory) {
-        super.init(sessionFactory);
-		this.persistentClass = (Class<AbstractAuthorityTypeEntity>) instancer.createAuthorityTypeEntity().getClass();
-    }
+	public void init(SessionFactory sessionFactory) {
+		super.init(sessionFactory);
+		this.persistentClass = (Class<AbstractAuthorityTypeEntity>) instancer
+				.createAuthorityTypeEntity().getClass();
+	}
 
 	/**
 	 * Save an authority type in the system
 	 * 
 	 * @param <code>authTypeEntity</code>
 	 * 
-	 * @return Identifier from the save entity 
+	 * @return Identifier from the save entity
 	 */
 	public Long save(AbstractAuthorityTypeEntity authTypeEntity) {
 		return (Long) getHibernateTemplate().save(authTypeEntity);
@@ -78,7 +81,7 @@ public class AuthorityTypeEntityDaoHibernateImpl extends
 	 */
 	public void delete(Long auth_id) {
 		AbstractAuthorityTypeEntity entity = findById(auth_id, false);
-		if(entity != null){
+		if (entity != null) {
 			getHibernateTemplate().delete(entity);
 		}
 	}

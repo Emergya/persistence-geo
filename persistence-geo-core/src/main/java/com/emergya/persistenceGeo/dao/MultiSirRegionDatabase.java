@@ -1,0 +1,6 @@
+package com.emergya.persistenceGeo.dao;
+
+public enum MultiSirRegionDatabase {
+
+	DEFAULT, ARICA, OHIGGINS, TARAPACA, ANTOFAGASTA, ATACAMA, COQUIMBO, VALPARAISO, MAULE, BIOBIO, ARAUCANIA, RIOS, LAGOS, AISEN, MAGALLANES, SANTIAGO
+}

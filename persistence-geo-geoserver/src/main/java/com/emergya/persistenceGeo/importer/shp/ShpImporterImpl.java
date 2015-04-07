@@ -72,7 +72,7 @@ public class ShpImporterImpl implements IShpImporter {
 	}
 
 	@Autowired(required = false)
-	@Qualifier("dataSourceHibernate")
+	@Qualifier("multiSIRDataSource")
 	private DataSource dataSource;
 
 	@Autowired(required = false)

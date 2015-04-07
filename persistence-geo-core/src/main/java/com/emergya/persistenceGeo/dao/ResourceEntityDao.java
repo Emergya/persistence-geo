@@ -37,8 +37,9 @@ import com.emergya.persistenceGeo.metaModel.AbstractResourceEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public interface ResourceEntityDao extends GenericDAO<AbstractResourceEntity, Long> {
-	
+public interface ResourceEntityDao extends
+		MultiSirDatabaseGenericDAO<AbstractResourceEntity, Long> {
+
 	/**
 	 * Find a resource by accessId
 	 * 
@@ -47,12 +48,12 @@ public interface ResourceEntityDao extends GenericDAO<AbstractResourceEntity, Lo
 	 * @return resource
 	 */
 	public AbstractResourceEntity findByAccessId(Long accessId);
-	
+
 	/**
 	 * Delete a resource by accessId
 	 * 
 	 * @param accessId
 	 */
 	public void deleteByAccessId(Long accessId);
-	
+
 }

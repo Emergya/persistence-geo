@@ -39,7 +39,8 @@ import com.emergya.persistenceGeo.metaModel.AbstractAuthorityEntity;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
-public interface AuthorityEntityDao extends GenericDAO<AbstractAuthorityEntity, Long>{
+public interface AuthorityEntityDao extends
+		MultiSirDatabaseGenericDAO<AbstractAuthorityEntity, Long> {
 
 	Long save(AbstractAuthorityEntity AbstractAuthorityEntity);
 
@@ -52,7 +53,7 @@ public interface AuthorityEntityDao extends GenericDAO<AbstractAuthorityEntity, 
 	List<AbstractAuthorityEntity> findByName(String name);
 
 	List<AbstractAuthorityEntity> findByName(List<String> names);
-	
+
 	List<AbstractAuthorityEntity> findByLayer(Long layer_id);
 
 }

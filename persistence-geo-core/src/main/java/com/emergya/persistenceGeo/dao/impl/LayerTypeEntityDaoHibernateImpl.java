@@ -53,8 +53,8 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
 @SuppressWarnings("unchecked")
 @Repository("layerTypeEntityDao")
 public class LayerTypeEntityDaoHibernateImpl extends
-		GenericHibernateDAOImpl<AbstractLayerTypeEntity, Long> implements
-		LayerTypeEntityDao {
+		MultiSirDatabaseGenericHibernateDAOImpl<AbstractLayerTypeEntity, Long>
+		implements LayerTypeEntityDao {
 
 	@Resource
 	private Instancer instancer;
