@@ -35,10 +35,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
-import com.emergya.persistenceGeo.dao.GenericDAO;
+import com.emergya.persistenceGeo.dao.MultiSirDatabaseGenericDAO;
 import com.emergya.persistenceGeo.dao.RuleEntityDao;
 import com.emergya.persistenceGeo.dao.StyleEntityDao;
 import com.emergya.persistenceGeo.dto.RuleDto;
@@ -55,16 +54,17 @@ import com.emergya.persistenceGeo.service.StyleAdminService;
  * 
  */
 @SuppressWarnings("unchecked")
-@Repository
-@Transactional
-public class StyleAdminServiceImpl extends AbstractServiceImpl<StyleDto, AbstractStyleEntity> implements StyleAdminService{
-	
+@Service
+public class StyleAdminServiceImpl extends
+		AbstractServiceImpl<StyleDto, AbstractStyleEntity> implements
+		StyleAdminService {
+
 	@Resource
 	private Instancer instancer;
-	
+
 	@Resource
 	private StyleEntityDao styleDao;
-	
+
 	@Resource
 	private RuleEntityDao ruleDao;
 
@@ -78,25 +78,24 @@ public class StyleAdminServiceImpl extends AbstractServiceImpl<StyleDto, Abstrac
 		this.update(style);
 	}
 
-	
 	@SuppressWarnings("rawtypes")
 	@Override
 	public StyleDto addRuleToStyle(RuleDto rule, Long idStyle) {
 		AbstractStyleEntity style = styleDao.findById(idStyle, true);
-		
+
 		AbstractRuleEntity ruleEntity = null;
-		if(rule.getRule_id() == null){
+		if (rule.getRule_id() == null) {
 			ruleEntity = ruleDao.makePersistent(dtoRuleToEntity(rule));
-		}else{
+		} else {
 			ruleEntity = dtoRuleToEntity(rule);
 		}
-		
-		if(style.getRuleList() == null){
+
+		if (style.getRuleList() == null) {
 			style.setRuleList(new LinkedList());
 		}
 		style.getRuleList().add(ruleEntity);
 		styleDao.makePersistent(style);
-		
+
 		return entityToDto(style);
 	}
 
@@ -104,19 +103,19 @@ public class StyleAdminServiceImpl extends AbstractServiceImpl<StyleDto, Abstrac
 	@Override
 	public StyleDto removeRuleFromStyle(Long idRule, Long idStyle) {
 		AbstractStyleEntity style = styleDao.findById(idStyle, true);
-		
-		if(style.getRuleList() != null){
+
+		if (style.getRuleList() != null) {
 			List<AbstractRuleEntity> rules = style.getRuleList();
 			List rulesToSave = new LinkedList();
-			for(AbstractRuleEntity rule: rules){
-				if(!rule.getId().equals(idRule)){
+			for (AbstractRuleEntity rule : rules) {
+				if (!rule.getId().equals(idRule)) {
 					rulesToSave.add(rule);
 				}
 			}
 			style.setRuleList(rulesToSave);
 		}
 		styleDao.makePersistent(style);
-		
+
 		return entityToDto(style);
 	}
 
@@ -127,7 +126,7 @@ public class StyleAdminServiceImpl extends AbstractServiceImpl<StyleDto, Abstrac
 
 	@Override
 	public void linkStyleToLayer(Long idStyle, Long idLayer) {
-		//TODO: Save at Layer entity
+		// TODO: Save at Layer entity
 	}
 
 	@Override
@@ -138,16 +137,16 @@ public class StyleAdminServiceImpl extends AbstractServiceImpl<StyleDto, Abstrac
 	@Override
 	protected StyleDto entityToDto(AbstractStyleEntity entity) {
 		StyleDto dto = null;
-		if(entity != null){
+		if (entity != null) {
 			dto = new StyleDto();
 			dto.setId(entity.getId());
 			dto.setCreateDate(entity.getCreateDate());
-			//TODO: dto.setLayerList(layerList)
+			// TODO: dto.setLayerList(layerList)
 			dto.setName(entity.getName());
-			//TODO: dto.setRuleList(ruleList);
+			// TODO: dto.setRuleList(ruleList);
 			dto.setUpdateDate(entity.getUpdateDate());
 		}
-	
+
 		return dto;
 	}
 
@@ -155,52 +154,54 @@ public class StyleAdminServiceImpl extends AbstractServiceImpl<StyleDto, Abstrac
 	protected AbstractStyleEntity dtoToEntity(StyleDto dto) {
 		Date now = new Date();
 		AbstractStyleEntity entity = null;
-		if(dto != null){
+		if (dto != null) {
 			entity = instancer.createStyle();
 			entity.setId(dto.getId());
-			entity.setCreateDate(dto.getCreateDate() != null ? dto.getCreateDate(): now);
-			//TODO: entity.setLayerList(layerList)
+			entity.setCreateDate(dto.getCreateDate() != null ? dto
+					.getCreateDate() : now);
+			// TODO: entity.setLayerList(layerList)
 			entity.setName(dto.getName());
-			//TODO: entity.setRuleList(ruleList);
+			// TODO: entity.setRuleList(ruleList);
 			entity.setUpdateDate(now);
 		}
-	
+
 		return entity;
 	}
-	
+
 	protected RuleDto entityRuleToDto(AbstractRuleEntity entity) {
 		RuleDto dto = null;
-		if(entity != null){
+		if (entity != null) {
 			dto = new RuleDto();
-//			dto.setId(entity.getId());
+			// dto.setId(entity.getId());
 			dto.setCreateDate(entity.getCreateDate());
-			//TODO: dto.setLayerList(layerList)
-//			dto.setName(entity.getName());
-			//TODO: dto.setRuleList(ruleList);
+			// TODO: dto.setLayerList(layerList)
+			// dto.setName(entity.getName());
+			// TODO: dto.setRuleList(ruleList);
 			dto.setUpdateDate(entity.getUpdateDate());
 		}
-	
+
 		return dto;
 	}
-	
+
 	protected AbstractRuleEntity dtoRuleToEntity(RuleDto dto) {
 		Date now = new Date();
 		AbstractRuleEntity entity = null;
-		if(dto != null){
+		if (dto != null) {
 			entity = instancer.createRule();
-//			entity.setId(dto.getId());
-			entity.setCreateDate(dto.getCreateDate() != null ? dto.getCreateDate(): now);
-			//TODO: entity.setLayerList(layerList)
-//			entity.setName(dto.getName());
-			//TODO: entity.setRuleList(ruleList);
+			// entity.setId(dto.getId());
+			entity.setCreateDate(dto.getCreateDate() != null ? dto
+					.getCreateDate() : now);
+			// TODO: entity.setLayerList(layerList)
+			// entity.setName(dto.getName());
+			// TODO: entity.setRuleList(ruleList);
 			entity.setUpdateDate(now);
 		}
-	
+
 		return entity;
 	}
 
 	@Override
-	protected GenericDAO<AbstractStyleEntity, Long> getDao() {
+	protected MultiSirDatabaseGenericDAO<AbstractStyleEntity, Long> getDao() {
 		return styleDao;
 	}
 

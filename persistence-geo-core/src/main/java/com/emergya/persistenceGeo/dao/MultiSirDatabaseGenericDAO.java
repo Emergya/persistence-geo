@@ -29,31 +29,39 @@ package com.emergya.persistenceGeo.dao;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Query;
 
 /**
  * Based on http://community.jboss.org/docs/DOC-13955
- * @param <T> entity type
- * @param <ID> primary key
+ * 
+ * @param <T>
+ *            entity type
+ * @param <ID>
+ *            primary key
  *
  * @see es.ceuta.cpd.server.dao.impl.GenericHibernateDAOImpl
  */
-public interface GenericDAO<T, ID extends Serializable> {
+public interface MultiSirDatabaseGenericDAO<T, ID extends Serializable> {
 
-    T findById(ID id, boolean lock);
+	T findById(ID id, boolean lock);
 
-    List<T> findAll();
+	List<T> findAll();
 
-    List<T> findAllFromTo(Integer first, Integer last);
-    
-    List<T> findOrdered(Integer first, Integer last, String fieldName, boolean ascending);
+	List<T> findAllFromTo(Integer first, Integer last);
 
-    List<T> findByExample(T exampleInstance, String[] excludeProperty);
-    
-    List<T> findByExample(T exampleInstance, String[] excludedProperties, boolean ignoreCase);
+	List<T> findOrdered(Integer first, Integer last, String fieldName,
+			boolean ascending);
 
-    Long getResults();
+	List<T> findByExample(T exampleInstance, String[] excludeProperty);
 
-    T makePersistent(T entity);
+	List<T> findByExample(T exampleInstance, String[] excludedProperties,
+			boolean ignoreCase);
 
-    void makeTransient(T entity);
+	Long getResults();
+
+	T makePersistent(T entity);
+
+	void makeTransient(T entity);
 }

@@ -37,17 +37,18 @@ import com.emergya.persistenceGeo.metaModel.AbstractAuthorityTypeEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public interface AuthorityTypeEntityDao extends GenericDAO<AbstractAuthorityTypeEntity, Long> {
+public interface AuthorityTypeEntityDao extends
+		MultiSirDatabaseGenericDAO<AbstractAuthorityTypeEntity, Long> {
 
 	/**
 	 * Save an authority type in the system
 	 * 
 	 * @param <code>authTypeEntity</code>
 	 * 
-	 * @return Identifier from the save entity 
+	 * @return Identifier from the save entity
 	 */
 	public Long save(AbstractAuthorityTypeEntity authTypeEntity);
-	
+
 	/**
 	 * Delete an authority type in the system
 	 * 
@@ -55,5 +56,5 @@ public interface AuthorityTypeEntityDao extends GenericDAO<AbstractAuthorityType
 	 * 
 	 */
 	public void delete(Long auth_id);
-	
+
 }

@@ -37,13 +37,14 @@ import com.emergya.persistenceGeo.metaModel.AbstractMapConfigurationEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public interface MapConfigurationEntityDao extends GenericDAO<AbstractMapConfigurationEntity, Long> {
+public interface MapConfigurationEntityDao extends
+		MultiSirDatabaseGenericDAO<AbstractMapConfigurationEntity, Long> {
 
-	
-	public void updateMapConfiguration (Long mapConfigurationID,String bbox,String iP, String res);
-	
+	public void updateMapConfiguration(Long mapConfigurationID, String bbox,
+			String iP, String res);
+
 	public AbstractMapConfigurationEntity loadConfiguration();
-	
+
 	public void removeMapConfiguration(Long mapConfigurationID);
-	
+
 }

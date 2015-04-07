@@ -40,7 +40,8 @@ import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public interface LayerEntityDao extends GenericDAO<AbstractLayerEntity, Long> {
+public interface LayerEntityDao extends
+		MultiSirDatabaseGenericDAO<AbstractLayerEntity, Long> {
 
 	/**
 	 * Create a new layer in the system
@@ -50,7 +51,7 @@ public interface LayerEntityDao extends GenericDAO<AbstractLayerEntity, Long> {
 	 * @return Entity from the new layer
 	 */
 	public AbstractLayerEntity createLayer(String layerName);
-	
+
 	/**
 	 * Get layers by folder
 	 * 
@@ -59,7 +60,7 @@ public interface LayerEntityDao extends GenericDAO<AbstractLayerEntity, Long> {
 	 * @return all layers in a folder
 	 */
 	public List<AbstractLayerEntity> getLayersByFolder(Long folderId);
-	
+
 	/**
 	 * Save the layer in the system
 	 * 
@@ -68,63 +69,64 @@ public interface LayerEntityDao extends GenericDAO<AbstractLayerEntity, Long> {
 	 * @return Entity identifier from the save layer
 	 */
 	public Long save(AbstractLayerEntity layerEntity);
-	
+
 	/**
-	 * Get a layers list by the private layer name 
+	 * Get a layers list by the private layer name
 	 * 
 	 * @param <code>layerName</code>
 	 * 
-	 * @return Entities list associated with the layer name or null if not found 
+	 * @return Entities list associated with the layer name or null if not found
 	 */
 	public List<AbstractLayerEntity> getLayers(String layerName);
-	
+
 	/**
-	 * Delete a layer by the layer identifier 
+	 * Delete a layer by the layer identifier
 	 * 
 	 * @param <code>layerID</code>
 	 * 
 	 */
 	public void delete(Long layerID);
-	
+
 	/**
 	 * Get a users list by a layer id
 	 * 
 	 * @param layerID
 	 * 
-	 * @return Entities list associated with the layer identifier or null if not found 
+	 * @return Entities list associated with the layer identifier or null if not
+	 *         found
 	 */
 	public AbstractUserEntity findByLayer(Long layerID);
-	
+
 	/**
 	 * Get a layers list by user
 	 * 
 	 * @param <code>id</code>
 	 * 
-	 * @return Entities list associated with the identifier or null if not found 
+	 * @return Entities list associated with the identifier or null if not found
 	 */
 	public List<AbstractLayerEntity> findByUserId(Long id);
-	
+
 	/**
 	 * Get a layers list by authority
 	 * 
 	 * @param <code>id</code>
 	 * 
-	 * @return Entities list associated with the identifier or null if not found 
+	 * @return Entities list associated with the identifier or null if not found
 	 */
 	public List<AbstractLayerEntity> findByAuthorityId(Long id);
 
-	
 	/**
 	 * Get a layers list by authority
 	 * 
 	 * @param <code>id</code>
-	 * @param <code>isChannel</code> compare with entity property and filter by this. False value get null values too
+	 * @param <code>isChannel</code> compare with entity property and filter by
+	 *        this. False value get null values too
 	 * 
-	 * @return Entities list associated with the identifier or null if not found 
+	 * @return Entities list associated with the identifier or null if not found
 	 */
 	public List<AbstractLayerEntity> findByAuthorityId(Long id,
 			Boolean isChannel);
-	
+
 	/**
 	 * Get layers by folder
 	 * 
@@ -134,27 +136,31 @@ public interface LayerEntityDao extends GenericDAO<AbstractLayerEntity, Long> {
 	 * 
 	 * @return all layers in a folder mark as channel
 	 */
-	public List<AbstractLayerEntity> getLayersByFolder(Long folderId, Boolean isChannel, Boolean isEnabled);
-	
+	public List<AbstractLayerEntity> getLayersByFolder(Long folderId,
+			Boolean isChannel, Boolean isEnabled);
+
 	/**
 	 * Get a layers list by authority
 	 * 
 	 * @param <code>id</code>
-	 * @param <code>isChannel</code> compare with entity property and filter by this. False value get null values too
+	 * @param <code>isChannel</code> compare with entity property and filter by
+	 *        this. False value get null values too
 	 * 
-	 * @return Entities list associated with the identifier or null if not found 
+	 * @return Entities list associated with the identifier or null if not found
 	 */
 	public List<AbstractLayerEntity> getLayersByFolder(Long folderId,
 			Boolean isChannel);
-	
+
 	/**
 	 * Gets all the public layers.
+	 * 
 	 * @return
 	 */
 	public List<AbstractLayerEntity> getPublicLayers();
 
 	/**
 	 * Gets all unassigned layers (layers not assinged to folders or channels).
+	 * 
 	 * @return
 	 */
 	public List<AbstractLayerEntity> getUnassignedLayers();

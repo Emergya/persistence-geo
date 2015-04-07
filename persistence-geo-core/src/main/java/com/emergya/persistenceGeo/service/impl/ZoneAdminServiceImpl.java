@@ -36,11 +36,10 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
 import com.emergya.persistenceGeo.dao.AbstractGenericDao;
-import com.emergya.persistenceGeo.dao.GenericDAO;
+import com.emergya.persistenceGeo.dao.MultiSirDatabaseGenericDAO;
 import com.emergya.persistenceGeo.dao.ZoneEntityDao;
 import com.emergya.persistenceGeo.dto.ZoneDto;
 import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
@@ -54,24 +53,25 @@ import com.emergya.persistenceGeo.service.ZoneAdminService;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  * 
  */
-@Repository
-@Transactional
-public class ZoneAdminServiceImpl 
-	extends AbstractServiceImpl<ZoneDto, AbstractZoneEntity> 
-	implements ZoneAdminService {
-	
+@Service
+public class ZoneAdminServiceImpl extends
+		AbstractServiceImpl<ZoneDto, AbstractZoneEntity> implements
+		ZoneAdminService {
+
 	@Resource
 	private ZoneEntityDao zoneDao;
-	
+
 	@Resource
 	private Instancer instancer;
 
 	@Override
-	protected GenericDAO<AbstractZoneEntity, Long> getDao() {
+	protected MultiSirDatabaseGenericDAO<AbstractZoneEntity, Long> getDao() {
 		return zoneDao;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.emergya.persistenceGeo.service.impl.AbstractServiceImpl#getAll()
 	 */
 	@Cacheable("persistenceGeo")
@@ -88,15 +88,14 @@ public class ZoneAdminServiceImpl
 	 * 
 	 * @return zones
 	 */
-    public List<ZoneDto> findByType(String type, Boolean isEnabled){
-    	List<ZoneDto> zonesDto = new LinkedList<ZoneDto>();
-        List<AbstractZoneEntity> zones = zoneDao.findByType(type);
-        for (AbstractZoneEntity zoneEntity: zones) {
-            zonesDto.add(entityToDto(zoneEntity));
-        }
-        return zonesDto;
-    }
-
+	public List<ZoneDto> findByType(String type, Boolean isEnabled) {
+		List<ZoneDto> zonesDto = new LinkedList<ZoneDto>();
+		List<AbstractZoneEntity> zones = zoneDao.findByType(type);
+		for (AbstractZoneEntity zoneEntity : zones) {
+			zonesDto.add(entityToDto(zoneEntity));
+		}
+		return zonesDto;
+	}
 
 	/**
 	 * Find zone by id
@@ -105,19 +104,19 @@ public class ZoneAdminServiceImpl
 	 * 
 	 * @return zones
 	 */
-    public List<ZoneDto> findByType(String type) {
-        return findByType(type, null);
-    }
+	public List<ZoneDto> findByType(String type) {
+		return findByType(type, null);
+	}
 
 	/**
 	 * Find all enabled
 	 * 
 	 * @return zones enabled
 	 */
-    @SuppressWarnings("unchecked")
-	public List<ZoneDto> findAllEnabled(){
-    	return (List<ZoneDto>) entitiesToDtos(zoneDao.findAllEnabled());
-    }
+	@SuppressWarnings("unchecked")
+	public List<ZoneDto> findAllEnabled() {
+		return (List<ZoneDto>) entitiesToDtos(zoneDao.findAllEnabled());
+	}
 
 	/**
 	 * Find zone by id
@@ -127,15 +126,15 @@ public class ZoneAdminServiceImpl
 	 * 
 	 * @return zones
 	 */
-    @SuppressWarnings("unchecked")
-    public List<ZoneDto> findByParent(Long idZone){
-    	return (List<ZoneDto>) entitiesToDtos(zoneDao.findByParent(idZone));	
-    }
+	@SuppressWarnings("unchecked")
+	public List<ZoneDto> findByParent(Long idZone) {
+		return (List<ZoneDto>) entitiesToDtos(zoneDao.findByParent(idZone));
+	}
 
 	@Override
 	protected ZoneDto entityToDto(AbstractZoneEntity entity) {
 		ZoneDto dto = null;
-		if(entity != null){
+		if (entity != null) {
 			dto = new ZoneDto();
 			dto.setCreateDate(entity.getCreateDate());
 			dto.setCode(entity.getCode());
@@ -144,7 +143,7 @@ public class ZoneAdminServiceImpl
 			dto.setName(entity.getName());
 			dto.setType(entity.getType());
 			dto.setUpdateDate(entity.getUpdateDate());
-            dto.setEnabled(entity.getEnabled());
+			dto.setEnabled(entity.getEnabled());
 		}
 		return dto;
 	}
@@ -152,10 +151,10 @@ public class ZoneAdminServiceImpl
 	@Override
 	protected AbstractZoneEntity dtoToEntity(ZoneDto dto) {
 		AbstractZoneEntity entity = null;
-		if(dto != null){
-			if(dto.getId()!= null){
+		if (dto != null) {
+			if (dto.getId() != null) {
 				zoneDao.findById(dto.getId(), false);
-			}else{
+			} else {
 				entity = instancer.createZone();
 			}
 			entity.setCreateDate(dto.getCreateDate());
@@ -165,7 +164,7 @@ public class ZoneAdminServiceImpl
 			entity.setName(dto.getName());
 			entity.setType(dto.getType());
 			entity.setUpdateDate(dto.getUpdateDate());
-            entity.setEnabled(dto.getEnabled());
+			entity.setEnabled(dto.getEnabled());
 		}
 		return entity;
 	}

@@ -48,22 +48,28 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
  */
 @SuppressWarnings("unchecked")
 @Repository
-public class AbstractResourceEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractResourceEntity, Long> implements ResourceEntityDao{
+public class AbstractResourceEntityDaoHibernateImpl extends
+		MultiSirDatabaseGenericHibernateDAOImpl<AbstractResourceEntity, Long>
+		implements ResourceEntityDao {
 
 	@Resource
 	private Instancer instancer;
-	
+
 	private static final String ACCESS_ID = "accessId";
 
 	@Autowired
-    public void init(SessionFactory sessionFactory) {
-        super.init(sessionFactory);
-		this.persistentClass = (Class<AbstractResourceEntity>) instancer.createResourceEntity().getClass();
-    }
+	public void init(SessionFactory sessionFactory) {
+		super.init(sessionFactory);
+		this.persistentClass = (Class<AbstractResourceEntity>) instancer
+				.createResourceEntity().getClass();
+	}
+
 	@Override
 	public AbstractResourceEntity findByAccessId(Long accessId) {
-		return (AbstractResourceEntity) findByCriteria(Restrictions.eq(ACCESS_ID, accessId)).get(0);
+		return (AbstractResourceEntity) findByCriteria(
+				Restrictions.eq(ACCESS_ID, accessId)).get(0);
 	}
+
 	@Override
 	public void deleteByAccessId(Long accessId) {
 		makePersistent(findByAccessId(accessId));

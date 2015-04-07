@@ -40,18 +40,19 @@ import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  *
  */
-public interface UserEntityDao extends GenericDAO<AbstractUserEntity, Long>{
-	
+public interface UserEntityDao extends
+		MultiSirDatabaseGenericDAO<AbstractUserEntity, Long> {
+
 	/**
 	 * Crea un nuevo usuario en el sistema
 	 * 
 	 * @param <code>userName</code>
 	 * @param <code>password</code>
 	 * 
-	 * @return entidad del usuario creado 
+	 * @return entidad del usuario creado
 	 */
 	public AbstractUserEntity createUser(String userName, String password);
-	
+
 	/**
 	 * Obtiene un usuario por nombre de usuario
 	 * 
@@ -61,7 +62,7 @@ public interface UserEntityDao extends GenericDAO<AbstractUserEntity, Long>{
 	 * @return entidad asociada al nombre de usuario o null si no se encuentra
 	 */
 	public AbstractUserEntity getUser(String userName, String password);
-	
+
 	/**
 	 * Obtiene un usuario por nombre de usuario
 	 * 
@@ -70,13 +71,14 @@ public interface UserEntityDao extends GenericDAO<AbstractUserEntity, Long>{
 	 * @return entidad asociada al nombre de usuario o null si no se encuentra
 	 */
 	public AbstractUserEntity getUser(String userName);
-	
+
 	/**
 	 * Get a users list by a names users list
 	 * 
 	 * @param names
 	 * 
-	 * @return Entities list associated with the names users list or null if not found 
+	 * @return Entities list associated with the names users list or null if not
+	 *         found
 	 */
 	public List<AbstractUserEntity> findByName(List<String> names);
 
@@ -88,7 +90,7 @@ public interface UserEntityDao extends GenericDAO<AbstractUserEntity, Long>{
 	 * @return Entity associated with the user identifier or null if not found
 	 */
 	public AbstractAuthorityEntity findByUserID(Long user_id);
-	
+
 	/**
 	 * Get user list by a auth id
 	 * 

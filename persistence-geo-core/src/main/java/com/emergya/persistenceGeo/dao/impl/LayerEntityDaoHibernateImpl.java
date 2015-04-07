@@ -54,17 +54,20 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
  */
 @SuppressWarnings("unchecked")
 @Repository("layerEntityDao")
-public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractLayerEntity, Long> implements LayerEntityDao {
+public class LayerEntityDaoHibernateImpl extends
+		MultiSirDatabaseGenericHibernateDAOImpl<AbstractLayerEntity, Long>
+		implements LayerEntityDao {
 
 	@Resource
 	private Instancer instancer;
 
 	@Autowired
-    public void init(SessionFactory sessionFactory) {
-        super.init(sessionFactory);
-		this.persistentClass = (Class<AbstractLayerEntity>) instancer.createLayer().getClass();
-    }
-	
+	public void init(SessionFactory sessionFactory) {
+		super.init(sessionFactory);
+		this.persistentClass = (Class<AbstractLayerEntity>) instancer
+				.createLayer().getClass();
+	}
+
 	/**
 	 * Create a new layer in the system
 	 * 
@@ -78,7 +81,7 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 		this.save(entity);
 		return entity;
 	}
-	
+
 	/**
 	 * Save the layer in the system
 	 * 
@@ -91,25 +94,25 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 	}
 
 	/**
-	 * Get a layers list by the private layer name 
+	 * Get a layers list by the private layer name
 	 * 
 	 * @param <code>layerName</code>
 	 * 
-	 * @return Entities list associated with the layer name or null if not found 
+	 * @return Entities list associated with the layer name or null if not found
 	 */
 	public List<AbstractLayerEntity> getLayers(String layerName) {
 		return findByCriteria(Restrictions.eq("name", layerName));
 	}
 
 	/**
-	 * Delete a layer by the layer identifier 
+	 * Delete a layer by the layer identifier
 	 * 
 	 * @param <code>layerID</code>
 	 * 
 	 */
 	public void delete(Long layerID) {
 		AbstractLayerEntity entity = findById(layerID, false);
-		if(entity != null){
+		if (entity != null) {
 			getHibernateTemplate().delete(entity);
 		}
 	}
@@ -119,68 +122,66 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 	 * 
 	 * @param layerID
 	 * 
-	 * @return Entities list associated with the layer identifier or null if not found 
+	 * @return Entities list associated with the layer identifier or null if not
+	 *         found
 	 */
 	public AbstractUserEntity findByLayer(Long layerID) {
 		AbstractLayerEntity entity = findById(layerID, false);
-		
+
 		return entity.getUser();
 	}
 
 	@Override
 	public List<AbstractLayerEntity> findByUserId(Long id) {
-		
+
 		Criteria criteria = getSession().createCriteria(persistentClass)
-						.createAlias("user", "user")
-						.add(Restrictions.eq("user.id", id));
-		
-		
+				.createAlias("user", "user")
+				.add(Restrictions.eq("user.id", id));
+
 		addLayerSorting(criteria);
-		
+
 		return criteria.list();
 	}
 
 	@Override
 	public List<AbstractLayerEntity> findByAuthorityId(Long id) {
 		Criteria criteria = getSession().createCriteria(persistentClass)
-						.createAlias("auth", "auth")
-						.add(Restrictions.eq("auth.id", id));
-		
-		
+				.createAlias("auth", "auth")
+				.add(Restrictions.eq("auth.id", id));
+
 		addLayerSorting(criteria);
-		
+
 		return criteria.list();
 	}
 
-	
 	/**
 	 * Get a layers list by authority
 	 * 
 	 * @param <code>id</code>
 	 * 
-	 * @param <code>isChannel</code> compare with entity property and filter by this. False value get null values too
+	 * @param <code>isChannel</code> compare with entity property and filter by
+	 *        this. False value get null values too
 	 * 
-	 * @return Entities list associated with the identifier or null if not found 
+	 * @return Entities list associated with the identifier or null if not found
 	 */
 	public List<AbstractLayerEntity> findByAuthorityId(Long id,
-			Boolean isChannel){
+			Boolean isChannel) {
 		Criteria criteria = getSession().createCriteria(persistentClass)
-						.createAlias("auth", "auth")
-						.add(Restrictions.eq("auth.id", id));
-		if(isChannel == null){
+				.createAlias("auth", "auth")
+				.add(Restrictions.eq("auth.id", id));
+		if (isChannel == null) {
 			criteria.add(Restrictions.isNull("isChannel"));
-		}else if(isChannel){
+		} else if (isChannel) {
 			criteria.add(Restrictions.eq("isChannel", isChannel));
-		}else{
+		} else {
 			Disjunction dis = Restrictions.disjunction();
 			dis.add(Restrictions.isNull("isChannel"));
 			dis.add(Restrictions.eq("isChannel", isChannel));
 			criteria.add(dis);
 		}
-		
-		
+
 		addLayerSorting(criteria);
-		
+
 		return criteria.list();
 	}
 
@@ -190,41 +191,41 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 				.createAlias("folder", "folder")
 				.add(Restrictions.eq("folder.id", folderId));
 
-		
 		addLayerSorting(criteria);
-		
+
 		return criteria.list();
 	}
-	
+
 	/**
 	 * Get a layers list by authority
 	 * 
 	 * @param <code>id</code>
-	 * @param <code>isChannel</code> compare with entity property and filter by this. False value get null values too
+	 * @param <code>isChannel</code> compare with entity property and filter by
+	 *        this. False value get null values too
 	 * 
-	 * @return Entities list associated with the identifier or null if not found 
+	 * @return Entities list associated with the identifier or null if not found
 	 */
 	public List<AbstractLayerEntity> getLayersByFolder(Long folderId,
 			Boolean isChannel) {
 		Criteria criteria = getSession().createCriteria(persistentClass)
 				.createAlias("folder", "folder")
 				.add(Restrictions.eq("folder.id", folderId));
-		if(isChannel == null){
+		if (isChannel == null) {
 			criteria.add(Restrictions.isNull("isChannel"));
-		}else if(isChannel){
+		} else if (isChannel) {
 			criteria.add(Restrictions.eq("isChannel", isChannel));
-		}else{
+		} else {
 			Disjunction dis = Restrictions.disjunction();
 			dis.add(Restrictions.isNull("isChannel"));
 			dis.add(Restrictions.eq("isChannel", isChannel));
 			criteria.add(dis);
 		}
-				
+
 		addLayerSorting(criteria);
-		
+
 		return criteria.list();
 	}
-	
+
 	/**
 	 * Get layers by folder
 	 * 
@@ -234,47 +235,47 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 	 * 
 	 * @return all layers in a folder mark as channel
 	 */
-	public List<AbstractLayerEntity> getLayersByFolder(Long folderId, Boolean isChannel, Boolean isEnabled){
+	public List<AbstractLayerEntity> getLayersByFolder(Long folderId,
+			Boolean isChannel, Boolean isEnabled) {
 		Criteria criteria = getSession().createCriteria(persistentClass)
 				.createAlias("folder", "folder")
 				.add(Restrictions.eq("folder.id", folderId));
-		if(isChannel != null){
-			if(isChannel){
+		if (isChannel != null) {
+			if (isChannel) {
 				criteria.add(Restrictions.eq("isChannel", isChannel));
-			}else{
+			} else {
 				Disjunction dis = Restrictions.disjunction();
 				dis.add(Restrictions.isNull("isChannel"));
 				dis.add(Restrictions.eq("isChannel", isChannel));
 				criteria.add(dis);
 			}
 		}
-		if(isEnabled == null){
+		if (isEnabled == null) {
 			criteria.add(Restrictions.isNull("enabled"));
-		}else if(isEnabled){
+		} else if (isEnabled) {
 			criteria.add(Restrictions.eq("enabled", isEnabled));
-		}else{
+		} else {
 			Disjunction dis = Restrictions.disjunction();
 			dis.add(Restrictions.isNull("enabled"));
 			dis.add(Restrictions.eq("enabled", isEnabled));
 			criteria.add(dis);
 		}
-		
-		
+
 		addLayerSorting(criteria);
-		
+
 		return criteria.list();
 	}
-	
+
 	@Override
 	public List<AbstractLayerEntity> getUnassignedLayers() {
 		Criteria criteria = getSession().createCriteria(persistentClass);
-		
+
 		criteria.add(Restrictions.isNull("folder"));
 		criteria.add(Restrictions.eq("enabled", true));
 		criteria.add(Restrictions.eq("publicized", true));
-		
+
 		addLayerSorting(criteria);
-		
+
 		return criteria.list();
 	}
 
@@ -282,9 +283,9 @@ public class LayerEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 	public List<AbstractLayerEntity> getPublicLayers() {
 		Criteria crit = getSession().createCriteria(persistentClass);
 		crit.add(Restrictions.eq("publicized", true));
-		
+
 		addLayerSorting(crit);
-		
+
 		return crit.list();
 	}
 

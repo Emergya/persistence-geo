@@ -45,7 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-import com.emergya.persistenceGeo.dao.GenericDAO;
+import com.emergya.persistenceGeo.dao.MultiSirDatabaseGenericDAO;
 
 /**
  * Based on http://community.jboss.org/docs/DOC-13955
@@ -55,19 +55,20 @@ import com.emergya.persistenceGeo.dao.GenericDAO;
  * @param <ID>
  *            primary key
  */
-public abstract class GenericHibernateDAOImpl<T, ID extends Serializable>
-		extends HibernateDaoSupport implements GenericDAO<T, ID> {
+public abstract class MultiSirDatabaseGenericHibernateDAOImpl<T, ID extends Serializable>
+		extends HibernateDaoSupport implements
+		MultiSirDatabaseGenericDAO<T, ID> {
 
 	protected Class<T> persistentClass;
 
 	@Autowired
-	@Qualifier("sessionFactory")
+	@Qualifier("sessionFactoryMultiSIRDataSource")
 	public void init(SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);
 	}
 
 	@SuppressWarnings({ "unchecked" })
-	public GenericHibernateDAOImpl() {
+	public MultiSirDatabaseGenericHibernateDAOImpl() {
 		try {
 			persistentClass = (Class<T>) ((ParameterizedType) getClass()
 					.getGenericSuperclass()).getActualTypeArguments()[0];
@@ -121,12 +122,12 @@ public abstract class GenericHibernateDAOImpl<T, ID extends Serializable>
 		return criteria.list();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> findByExample(T exampleInstance, String[] excludedProperties) {
 		return this.findByExample(exampleInstance, excludedProperties, false);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> findByExample(T exampleInstance,
 			String[] excludedProperties, boolean ignoreCase) {

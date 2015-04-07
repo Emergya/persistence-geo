@@ -39,7 +39,8 @@ import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public interface StyleEntityDao extends GenericDAO<AbstractStyleEntity, Long> {
+public interface StyleEntityDao extends
+		MultiSirDatabaseGenericDAO<AbstractStyleEntity, Long> {
 
 	/**
 	 * Create a new style in the system
@@ -49,30 +50,31 @@ public interface StyleEntityDao extends GenericDAO<AbstractStyleEntity, Long> {
 	 * @return Entity from the created style
 	 */
 	public AbstractStyleEntity createStyle(String style);
-	
+
 	/**
 	 * Get a style list by the style name
 	 * 
 	 * @param <code>styleName</code>
 	 * 
-	 * @return Entities list associated with the style name or null if not found 
+	 * @return Entities list associated with the style name or null if not found
 	 */
 	public List<AbstractStyleEntity> getStyles(String styleName);
-	
+
 	/**
-	 * Delete a style by the style identifier 
+	 * Delete a style by the style identifier
 	 * 
 	 * @param <code>styleID</code>
 	 * 
 	 */
 	public void deleteStyle(Long styleID);
-	
+
 	/**
 	 * Get a style list by the names users list
 	 * 
 	 * @param <code>names</code>
 	 * 
-	 * @return Entities list associated with the names users list or null if not found 
+	 * @return Entities list associated with the names users list or null if not
+	 *         found
 	 */
 	public List<AbstractStyleEntity> findByName(List<String> names);
 }

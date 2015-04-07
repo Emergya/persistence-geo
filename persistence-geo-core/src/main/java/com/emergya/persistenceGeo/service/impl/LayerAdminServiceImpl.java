@@ -40,15 +40,14 @@ import javax.annotation.Resource;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
 import com.emergya.persistenceGeo.dao.AbstractGenericDao;
 import com.emergya.persistenceGeo.dao.AuthorityEntityDao;
 import com.emergya.persistenceGeo.dao.FolderEntityDao;
-import com.emergya.persistenceGeo.dao.GenericDAO;
 import com.emergya.persistenceGeo.dao.LayerEntityDao;
 import com.emergya.persistenceGeo.dao.LayerTypeEntityDao;
+import com.emergya.persistenceGeo.dao.MultiSirDatabaseGenericDAO;
 import com.emergya.persistenceGeo.dao.RuleEntityDao;
 import com.emergya.persistenceGeo.dao.StyleEntityDao;
 import com.emergya.persistenceGeo.dao.UserEntityDao;
@@ -68,8 +67,6 @@ import com.emergya.persistenceGeo.metaModel.AbstractRulePropertyEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractStyleEntity;
 import com.emergya.persistenceGeo.metaModel.AbstractUserEntity;
 import com.emergya.persistenceGeo.metaModel.Instancer;
-import com.emergya.persistenceGeo.model.LayerEntity;
-import com.emergya.persistenceGeo.model.LayerTypeEntity;
 import com.emergya.persistenceGeo.service.LayerAdminService;
 
 /**
@@ -80,10 +77,10 @@ import com.emergya.persistenceGeo.service.LayerAdminService;
  * 
  */
 @SuppressWarnings("unchecked")
-@Repository
-@Transactional
-public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, AbstractLayerEntity>
-		implements LayerAdminService {
+@Service
+public class LayerAdminServiceImpl extends
+		AbstractServiceImpl<LayerDto, AbstractLayerEntity> implements
+		LayerAdminService {
 
 	@Resource
 	private Instancer instancer;
@@ -101,8 +98,8 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 	private AuthorityEntityDao authDao;
 	@Resource
 	private FolderEntityDao folderDao;
-	
-	public LayerAdminServiceImpl(){
+
+	public LayerAdminServiceImpl() {
 		super();
 	}
 
@@ -118,16 +115,16 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 		List<LayerDto> layersDto = new LinkedList<LayerDto>();
 		LayerDto dto = null;
 		List<AbstractLayerEntity> layers = layerDao.getLayers(layerName);
-		for(AbstractLayerEntity l: layers){
+		for (AbstractLayerEntity l : layers) {
 			dto = entityToDto(l);
-			if(dto == null){
+			if (dto == null) {
 				dto = entityToDto(layerDao.createLayer(layerName));
 			}
 			layersDto.add(dto);
 		}
 		return layersDto;
 	}
-	
+
 	/**
 	 * Get a layer list by names list
 	 * 
@@ -138,7 +135,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 	@Cacheable("persistenceGeo")
 	public List<LayerDto> getLayersByName(List<String> namesList) {
 		List<LayerDto> layersDto = new LinkedList<LayerDto>();
-		for(String name: namesList){
+		for (String name : namesList) {
 			layersDto.addAll(this.getLayersByName(name));
 		}
 		return layersDto;
@@ -154,17 +151,17 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 	public void addRuleToStyleLayer(Long styleID, Long ruleID) {
 		AbstractStyleEntity styleEntity = styleDao.findById(styleID, false);
 		List<AbstractRuleEntity> rules = styleEntity.getRuleList();
-		if(rules == null){
+		if (rules == null) {
 			rules = new LinkedList<AbstractRuleEntity>();
 		}
 		boolean enc = false;
-		for(AbstractRuleEntity re: rules){
-			if(re.getId().equals(ruleID)){
+		for (AbstractRuleEntity re : rules) {
+			if (re.getId().equals(ruleID)) {
 				enc = true;
 				break;
 			}
 		}
-		if(!enc){
+		if (!enc) {
 			rules.add(ruleDao.findById(ruleID, false));
 			styleEntity.setRuleList(rules);
 			styleDao.makePersistent(styleEntity);
@@ -184,7 +181,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 		layerEntity.setStyleList(addToList(layerEntity.getStyleList(), style));
 		layerDao.save(layerEntity);
 	}
-	
+
 	/**
 	 * Add authorities to a layer
 	 * 
@@ -195,15 +192,15 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 	public void addAuthoritiesToLayer(Long auth_id, Long layer_id) {
 		AbstractLayerEntity entity = layerDao.findById(layer_id, false);
 		AbstractAuthorityEntity authority = entity.getAuth();
-		if(authority == null){
+		if (authority == null) {
 			authority = instancer.createAuthority();
 		}
 		boolean enc = false;
-		if(authority.getId().equals(auth_id)){
+		if (authority.getId().equals(auth_id)) {
 			enc = true;
 		}
-		
-		if(!enc){
+
+		if (!enc) {
 			entity.setAuth(authDao.findById(auth_id, false));
 			layerDao.save(entity);
 		}
@@ -222,7 +219,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 		entity.setUser(user);
 		layerDao.save(entity);
 	}
-	
+
 	/**
 	 * Add a folder to a layer
 	 * 
@@ -230,7 +227,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 	 * @param layer_id
 	 * 
 	 */
-	public void addFolderToLayer(Long folder_id, Long layer_id){
+	public void addFolderToLayer(Long folder_id, Long layer_id) {
 		AbstractLayerEntity entity = layerDao.findById(layer_id, false);
 		AbstractFolderEntity folder = folderDao.findById(folder_id, false);
 		entity.setFolder(folder);
@@ -240,30 +237,35 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 	/**
 	 * Get layers by folder
 	 * 
-	 * @param folderId to be loaded
+	 * @param folderId
+	 *            to be loaded
 	 * 
 	 * @return all layers in the folder
 	 */
-	public List<LayerDto> getLayersByFolder(Long folderId){
-		return (List<LayerDto>) entitiesToDtos(layerDao.getLayersByFolder(folderId));
+	public List<LayerDto> getLayersByFolder(Long folderId) {
+		return (List<LayerDto>) entitiesToDtos(layerDao
+				.getLayersByFolder(folderId));
 	}
 
 	/**
 	 * Get layers by folder
 	 * 
-	 * @param folderId to be loaded
+	 * @param folderId
+	 *            to be loaded
 	 * @param isChannel
 	 * @param isEnabled
 	 * 
 	 * @return all layers in the folder
 	 */
-	public List<LayerDto> getLayersByFolder(Long folderId, Boolean isChannel, Boolean isEnabled){
-		return (List<LayerDto>) entitiesToDtos(layerDao.getLayersByFolder(folderId, isChannel, isEnabled));
+	public List<LayerDto> getLayersByFolder(Long folderId, Boolean isChannel,
+			Boolean isEnabled) {
+		return (List<LayerDto>) entitiesToDtos(layerDao.getLayersByFolder(
+				folderId, isChannel, isEnabled));
 	}
 
 	protected LayerDto entityToDto(AbstractLayerEntity entity) {
 		LayerDto dto = null;
-		if(entity != null){
+		if (entity != null) {
 			dto = new LayerDto();
 			// Add own parameters
 			dto.setId(entity.getId());
@@ -277,18 +279,20 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			dto.setUpdateDate(entity.getUpdateDate());
 			dto.setLayerTitle(entity.getLayerTitle());
 			dto.setTableName(entity.getTableName());
-			
+
 			AbstractLayerTypeEntity type = entity.getType();
-			//Layer type
-			if(type!= null
-					&& type.getName() != null){
+			// Layer type
+			if (type != null && type.getName() != null) {
 				dto.setType(type.getName());
 				dto.setTypeId(type.getId());
 			}
-			
-			if(entity.getData() != null){
+
+			if (entity.getData() != null) {
 				try {
-					File file = com.emergya.persistenceGeo.utils.FileUtils.createFileTemp(entity.getName(), entity.getType() != null ? entity.getType().getName() : "xml");
+					File file = com.emergya.persistenceGeo.utils.FileUtils
+							.createFileTemp(entity.getName(),
+									entity.getType() != null ? entity.getType()
+											.getName() : "xml");
 					FileUtils.writeByteArrayToFile(file, entity.getData());
 					dto.setData(file);
 				} catch (Exception e) {
@@ -296,32 +300,36 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 					e.printStackTrace();
 				}
 			}
-			
+
 			// Add relational parameters
 			// Add users
 			AbstractUserEntity user = layerDao.findByLayer(entity.getId());
-			if(user != null){
+			if (user != null) {
 				dto.setUser(user.getNombreCompleto());
 			}
 			// Add authority
-			dto.setAuthId(entity.getAuth() != null ? entity.getAuth().getId() : null);
+			dto.setAuthId(entity.getAuth() != null ? entity.getAuth().getId()
+					: null);
 			// Add style
 			Map<StyleDto, Map<RuleDto, Map<String, String>>> styles = new HashMap<StyleDto, Map<RuleDto, Map<String, String>>>();
-			if(entity.getStyleList() != null){
-				for (Object style: entity.getStyleList()){
+			if (entity.getStyleList() != null) {
+				for (Object style : entity.getStyleList()) {
 					StyleDto styleDto = entityStyleToDto((AbstractStyleEntity) style);
 					styles.put(styleDto, styleDto.getRules());
 				}
 			}
 			dto.setStyles(styles);
 			// Add folder
-			dto.setFolderId(entity.getFolder() != null ? entity.getFolder().getId(): null);
-			
+			dto.setFolderId(entity.getFolder() != null ? entity.getFolder()
+					.getId() : null);
+
 			// Properties
-			if(entity.getProperties() != null && entity.getProperties().size()>0){
+			if (entity.getProperties() != null
+					&& entity.getProperties().size() > 0) {
 				Map<String, String> properties = new HashMap<String, String>();
-				List<AbstractLayerPropertyEntity> propertiesList = entity.getProperties();
-				for(AbstractLayerPropertyEntity property: propertiesList){
+				List<AbstractLayerPropertyEntity> propertiesList = entity
+						.getProperties();
+				for (AbstractLayerPropertyEntity property : propertiesList) {
 					properties.put(property.getName(), property.getValue());
 				}
 				dto.setProperties(properties);
@@ -332,31 +340,33 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 
 	protected AbstractLayerEntity dtoToEntity(LayerDto dto) {
 		AbstractLayerEntity entity = null;
-		if(dto != null){
+		if (dto != null) {
 			Date now = new Date();
-			if(dto.getId() != null && dto.getId() > 0){
-				entity = (AbstractLayerEntity) layerDao.findById(dto.getId(), false);
-				//Grupos
-//				authDao.clearUser(dto.getId());
-			}else{
-				entity =  instancer.createLayer();
+			if (dto.getId() != null && dto.getId() > 0) {
+				entity = (AbstractLayerEntity) layerDao.findById(dto.getId(),
+						false);
+				// Grupos
+				// authDao.clearUser(dto.getId());
+			} else {
+				entity = instancer.createLayer();
 				entity.setCreateDate(now);
 			}
-			
+
 			// Properties
-			if(dto.getProperties() != null && dto.getProperties().size()>0){
+			if (dto.getProperties() != null && dto.getProperties().size() > 0) {
 				List<AbstractLayerPropertyEntity> propertiesList = new LinkedList<AbstractLayerPropertyEntity>();
-				for(String name: dto.getProperties().keySet()){
-					AbstractLayerPropertyEntity property = instancer.createLayerProperty();
+				for (String name : dto.getProperties().keySet()) {
+					AbstractLayerPropertyEntity property = instancer
+							.createLayerProperty();
 					property.setName(name);
 					property.setValue(dto.getProperties().get(name));
 					propertiesList.add(property);
 				}
 				entity.setProperties(propertiesList);
 			}
-			
+
 			// Add own parameters
-			//entity.setId(dto.getId());
+			// entity.setId(dto.getId());
 			entity.setName(dto.getName());
 			entity.setOrder(dto.getOrder());
 			entity.setServer_resource(dto.getServer_resource());
@@ -365,54 +375,55 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			entity.setIsChannel(dto.getPertenece_a_canal());
 			entity.setUpdateDate(now);
 			entity.setLayerTitle(dto.getLayerTitle());
-			
-			//Layer type
-			if(dto.getType() != null){
+
+			// Layer type
+			if (dto.getType() != null) {
 				entity.setType(layerTypeDao.getLayerType(dto.getType()));
 			}
-			
-			//Layer data
-			if(dto.getData() != null){
+
+			// Layer data
+			if (dto.getData() != null) {
 				try {
 					entity.setData(FileUtils.readFileToByteArray(dto.getData()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-			
+
 			// Add relational parameters
 			// Add users
 			String usersDto = dto.getUser();
-			if(usersDto != null){
+			if (usersDto != null) {
 				AbstractUserEntity user = userDao.getUser(usersDto);
-				if(user != null){
+				if (user != null) {
 					entity.setUser(user);
 				}
 			}
 			// Add authorities
 			Long authId = dto.getAuthId();
-			if(authId != null){
+			if (authId != null) {
 				entity.setAuth(authDao.findById(authId, false));
 			}
 			// Add style
 			List<AbstractEntity> styleList = new LinkedList<AbstractEntity>();
-			if(dto.getStyles() != null){
-				for (StyleDto styleDto: dto.getStyles().keySet()){
-					styleList =  addToList(styleList, dtoStyleToEntity(styleDto, entity));
+			if (dto.getStyles() != null) {
+				for (StyleDto styleDto : dto.getStyles().keySet()) {
+					styleList = addToList(styleList,
+							dtoStyleToEntity(styleDto, entity));
 				}
 			}
 			entity.setStyleList(styleList);
 			// Add folder
-			if(dto.getFolderId() != null){
+			if (dto.getFolderId() != null) {
 				entity.setFolder(folderDao.findById(dto.getFolderId(), false));
 			}
 		}
 		return entity;
 	}
 
-	private StyleDto entityStyleToDto(AbstractStyleEntity entity){
+	private StyleDto entityStyleToDto(AbstractStyleEntity entity) {
 		StyleDto dto = null;
-		if(entity != null){
+		if (entity != null) {
 			dto = new StyleDto();
 			// Add own attributes
 			dto.setId(entity.getId());
@@ -421,35 +432,37 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			dto.setUpdateDate(entity.getUpdateDate());
 			// Add relational attributes
 			// Add layer
-//			List<AbstractLayerEntity> layers = entity.getLayerList();
-//			if(layers != null 
-//					&& layers.size()>0){
-//				dto.setLayerId(layers.get(0).getId());
-//			}
+			// List<AbstractLayerEntity> layers = entity.getLayerList();
+			// if(layers != null
+			// && layers.size()>0){
+			// dto.setLayerId(layers.get(0).getId());
+			// }
 			// Add rules
-			Map<RuleDto, Map<String, String>> rulesDto = new HashMap<RuleDto, Map<String,String>>();
+			Map<RuleDto, Map<String, String>> rulesDto = new HashMap<RuleDto, Map<String, String>>();
 			List<AbstractRuleEntity> rules = entity.getRuleList();
-			if(rules != null){
-				for(AbstractRuleEntity ruleEntity: rules){
+			if (rules != null) {
+				for (AbstractRuleEntity ruleEntity : rules) {
 					Map<String, String> properties = new HashMap<String, String>();
-					List<AbstractRulePropertyEntity> ruleProperties = ruleEntity.getProperties();
-					for(AbstractRulePropertyEntity property: ruleProperties){
+					List<AbstractRulePropertyEntity> ruleProperties = ruleEntity
+							.getProperties();
+					for (AbstractRulePropertyEntity property : ruleProperties) {
 						properties.put(property.getName(), property.getValue());
 					}
-					rulesDto.put(ruleEntityToDto(ruleEntity, dto.getName()), properties);
+					rulesDto.put(ruleEntityToDto(ruleEntity, dto.getName()),
+							properties);
 				}
 			}
 			dto.setRules(rulesDto);
 		}
 		return dto;
 	}
-	
-	private RuleDto ruleEntityToDto(AbstractRuleEntity entity, String styleName){
+
+	private RuleDto ruleEntityToDto(AbstractRuleEntity entity, String styleName) {
 		RuleDto dto = null;
-		if(entity != null){
+		if (entity != null) {
 			dto = new RuleDto();
 			// Add own attributes
-			dto.setRule_id((Long )entity.getId());
+			dto.setRule_id((Long) entity.getId());
 			dto.setSymbolizer(entity.getSymbolizer());
 			dto.setFilter(entity.getFilter());
 			dto.setCreateDate(entity.getCreateDate());
@@ -469,10 +482,10 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 
 	@Override
 	@Cacheable("persistenceGeo")
-	public List<LayerDto> getPublicLayers() {		
+	public List<LayerDto> getPublicLayers() {
 		return (List<LayerDto>) entitiesToDtos(layerDao.getPublicLayers());
 	}
-	
+
 	@Override
 	@Cacheable("persistenceGeo")
 	public List<LayerDto> getLayersByAuthority(Long id) {
@@ -483,53 +496,57 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 	 * Get a layer list by authority id
 	 * 
 	 * @param layerName
-	 * @param isChannel indicates if layers can be channel layers 
+	 * @param isChannel
+	 *            indicates if layers can be channel layers
 	 * 
 	 * @return list
 	 */
-	public List<LayerDto> getLayersByAuthority(Long id, Boolean isChannel){
-		return (List<LayerDto>) entitiesToDtos(layerDao.findByAuthorityId(id, isChannel));
+	public List<LayerDto> getLayersByAuthority(Long id, Boolean isChannel) {
+		return (List<LayerDto>) entitiesToDtos(layerDao.findByAuthorityId(id,
+				isChannel));
 	}
 
 	@Cacheable("persistenceGeo")
 	public List<String> getAllLayerTypes() {
 		List<String> result = new LinkedList<String>();
-		
-		for(AbstractLayerTypeEntity layerType: layerTypeDao.findAll()){
+
+		for (AbstractLayerTypeEntity layerType : layerTypeDao.findAll()) {
 			result.add(layerType.getName());
 		}
-		
+
 		return result;
 	}
 
 	@Cacheable("persistenceGeo")
 	public List<String> getAllLayerTypeProperties(String layerType) {
 		List<String> result = new LinkedList<String>();
-		
-		for(AbstractLayerTypePropertyEntity layerTypeProperty: layerTypeDao.getLayerTypeProperties(layerType)){
+
+		for (AbstractLayerTypePropertyEntity layerTypeProperty : layerTypeDao
+				.getLayerTypeProperties(layerType)) {
 			result.add(layerTypeProperty.getName());
 		}
-		
+
 		return result;
 	}
 
 	public List<LayerDto> getLayersByFolder(Long folderId, Boolean isChannel) {
-		return (List<LayerDto>) entitiesToDtos(layerDao.getLayersByFolder(folderId, isChannel, Boolean.TRUE));
+		return (List<LayerDto>) entitiesToDtos(layerDao.getLayersByFolder(
+				folderId, isChannel, Boolean.TRUE));
 	}
-	
+
 	/**
 	 * Saves a folder
 	 * 
 	 * @return saved folder
 	 */
-	public FolderDto saveFolder(FolderDto folder){
+	public FolderDto saveFolder(FolderDto folder) {
 		AbstractFolderEntity entity = dtoFolderToEntity(folder);
 		return entityFolderToDto(folderDao.makePersistent(entity));
 	}
 
 	private FolderDto entityFolderToDto(AbstractFolderEntity entity) {
 		FolderDto dto = null;
-		if(entity != null){
+		if (entity != null) {
 			dto = new FolderDto();
 			dto.setEnabled(entity.getEnabled());
 			dto.setIsChannel(entity.getIsChannel());
@@ -537,48 +554,47 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			dto.setCreateDate(entity.getCreateDate());
 			dto.setId(entity.getId());
 			dto.setName(entity.getName());
-			
-			
-			//Children
-			List<AbstractFolderEntity> children = folderDao.getFolders(entity.getId());
-			if(children != null){
+
+			// Children
+			List<AbstractFolderEntity> children = folderDao.getFolders(entity
+					.getId());
+			if (children != null) {
 				List<FolderDto> subFolders = new LinkedList<FolderDto>();
-				for(AbstractFolderEntity child: children){
-					//Recursive case
+				for (AbstractFolderEntity child : children) {
+					// Recursive case
 					subFolders.add(entityFolderToDto(child));
 				}
 				dto.setFolderList(subFolders);
-			}//else: base case
-			
-			//Parent
-			if(entity.getParent() != null
-					&& entity.getParent().getId() != null){
+			}// else: base case
+
+			// Parent
+			if (entity.getParent() != null
+					&& entity.getParent().getId() != null) {
 				dto.setIdParent(entity.getParent().getId());
 			}
 
-			//Auth
-			if(entity.getAuthority() != null
-					&& entity.getAuthority().getId() != null){
+			// Auth
+			if (entity.getAuthority() != null
+					&& entity.getAuthority().getId() != null) {
 				dto.setIdAuth(entity.getAuthority().getId());
 			}
 
-			//User
-			if(entity.getUser() != null
-					&& entity.getUser().getId() != null){
+			// User
+			if (entity.getUser() != null && entity.getUser().getId() != null) {
 				dto.setIdUser((Long) entity.getUser().getId());
 			}
-			
-			//TODO: entity.setZoneList(zoneList);
+
+			// TODO: entity.setZoneList(zoneList);
 		}
 		return dto;
 	}
 
 	private AbstractFolderEntity dtoFolderToEntity(FolderDto dto) {
 		AbstractFolderEntity entity = null;
-		if(dto != null){
-			if(dto.getId() != null){
+		if (dto != null) {
+			if (dto.getId() != null) {
 				entity = folderDao.findById(dto.getId(), true);
-			}else{
+			} else {
 				entity = instancer.createFolder();
 			}
 			entity.setEnabled(dto.getEnabled());
@@ -586,54 +602,57 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			entity.setUpdateDate(dto.getUpdateDate());
 			entity.setCreateDate(dto.getCreateDate());
 			entity.setName(dto.getName());
-			
-			//TODO: Children if is necesary
-			
-			//Parent
+
+			// TODO: Children if is necesary
+
+			// Parent
 			if (dto.getIdParent() != null) {
-				AbstractFolderEntity parent = folderDao.findById(dto.getIdParent(), false);
+				AbstractFolderEntity parent = folderDao.findById(
+						dto.getIdParent(), false);
 				entity.setParent(parent);
 			}
-			
-			//Auth & user
-			if(dto.getIdAuth() != null){
+
+			// Auth & user
+			if (dto.getIdAuth() != null) {
 				entity.setAuthority(authDao.findById(dto.getIdAuth(), false));
 			}
-			if(dto.getIdUser() != null){
+			if (dto.getIdUser() != null) {
 				entity.setUser(userDao.findById(dto.getIdUser(), false));
 			}
-			
-			//TODO: entity.setZoneList(zoneList);
+
+			// TODO: entity.setZoneList(zoneList);
 		}
 		return entity;
 	}
 
-	private AbstractStyleEntity dtoStyleToEntity(StyleDto dto, AbstractLayerEntity layerEntity) {
+	private AbstractStyleEntity dtoStyleToEntity(StyleDto dto,
+			AbstractLayerEntity layerEntity) {
 		AbstractStyleEntity entity = null;
-		if(dto != null){
-			if(dto.getId() != null){
+		if (dto != null) {
+			if (dto.getId() != null) {
 				entity = styleDao.findById(dto.getId(), true);
-			}else{
+			} else {
 				entity = instancer.createStyle();
 			}
 			entity.setName(dto.getName());
-			
-			//Rules
+
+			// Rules
 			List<AbstractRuleEntity> rules = new LinkedList<AbstractRuleEntity>();
-			if(dto.getRules() != null
-					&& !dto.getRules().isEmpty()){
-				for(RuleDto ruleDto: dto.getRules().keySet()){
-					rules.add(ruleDtoToEntity(ruleDto, dto.getRules().get(ruleDto)));
+			if (dto.getRules() != null && !dto.getRules().isEmpty()) {
+				for (RuleDto ruleDto : dto.getRules().keySet()) {
+					rules.add(ruleDtoToEntity(ruleDto,
+							dto.getRules().get(ruleDto)));
 				}
 			}
 			entity.setRuleList(rules);
 
-			//Layer list
-//			entity.setLayerList(addToList(entity.getLayerList(), layerEntity));
+			// Layer list
+			// entity.setLayerList(addToList(entity.getLayerList(),
+			// layerEntity));
 		}
 		return entity;
 	}
-	
+
 	/**
 	 * Adds a entity to a list or initialize it
 	 * 
@@ -642,23 +661,23 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 	 * 
 	 * @return List with toAdd added
 	 */
-	private List<AbstractEntity> addToList(List<AbstractEntity> entities, AbstractEntity toAdd){
-		//Layer list
+	private List<AbstractEntity> addToList(List<AbstractEntity> entities,
+			AbstractEntity toAdd) {
+		// Layer list
 		boolean alreadyAdded = false;
 		List<AbstractEntity> result;
-		if(entities != null 
-				&& !entities.isEmpty()){
+		if (entities != null && !entities.isEmpty()) {
 			result = entities;
-			for(AbstractEntity entity: entities){
-				if(entity.equals(toAdd)){
+			for (AbstractEntity entity : entities) {
+				if (entity.equals(toAdd)) {
 					alreadyAdded = true;
 					break;
 				}
 			}
-		}else{
+		} else {
 			result = new LinkedList<AbstractEntity>();
 		}
-		if(!alreadyAdded){
+		if (!alreadyAdded) {
 			result.add(toAdd);
 		}
 		return result;
@@ -667,24 +686,25 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 	private AbstractRuleEntity ruleDtoToEntity(RuleDto ruleDto,
 			Map<String, String> properties) {
 		AbstractRuleEntity entity = null;
-		if(ruleDto != null){
+		if (ruleDto != null) {
 			Date now = new Date();
-			if(ruleDto.getRule_id() != null){
+			if (ruleDto.getRule_id() != null) {
 				ruleDao.findById(ruleDto.getRule_id(), true);
-			}else{
+			} else {
 				entity = ruleDao.createRule();
 				entity.setCreateDate(now);
 			}
 			entity.setFilter(ruleDto.getFilter());
 			entity.setUpdateDate(now);
 			entity.setSymbolizer(ruleDto.getSymbolizer());
-			//TODO? entity.setStyle(style);
-			
-			//Rule properties
+			// TODO? entity.setStyle(style);
+
+			// Rule properties
 			List<AbstractRulePropertyEntity> ruleProperties = new LinkedList<AbstractRulePropertyEntity>();
-			if(properties != null){
-				for(String name: properties.keySet()){
-					AbstractRulePropertyEntity ruleProperty = instancer.createRulePropertyEntity();
+			if (properties != null) {
+				for (String name : properties.keySet()) {
+					AbstractRulePropertyEntity ruleProperty = instancer
+							.createRulePropertyEntity();
 					ruleProperty.setName(name);
 					ruleProperty.setValue(properties.get(name));
 					ruleProperties.add(ruleProperty);
@@ -696,14 +716,14 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 	}
 
 	@Override
-	protected GenericDAO<AbstractLayerEntity, Long> getDao() {
+	protected MultiSirDatabaseGenericDAO<AbstractLayerEntity, Long> getDao() {
 		return layerDao;
 	}
 
 	@Override
 	public void deleteLayerById(Long layerId) {
 		// Delete the layer properties
-		
+
 		layerDao.delete(layerId);
 	}
 

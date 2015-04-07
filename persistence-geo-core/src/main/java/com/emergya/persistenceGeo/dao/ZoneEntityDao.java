@@ -39,7 +39,8 @@ import com.emergya.persistenceGeo.metaModel.AbstractZoneEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public interface ZoneEntityDao extends GenericDAO<AbstractZoneEntity, Long> {
+public interface ZoneEntityDao extends
+		MultiSirDatabaseGenericDAO<AbstractZoneEntity, Long> {
 
 	/**
 	 * Create a new zone in the system
@@ -49,13 +50,13 @@ public interface ZoneEntityDao extends GenericDAO<AbstractZoneEntity, Long> {
 	 * @return Entity from the created zone
 	 */
 	public AbstractZoneEntity createZone(String zone);
-	
+
 	/**
-	 * Get a zones list by the zone name 
+	 * Get a zones list by the zone name
 	 * 
 	 * @param <code>zoneName</code>
 	 * 
-	 * @return Entities list associated with the zone name or null if not found 
+	 * @return Entities list associated with the zone name or null if not found
 	 */
 	public List<AbstractZoneEntity> getZones(String zoneName);
 
@@ -69,13 +70,13 @@ public interface ZoneEntityDao extends GenericDAO<AbstractZoneEntity, Long> {
 	public List<AbstractZoneEntity> findByType(String zoneType);
 
 	/**
-	 * Delete a zone by the zone identifier 
+	 * Delete a zone by the zone identifier
 	 * 
 	 * @param <code>zoneID</code>
 	 * 
 	 */
 	public void deleteZone(Long zoneID);
-	
+
 	/**
 	 * Find zone by id
 	 * 
@@ -84,11 +85,11 @@ public interface ZoneEntityDao extends GenericDAO<AbstractZoneEntity, Long> {
 	 * @return zones
 	 */
 	public List<AbstractZoneEntity> findByParent(Long idParent);
-	
+
 	/**
 	 * Get all zones enabled
 	 * 
-	 * @return Entities 
+	 * @return Entities
 	 */
 	public List<AbstractZoneEntity> findAllEnabled();
 
@@ -100,20 +101,22 @@ public interface ZoneEntityDao extends GenericDAO<AbstractZoneEntity, Long> {
 	 *
 	 * @return Entities list associated with the zone type or null if not found
 	 */
-	public List<AbstractZoneEntity> findByType(String zoneType, Boolean isEnabled);
-	
+	public List<AbstractZoneEntity> findByType(String zoneType,
+			Boolean isEnabled);
+
 	/**
-	 * Get a zones list by the zone name 
+	 * Get a zones list by the zone name
 	 * 
 	 * @param <code>zoneName</code>
 	 * @param isEnabled
 	 * 
-	 * @return Entities list associated with the zone name or null if not found 
+	 * @return Entities list associated with the zone name or null if not found
 	 */
 	public List<AbstractZoneEntity> getZones(String zoneName, Boolean isEnabled);
 
 	/**
 	 * Gets a zone's geometry as it Well Known Text representation.
+	 * 
 	 * @param zoneId
 	 * @param projectionName
 	 * @return

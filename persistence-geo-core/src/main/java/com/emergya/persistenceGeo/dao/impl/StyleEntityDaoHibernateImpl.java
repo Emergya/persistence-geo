@@ -51,16 +51,19 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
  */
 @SuppressWarnings("unchecked")
 @Repository("styleEntityDao")
-public class StyleEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractStyleEntity, Long> implements StyleEntityDao {
+public class StyleEntityDaoHibernateImpl extends
+		MultiSirDatabaseGenericHibernateDAOImpl<AbstractStyleEntity, Long>
+		implements StyleEntityDao {
 
 	@Resource
 	private Instancer instancer;
 
 	@Autowired
-    public void init(SessionFactory sessionFactory) {
-        super.init(sessionFactory);
-		this.persistentClass = (Class<AbstractStyleEntity>) instancer.createStyle().getClass();
-    }
+	public void init(SessionFactory sessionFactory) {
+		super.init(sessionFactory);
+		this.persistentClass = (Class<AbstractStyleEntity>) instancer
+				.createStyle().getClass();
+	}
 
 	/**
 	 * Create a new style in the system
@@ -81,21 +84,21 @@ public class StyleEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 	 * 
 	 * @param <code>styleName</code>
 	 * 
-	 * @return Entities list associated with the style name or null if not found 
+	 * @return Entities list associated with the style name or null if not found
 	 */
 	public List<AbstractStyleEntity> getStyles(String styleName) {
 		return findByCriteria(Restrictions.eq("name", styleName));
 	}
 
 	/**
-	 * Delete a style by the style identifier 
+	 * Delete a style by the style identifier
 	 * 
 	 * @param <code>styleID</code>
 	 * 
 	 */
 	public void deleteStyle(Long styleID) {
 		AbstractStyleEntity styleEntity = findById(styleID, false);
-		if(styleEntity != null){
+		if (styleEntity != null) {
 			getHibernateTemplate().delete(styleEntity);
 		}
 	}
@@ -105,12 +108,13 @@ public class StyleEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstrac
 	 * 
 	 * @param <code>names</code>
 	 * 
-	 * @return Entities list associated with the names users list or null if not found 
+	 * @return Entities list associated with the names users list or null if not
+	 *         found
 	 */
 	public List<AbstractStyleEntity> findByName(List<String> names) {
 		List<AbstractStyleEntity> styles = new LinkedList<AbstractStyleEntity>();
-		if(names != null){
-			for(String name: names){
+		if (names != null) {
+			for (String name : names) {
 				styles.addAll(getStyles(name));
 			}
 		}

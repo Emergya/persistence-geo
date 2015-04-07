@@ -38,12 +38,11 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
 import com.emergya.persistenceGeo.dao.AbstractGenericDao;
 import com.emergya.persistenceGeo.dao.AuthorityEntityDao;
-import com.emergya.persistenceGeo.dao.GenericDAO;
+import com.emergya.persistenceGeo.dao.MultiSirDatabaseGenericDAO;
 import com.emergya.persistenceGeo.dao.UserEntityDao;
 import com.emergya.persistenceGeo.dao.ZoneEntityDao;
 import com.emergya.persistenceGeo.dto.AuthorityDto;
@@ -62,9 +61,10 @@ import com.emergya.persistenceGeo.service.UserAdminService;
  * 
  */
 @SuppressWarnings("unchecked")
-@Repository
-@Transactional
-public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractUserEntity> implements UserAdminService {
+@Service
+public class UserAdminServiceImpl extends
+		AbstractServiceImpl<UserDto, AbstractUserEntity> implements
+		UserAdminService {
 
 	@Resource
 	private Instancer instancer;
@@ -161,10 +161,11 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 	 * @return id
 	 */
 	public Long crearGrupoUsuarios(AuthorityDto dto) {
-		AbstractAuthorityEntity entity = authorityDao.makePersistent(dtoToEntity(dto));
+		AbstractAuthorityEntity entity = authorityDao
+				.makePersistent(dtoToEntity(dto));
 		return entity.getId();
 	}
-	
+
 	/**
 	 * An user can load group's layers
 	 * 
@@ -174,22 +175,22 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 	 * @return true if the user identified by <code>idUser</code> is member of
 	 *         group identified by <code>idGroup</code> of a child of this group
 	 */
-	public Boolean canLoad(Long idUser, Long idGroup){
+	public Boolean canLoad(Long idUser, Long idGroup) {
 		AbstractUserEntity user = userDao.findById(idUser, false);
-		return user.getAuthority() != null 
-				&& idGroup != null
+		return user.getAuthority() != null && idGroup != null
 				&& isInAuthTree(user.getAuthority(), idGroup);
 	}
-	
+
 	/**
 	 * Check if an authority is in authority tree ascendent of authority
 	 * 
 	 * @param authority
 	 * @param idGroup
 	 * 
-	 * @return true if group identified by <code>idGroup</code> is founded in tree
+	 * @return true if group identified by <code>idGroup</code> is founded in
+	 *         tree
 	 */
-	private Boolean isInAuthTree(AbstractAuthorityEntity authority, Long idGroup){
+	private Boolean isInAuthTree(AbstractAuthorityEntity authority, Long idGroup) {
 		return authority.getId().equals(idGroup)
 				|| (authority.getParent() != null ? isInAuthTree(
 						authority.getParent(), idGroup) : false);
@@ -202,7 +203,8 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 	 * @param usuario
 	 */
 	public void addUsuarioAGrupo(Long idGrupo, String usuario) {
-		AbstractAuthorityEntity AbstractAuthorityEntity = authorityDao.findById(idGrupo, false);
+		AbstractAuthorityEntity AbstractAuthorityEntity = authorityDao
+				.findById(idGrupo, false);
 		Set<AbstractUserEntity> usuarios = AbstractAuthorityEntity.getPeople();
 		if (usuarios == null) {
 			usuarios = new HashSet<AbstractUserEntity>();
@@ -228,7 +230,8 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 	 * @param usuario
 	 */
 	public void eliminaUsuarioDeGrupo(Long idGrupo, String usuario) {
-		AbstractAuthorityEntity AbstractAuthorityEntity = authorityDao.findById(idGrupo, false);
+		AbstractAuthorityEntity AbstractAuthorityEntity = authorityDao
+				.findById(idGrupo, false);
 		Set<AbstractUserEntity> usuarios = AbstractAuthorityEntity.getPeople();
 		if (usuarios == null) {
 			usuarios = new HashSet<AbstractUserEntity>();
@@ -262,10 +265,10 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 	 * @param dto
 	 */
 	public void modificarGrupoUsuarios(AuthorityDto dto) {
-		//authorityDao.save(dtoToEntity(dto));
+		// authorityDao.save(dtoToEntity(dto));
 		authorityDao.makePersistent(dtoToEntity(dto));
 	}
-	
+
 	/**
 	 * Get all users by group
 	 * 
@@ -274,7 +277,7 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 	 * @return users of a group
 	 */
 	@Cacheable("persistenceGeo")
-	public List<UserDto> getUsersByGroup(Long idGroup){
+	public List<UserDto> getUsersByGroup(Long idGroup) {
 		return (List<UserDto>) entitiesToDtos(userDao.findByAuthID(idGroup));
 	}
 
@@ -296,23 +299,24 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 			dto.setValid(user.getValid());
 			// Add relational parameters
 			// Add authority
-			AbstractAuthorityEntity authority = userDao.findByUserID((Long) user.getId());
+			AbstractAuthorityEntity authority = userDao
+					.findByUserID((Long) user.getId());
 			if (authority != null) {
 				dto.setAuthority(authority.getName());
 				dto.setAuthorityId(authority.getId());
-				if(authority.getZone()!=null) {
+				if (authority.getZone() != null) {
 					dto.setAuthorityZoneId(authority.getZone().getId());
 				}
 			}
-//			// Add layer
-//			List<AbstractLayerEntity> layers = user.getLayerList();
-//			List<String> layersDto = new LinkedList<String>();
-//			if (layersDto != null && layers != null) {
-//				for(AbstractLayerEntity layer: layers){
-//					layersDto.add(layer.getName());
-//				}
-//				dto.setLayerList(layersDto);
-//			}
+			// // Add layer
+			// List<AbstractLayerEntity> layers = user.getLayerList();
+			// List<String> layersDto = new LinkedList<String>();
+			// if (layersDto != null && layers != null) {
+			// for(AbstractLayerEntity layer: layers){
+			// layersDto.add(layer.getName());
+			// }
+			// dto.setLayerList(layersDto);
+			// }
 		}
 		return dto;
 	}
@@ -328,7 +332,8 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 					.getId() : null);
 			List<String> usuarios = new LinkedList<String>();
 			if (entity.getPeople() != null) {
-				Set<AbstractUserEntity> users = (Set<AbstractUserEntity>) entity.getPeople();
+				Set<AbstractUserEntity> users = (Set<AbstractUserEntity>) entity
+						.getPeople();
 				for (AbstractUserEntity user : users) {
 					usuarios.add(user.getUsername());
 				}
@@ -359,22 +364,21 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 			entity.setPeople(people);
 
 			// Zone
-			if(dto.getZone() != null){
-				List<AbstractZoneEntity> zones = zoneDao.getZones(dto.getZone());
-				if(zones != null
-						&& zones.size()>0){
+			if (dto.getZone() != null) {
+				List<AbstractZoneEntity> zones = zoneDao
+						.getZones(dto.getZone());
+				if (zones != null && zones.size() > 0) {
 					entity.setZone(zones.get(0));
-				}else{
-					//TODO: ¿Creates a new zone if not exists?
+				} else {
+					// TODO: ¿Creates a new zone if not exists?
 					entity.setZone(zoneDao.createZone(dto.getZone()));
 				}
 			}
-			
-			if(dto.getParentId() != null){
+
+			if (dto.getParentId() != null) {
 				entity.setParent(authorityDao.findById(dto.getParentId(), false));
 			}
-				
-			
+
 		}
 		return entity;
 	}
@@ -382,16 +386,18 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 	@Override
 	protected AbstractUserEntity dtoToEntity(UserDto dto) {
 		AbstractUserEntity entity = null;
-		
-		if(dto != null){
+
+		if (dto != null) {
 			Date now = new Date();
-			
-			if(dto.getId() != null && dto.getId() > 0){
-				entity = (AbstractUserEntity) userDao.findById(dto.getId(), false);
-				//Grupos
+
+			if (dto.getId() != null && dto.getId() > 0) {
+				entity = (AbstractUserEntity) userDao.findById(dto.getId(),
+						false);
+				// Grupos
 				authorityDao.clearUser(dto.getId());
-			}else{
-				entity =  userDao.createUser(dto.getUsername(), dto.getPassword());
+			} else {
+				entity = userDao.createUser(dto.getUsername(),
+						dto.getPassword());
 				entity.setCreateDate(now);
 			}
 			entity.setAdmin(dto.getAdmin());
@@ -403,24 +409,25 @@ public class UserAdminServiceImpl extends AbstractServiceImpl<UserDto, AbstractU
 			entity.setUsername(dto.getUsername());
 			entity.setNombreCompleto(dto.getNombreCompleto());
 			entity.setValid(dto.getValid());
-			
-			//Grupos
+
+			// Grupos
 			String grupo = dto.getAuthority();
 			if (grupo != null) {
-				List<AbstractAuthorityEntity> authorities = authorityDao.findByName(grupo);
-				for (AbstractAuthorityEntity authority: authorities){
+				List<AbstractAuthorityEntity> authorities = authorityDao
+						.findByName(grupo);
+				for (AbstractAuthorityEntity authority : authorities) {
 					this.addUsuarioAGrupo(authority.getId(), dto.getUsername());
 					entity.setAuthority(authority);
 				}
 			}
 		}
-		
+
 		userDao.makePersistent(entity);
-		
+
 		return entity;
 	}
 
-	protected GenericDAO<AbstractUserEntity, Long> getDao() {
+	protected MultiSirDatabaseGenericDAO<AbstractUserEntity, Long> getDao() {
 		return userDao;
 	}
 }

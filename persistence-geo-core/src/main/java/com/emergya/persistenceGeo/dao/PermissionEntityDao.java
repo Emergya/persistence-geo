@@ -39,7 +39,8 @@ import com.emergya.persistenceGeo.metaModel.AbstractPermissionEntity;
  * @author <a href="mailto:marcos@emergya.com">marcos</a>
  *
  */
-public interface PermissionEntityDao extends GenericDAO<AbstractPermissionEntity, Long> {
+public interface PermissionEntityDao extends
+		MultiSirDatabaseGenericDAO<AbstractPermissionEntity, Long> {
 
 	/**
 	 * Create a new permission in the system
@@ -49,39 +50,45 @@ public interface PermissionEntityDao extends GenericDAO<AbstractPermissionEntity
 	 * @return Entity from the created permission
 	 */
 	public AbstractPermissionEntity createPermission(String permission);
-	
+
 	/**
-	 * Get a permissions list by the permission name 
+	 * Get a permissions list by the permission name
 	 * 
 	 * @param <code>permissionName</code>
 	 * 
-	 * @return Entities list associated with the permission name or null if not found 
+	 * @return Entities list associated with the permission name or null if not
+	 *         found
 	 */
 	public List<AbstractPermissionEntity> getPermissions(String permissionName);
-	
+
 	/**
-	 * Delete a permission by the permission identifier 
+	 * Delete a permission by the permission identifier
 	 * 
 	 * @param <code>permissionID</code>
 	 * 
 	 */
 	public void deletePermission(Long permissionID);
-	
+
 	/**
-	 * Get a permissions list by authority 
+	 * Get a permissions list by authority
 	 * 
-	 * @param <code>authorithyId</code> if this parameter is null search permissions without authority type
+	 * @param <code>authorithyId</code> if this parameter is null search
+	 *        permissions without authority type
 	 * 
-	 * @return Entities list associated with the authorithyId name or null if not found 
+	 * @return Entities list associated with the authorithyId name or null if
+	 *         not found
 	 */
-	public List<AbstractPermissionEntity> getPermissionsByAuthorithy(Long authorithyId);
-	
+	public List<AbstractPermissionEntity> getPermissionsByAuthorithy(
+			Long authorithyId);
+
 	/**
-	 * Get a permissions list by authority type 
+	 * Get a permissions list by authority type
 	 * 
-	 * @param <code>authorithyTypeId</code> 
+	 * @param <code>authorithyTypeId</code>
 	 * 
-	 * @return Entities list associated with the authorithyTypeId name or null if not found 
+	 * @return Entities list associated with the authorithyTypeId name or null
+	 *         if not found
 	 */
-	public List<AbstractPermissionEntity> getPermissionsByAuthorithyType(Long authorithyTypeId);
+	public List<AbstractPermissionEntity> getPermissionsByAuthorithyType(
+			Long authorithyTypeId);
 }

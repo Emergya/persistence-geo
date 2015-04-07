@@ -29,12 +29,9 @@
  */
 package com.emergya.persistenceGeo.service.impl;
 
-import java.io.Serializable;
-import java.util.List;
-
 import javax.annotation.Resource;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.emergya.persistenceGeo.dao.DBManagementDao;
@@ -46,21 +43,17 @@ import com.emergya.persistenceGeo.service.DBManagementService;
  * 
  * 
  */
-@SuppressWarnings("unchecked")
-@Repository
-@Transactional
-public class DBManagementServiceImpl implements DBManagementService{
-	
+@Service
+@Transactional(value = "multiSIRDatabaseTransactionManager")
+public class DBManagementServiceImpl implements DBManagementService {
 
-	
 	@Resource
 	private DBManagementDao dbManagementDao;
-	
+
 	@Override
 	public long getTableSize(String table_name) {
 		return dbManagementDao.getTableSize(table_name);
 	}
-
 
 	@Override
 	public String getTableSizeText(String table_name) {

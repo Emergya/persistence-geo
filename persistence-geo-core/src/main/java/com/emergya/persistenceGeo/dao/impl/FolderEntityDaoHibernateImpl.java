@@ -57,8 +57,8 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
 @SuppressWarnings("unchecked")
 @Repository("folderEntityDao")
 public class FolderEntityDaoHibernateImpl extends
-		GenericHibernateDAOImpl<AbstractFolderEntity, Long> implements
-		FolderEntityDao {
+		MultiSirDatabaseGenericHibernateDAOImpl<AbstractFolderEntity, Long>
+		implements FolderEntityDao {
 
 	@Resource
 	private Instancer instancer;
@@ -314,38 +314,46 @@ public class FolderEntityDaoHibernateImpl extends
 			criteria.add(dis);
 		}
 
-        folderList.addAll(criteria.list());
-        return folderList;	
-    }
-    
-    /**
-     * Get a folders list by types.
-     *
-     * @param <code>typeId</code>
-     *
-     * @return Entities list associated with the typeId and sub types of the type
-     */
-    public List<AbstractFolderEntity> findByType(Long typeId){
-    	List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
-    	Criteria criteria = getSession().createCriteria(persistentClass);
-    	if(typeId != null){
-    		criteria.add(Restrictions.in("folderType.id", getTypeAndChildrenIds(typeId)));
-    	}
-    	folderList.addAll(criteria.list());
-    	return folderList;
-    }
-	
+		folderList.addAll(criteria.list());
+		return folderList;
+	}
+
+	/**
+	 * Get a folders list by types.
+	 *
+	 * @param <code>typeId</code>
+	 *
+	 * @return Entities list associated with the typeId and sub types of the
+	 *         type
+	 */
+	public List<AbstractFolderEntity> findByType(Long typeId) {
+		List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
+		Criteria criteria = getSession().createCriteria(persistentClass);
+		if (typeId != null) {
+			criteria.add(Restrictions.in("folderType.id",
+					getTypeAndChildrenIds(typeId)));
+		}
+		folderList.addAll(criteria.list());
+		return folderList;
+	}
+
 	/**
 	 * Get all channel folders filterd
 	 * 
-	 * @param inZone indicates if obtain channel folders with a zone. If this parameter is null only obtain not zoned channels
-	 * @param idZone filter by zone. Obtain only channels of the zone identified by <code>idZone</code>
+	 * @param inZone
+	 *            indicates if obtain channel folders with a zone. If this
+	 *            parameter is null only obtain not zoned channels
+	 * @param idZone
+	 *            filter by zone. Obtain only channels of the zone identified by
+	 *            <code>idZone</code>
 	 * @param isEnabled
-	 * @param folderType folder type to obtain
+	 * @param folderType
+	 *            folder type to obtain
 	 * 
 	 * @return folder list
 	 */
-	public List<AbstractFolderEntity> getChannelFolders(Boolean inZone, Long idZone, Boolean isEnabled, Long folderType){
+	public List<AbstractFolderEntity> getChannelFolders(Boolean inZone,
+			Long idZone, Boolean isEnabled, Long folderType) {
 
 		Criteria criteria = getSession().createCriteria(persistentClass);
 		if (inZone != null) {
@@ -367,9 +375,10 @@ public class FolderEntityDaoHibernateImpl extends
 			dis.add(Restrictions.eq("enabled", Boolean.FALSE));
 			criteria.add(dis);
 		}
-		if(folderType != null){
-			// folders by type and subtypes 
-    		criteria.add(Restrictions.in("folderType.id", getTypeAndChildrenIds(folderType)));
+		if (folderType != null) {
+			// folders by type and subtypes
+			criteria.add(Restrictions.in("folderType.id",
+					getTypeAndChildrenIds(folderType)));
 		}
 		// only parent folders
 		criteria.add(Restrictions.isNull(PARENT));
@@ -377,38 +386,40 @@ public class FolderEntityDaoHibernateImpl extends
 
 		return criteria.list();
 	}
-    
-    /**
-     * Obtain all ids of a folder type and subtypes
-     * 
-     * @param typeId 
-     * 
-     * @return ids
-     */
-    private List<Long> getTypeAndChildrenIds(Long typeId){
-    	List<Long> typeAndSubTypes = new LinkedList<Long>();
-    	typeAndSubTypes.add(typeId);
-    	for (AbstractFolderTypeEntity folderType : folderTypeEntityDao.getFolderTypes(typeId)){
-    		typeAndSubTypes.add(folderType.getId());
-    	}
-    	return typeAndSubTypes;
-    }
-	
+
+	/**
+	 * Obtain all ids of a folder type and subtypes
+	 * 
+	 * @param typeId
+	 * 
+	 * @return ids
+	 */
+	private List<Long> getTypeAndChildrenIds(Long typeId) {
+		List<Long> typeAndSubTypes = new LinkedList<Long>();
+		typeAndSubTypes.add(typeId);
+		for (AbstractFolderTypeEntity folderType : folderTypeEntityDao
+				.getFolderTypes(typeId)) {
+			typeAndSubTypes.add(folderType.getId());
+		}
+		return typeAndSubTypes;
+	}
+
 	/**
 	 * @param <code>typeId</code>
 	 * 
-	 * @return List<AbstractFolderEntity>
-	 * 			Devuelve la lista de todos los folder types que tenga el mismo type id y no tengan padre
+	 * @return List<AbstractFolderEntity> Devuelve la lista de todos los folder
+	 *         types que tenga el mismo type id y no tengan padre
 	 */
-	public List<AbstractFolderEntity> rootFoldersByType(Long typeId){
-    	List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
-    	Criteria criteria = getSession().createCriteria(persistentClass);
-    	if(typeId != null){
-    		criteria.add(Restrictions.in("folderType.id", getTypeAndChildrenIds(typeId)));
-    	}
-    	criteria.add(Restrictions.isNull(PARENT));
-    	folderList.addAll(criteria.list());
-    	return folderList;
+	public List<AbstractFolderEntity> rootFoldersByType(Long typeId) {
+		List<AbstractFolderEntity> folderList = new LinkedList<AbstractFolderEntity>();
+		Criteria criteria = getSession().createCriteria(persistentClass);
+		if (typeId != null) {
+			criteria.add(Restrictions.in("folderType.id",
+					getTypeAndChildrenIds(typeId)));
+		}
+		criteria.add(Restrictions.isNull(PARENT));
+		folderList.addAll(criteria.list());
+		return folderList;
 	}
 
 }

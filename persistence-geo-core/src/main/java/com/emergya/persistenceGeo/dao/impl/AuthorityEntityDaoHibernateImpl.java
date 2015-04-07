@@ -52,11 +52,13 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
  */
 @SuppressWarnings("unchecked")
 @Repository
-public class AuthorityEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractAuthorityEntity, Long> implements AuthorityEntityDao{
+public class AuthorityEntityDaoHibernateImpl extends
+		MultiSirDatabaseGenericHibernateDAOImpl<AbstractAuthorityEntity, Long>
+		implements AuthorityEntityDao {
 
 	@Resource
 	private Instancer instancer;
-	
+
 	protected final String PEOPLE = "people";
 	protected final String LAYER = "layerList";
 	protected final String USER_ID = "id";
@@ -66,10 +68,11 @@ public class AuthorityEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abs
 	protected final String AUTHORITY = "name";
 
 	@Autowired
-    public void init(SessionFactory sessionFactory) {
-        super.init(sessionFactory);
-		this.persistentClass = (Class<AbstractAuthorityEntity>) instancer.createAuthority().getClass();
-    }
+	public void init(SessionFactory sessionFactory) {
+		super.init(sessionFactory);
+		this.persistentClass = (Class<AbstractAuthorityEntity>) instancer
+				.createAuthority().getClass();
+	}
 
 	public Long save(AbstractAuthorityEntity AbstractAuthorityEntity) {
 		return (Long) getHibernateTemplate().save(AbstractAuthorityEntity);
@@ -77,7 +80,7 @@ public class AuthorityEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abs
 
 	public void delete(Long idgrupo) {
 		AbstractAuthorityEntity entity = findById(idgrupo, false);
-		if(entity != null){
+		if (entity != null) {
 			getHibernateTemplate().delete(entity);
 		}
 	}
@@ -90,11 +93,12 @@ public class AuthorityEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abs
 
 	public void clearUser(Long user_id) {
 		List<AbstractAuthorityEntity> authorities = findByUser(user_id);
-		if(authorities != null){
-			for (AbstractAuthorityEntity authority: authorities){
-				Set<AbstractUserEntity> users = (Set<AbstractUserEntity>) authority.getPeople();
-				for(AbstractUserEntity user: users){
-					if(user.getId().equals(user_id)){
+		if (authorities != null) {
+			for (AbstractAuthorityEntity authority : authorities) {
+				Set<AbstractUserEntity> users = (Set<AbstractUserEntity>) authority
+						.getPeople();
+				for (AbstractUserEntity user : users) {
+					if (user.getId().equals(user_id)) {
 						authority.getPeople().remove(user);
 						break;
 					}
@@ -114,7 +118,8 @@ public class AuthorityEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abs
 
 	@Override
 	public List<AbstractAuthorityEntity> findByLayer(Long layer_id) {
-		return getSession().createCriteria(instancer.createAuthority().getClass())
+		return getSession()
+				.createCriteria(instancer.createAuthority().getClass())
 				.createAlias(LAYER, LAYER)
 				.add(Restrictions.eq(LAYER_LAYER_ID, layer_id)).list();
 	}

@@ -43,9 +43,10 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
  * MapConfigurationEntityDaoHibernateImpl
  */
 @Repository("mapConfigurationEntityDao")
-public class MapConfigurationEntityDaoHibernateImpl extends
-		GenericHibernateDAOImpl<AbstractMapConfigurationEntity, Long> implements
-		MapConfigurationEntityDao {
+public class MapConfigurationEntityDaoHibernateImpl
+		extends
+		MultiSirDatabaseGenericHibernateDAOImpl<AbstractMapConfigurationEntity, Long>
+		implements MapConfigurationEntityDao {
 
 	@Resource
 	private Instancer instancer;

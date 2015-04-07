@@ -43,14 +43,17 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
  */
 @SuppressWarnings("unchecked")
 @Repository
-public class AbstractSourceToolEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractSourceToolEntity, Long> implements SourceToolEntityDao{
+public class AbstractSourceToolEntityDaoHibernateImpl extends
+		MultiSirDatabaseGenericHibernateDAOImpl<AbstractSourceToolEntity, Long>
+		implements SourceToolEntityDao {
 
 	@Resource
 	private Instancer instancer;
 
 	@Autowired
-    public void init(SessionFactory sessionFactory) {
-        super.init(sessionFactory);
-		this.persistentClass = (Class<AbstractSourceToolEntity>) instancer.createSourceToolEntity().getClass();
-    }
+	public void init(SessionFactory sessionFactory) {
+		super.init(sessionFactory);
+		this.persistentClass = (Class<AbstractSourceToolEntity>) instancer
+				.createSourceToolEntity().getClass();
+	}
 }

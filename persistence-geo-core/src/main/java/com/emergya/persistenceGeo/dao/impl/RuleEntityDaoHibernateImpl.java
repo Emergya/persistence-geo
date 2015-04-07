@@ -47,16 +47,19 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
  */
 @SuppressWarnings("unchecked")
 @Repository("ruleEntityDao")
-public class RuleEntityDaoHibernateImpl extends GenericHibernateDAOImpl<AbstractRuleEntity, Long> implements RuleEntityDao {
+public class RuleEntityDaoHibernateImpl extends
+		MultiSirDatabaseGenericHibernateDAOImpl<AbstractRuleEntity, Long>
+		implements RuleEntityDao {
 
 	@Resource
 	private Instancer instancer;
 
 	@Autowired
-    public void init(SessionFactory sessionFactory) {
-        super.init(sessionFactory);
-		this.persistentClass = (Class<AbstractRuleEntity>) instancer.createRule().getClass();
-    }
+	public void init(SessionFactory sessionFactory) {
+		super.init(sessionFactory);
+		this.persistentClass = (Class<AbstractRuleEntity>) instancer
+				.createRule().getClass();
+	}
 
 	/**
 	 * Create a new rule in the system
@@ -71,14 +74,14 @@ public class RuleEntityDaoHibernateImpl extends GenericHibernateDAOImpl<Abstract
 	}
 
 	/**
-	 * Delete a rule by the rule identifier 
+	 * Delete a rule by the rule identifier
 	 * 
 	 * @param <code>ruleID</code>
 	 * 
 	 */
 	public void deleteRule(Long ruleID) {
 		AbstractRuleEntity ruleEntity = findById(ruleID, false);
-		if(ruleEntity != null){
+		if (ruleEntity != null) {
 			getHibernateTemplate().delete(ruleEntity);
 		}
 

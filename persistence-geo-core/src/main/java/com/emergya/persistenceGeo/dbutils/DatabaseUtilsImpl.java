@@ -56,7 +56,7 @@ import com.emergya.persistenceGeo.exceptions.DbUtilsException;
 public class DatabaseUtilsImpl implements IDatabaseUtils {
 
 	@Autowired
-	@Qualifier("dataSourceHibernate")
+	@Qualifier("multiSIRDataSource")
 	private DataSource ds;
 
 	@Override

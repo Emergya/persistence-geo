@@ -31,10 +31,9 @@ package com.emergya.persistenceGeo.service.impl;
 
 import javax.annotation.Resource;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
-import com.emergya.persistenceGeo.dao.GenericDAO;
+import com.emergya.persistenceGeo.dao.MultiSirDatabaseGenericDAO;
 import com.emergya.persistenceGeo.dao.SourceToolEntityDao;
 import com.emergya.persistenceGeo.dto.SourceToolDto;
 import com.emergya.persistenceGeo.metaModel.AbstractSourceToolEntity;
@@ -46,27 +45,27 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  * 
  */
-@Repository("sourceToolService")
-@Transactional
-public class SourceToolServiceImpl extends AbstractServiceImpl<SourceToolDto, AbstractSourceToolEntity>{
+@Service("sourceToolService")
+public class SourceToolServiceImpl extends
+		AbstractServiceImpl<SourceToolDto, AbstractSourceToolEntity> {
 
 	@Resource
 	private Instancer instancer;
 	@Resource
 	private SourceToolEntityDao dao;
-	
-	public SourceToolServiceImpl(){
+
+	public SourceToolServiceImpl() {
 		super();
 	}
 
 	@Override
-	protected GenericDAO<AbstractSourceToolEntity, Long> getDao() {
+	protected MultiSirDatabaseGenericDAO<AbstractSourceToolEntity, Long> getDao() {
 		return dao;
 	}
 
 	protected SourceToolDto entityToDto(AbstractSourceToolEntity entity) {
 		SourceToolDto dto = null;
-		if(entity != null){
+		if (entity != null) {
 			dto = new SourceToolDto();
 			// Add own parameters
 			dto.setId((Long) entity.getId());
@@ -82,11 +81,12 @@ public class SourceToolServiceImpl extends AbstractServiceImpl<SourceToolDto, Ab
 
 	protected AbstractSourceToolEntity dtoToEntity(SourceToolDto dto) {
 		AbstractSourceToolEntity entity = null;
-		if(dto != null){
-			if(dto.getId() != null && dto.getId() > 0){
-				entity = (AbstractSourceToolEntity) dao.findById(dto.getId(), false);
-			}else{
-				entity =  instancer.createSourceToolEntity();
+		if (dto != null) {
+			if (dto.getId() != null && dto.getId() > 0) {
+				entity = (AbstractSourceToolEntity) dao.findById(dto.getId(),
+						false);
+			} else {
+				entity = instancer.createSourceToolEntity();
 			}
 			// Add own parameters
 			entity.setName(dto.getName());
@@ -98,5 +98,5 @@ public class SourceToolServiceImpl extends AbstractServiceImpl<SourceToolDto, Ab
 		}
 		return entity;
 	}
-	
+
 }

@@ -33,10 +33,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
-import com.emergya.persistenceGeo.dao.GenericDAO;
+import com.emergya.persistenceGeo.dao.MultiSirDatabaseGenericDAO;
 import com.emergya.persistenceGeo.dao.PermissionEntityDao;
 import com.emergya.persistenceGeo.dao.UserEntityDao;
 import com.emergya.persistenceGeo.dto.ToolPermissionDto;
@@ -51,10 +50,10 @@ import com.emergya.persistenceGeo.service.ToolPermissionService;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  * 
  */
-@Repository("toolPermissionService")
-@Transactional
-public class ToolPermissionServiceImpl extends AbstractServiceImpl<ToolPermissionDto, AbstractPermissionEntity> 
-	implements ToolPermissionService{
+@Service("toolPermissionService")
+public class ToolPermissionServiceImpl extends
+		AbstractServiceImpl<ToolPermissionDto, AbstractPermissionEntity>
+		implements ToolPermissionService {
 
 	@Resource
 	private Instancer instancer;
@@ -62,8 +61,8 @@ public class ToolPermissionServiceImpl extends AbstractServiceImpl<ToolPermissio
 	private PermissionEntityDao dao;
 	@Resource
 	private UserEntityDao userDao;
-	
-	public ToolPermissionServiceImpl(){
+
+	public ToolPermissionServiceImpl() {
 		super();
 	}
 
@@ -75,16 +74,16 @@ public class ToolPermissionServiceImpl extends AbstractServiceImpl<ToolPermissio
 	 * @return permissions for the authority
 	 */
 	@SuppressWarnings("unchecked")
-	public List<ToolPermissionDto> getPermissionsByAuthority(
-			Long authorityId) {
+	public List<ToolPermissionDto> getPermissionsByAuthority(Long authorityId) {
 		List<ToolPermissionDto> result = null;
-		List<AbstractPermissionEntity> permissions = dao.getPermissionsByAuthorithy(authorityId);
-		if(permissions != null){
+		List<AbstractPermissionEntity> permissions = dao
+				.getPermissionsByAuthorithy(authorityId);
+		if (permissions != null) {
 			result = (List<ToolPermissionDto>) entitiesToDtos(permissions);
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Permissions for an user
 	 * 
@@ -95,29 +94,32 @@ public class ToolPermissionServiceImpl extends AbstractServiceImpl<ToolPermissio
 	@SuppressWarnings("unchecked")
 	public List<ToolPermissionDto> getPermissionsByUser(Long userId) {
 		Long authorithyTypeId = CITIZEN_AUTHORITY_TYPE_ID;
-		if(userId != null){
+		if (userId != null) {
 			AbstractUserEntity user = userDao.findById(userId, false);
-			if(user != null){
-				authorithyTypeId = (Long) (user.getAdmin() ? ADMIN_AUTHORITY_TYPE_ID: 
-					user.getAuthority() != null && user.getAuthority().getAuthType() != null ? 
-							user.getAuthority().getAuthType().getId() : CITIZEN_AUTHORITY_TYPE_ID);  
+			if (user != null) {
+				authorithyTypeId = (Long) (user.getAdmin() ? ADMIN_AUTHORITY_TYPE_ID
+						: user.getAuthority() != null
+								&& user.getAuthority().getAuthType() != null ? user
+								.getAuthority().getAuthType().getId()
+								: CITIZEN_AUTHORITY_TYPE_ID);
 			}
 		}
 		List<ToolPermissionDto> result = null;
-		List<AbstractPermissionEntity> permissions = dao.getPermissionsByAuthorithyType(authorithyTypeId);
-		if(permissions != null){
+		List<AbstractPermissionEntity> permissions = dao
+				.getPermissionsByAuthorithyType(authorithyTypeId);
+		if (permissions != null) {
 			result = (List<ToolPermissionDto>) entitiesToDtos(permissions);
 		}
 		return result;
 	}
 
-	protected GenericDAO<AbstractPermissionEntity, Long> getDao() {
+	protected MultiSirDatabaseGenericDAO<AbstractPermissionEntity, Long> getDao() {
 		return dao;
 	}
 
 	protected ToolPermissionDto entityToDto(AbstractPermissionEntity entity) {
 		ToolPermissionDto dto = null;
-		if(entity != null){
+		if (entity != null) {
 			dto = new ToolPermissionDto();
 			// Add own parameters
 			dto.setId((Long) entity.getId());
@@ -133,11 +135,12 @@ public class ToolPermissionServiceImpl extends AbstractServiceImpl<ToolPermissio
 
 	protected AbstractPermissionEntity dtoToEntity(ToolPermissionDto dto) {
 		AbstractPermissionEntity entity = null;
-		if(dto != null){
-			if(dto.getId() != null && dto.getId() > 0){
-				entity = (AbstractPermissionEntity) dao.findById(dto.getId(), false);
-			}else{
-				entity =  instancer.createPermission();
+		if (dto != null) {
+			if (dto.getId() != null && dto.getId() > 0) {
+				entity = (AbstractPermissionEntity) dao.findById(dto.getId(),
+						false);
+			} else {
+				entity = instancer.createPermission();
 			}
 			// Add own parameters
 			entity.setName(dto.getName());
@@ -149,5 +152,5 @@ public class ToolPermissionServiceImpl extends AbstractServiceImpl<ToolPermissio
 		}
 		return entity;
 	}
-	
+
 }
