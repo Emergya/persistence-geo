@@ -169,4 +169,5 @@ public class UserEntityDaoHibernateImpl extends
 				.createAlias("authority", "authority")
 				.add(Restrictions.eq("authority.id", authId)).list();
 	}
+	
 }
