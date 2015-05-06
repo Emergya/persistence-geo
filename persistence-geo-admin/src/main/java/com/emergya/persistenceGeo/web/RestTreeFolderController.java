@@ -39,7 +39,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.MediaType;
@@ -63,246 +63,222 @@ import com.emergya.persistenceGeo.utils.FoldersUtils;
  * @author <a href="mailto:adiaz@emergya.com">adiaz</a>
  */
 @Controller
-public class RestTreeFolderController extends RestPersistenceGeoController
-		implements Serializable {
+public class RestTreeFolderController extends RestPersistenceGeoController implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5233652723673416229L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5233652723673416229L;
 
-	/** Log */
-	private static final Log LOG = LogFactory
-			.getLog(RestTreeFolderController.class);
-	@Resource
-	private FoldersAdminService foldersAdminService;
+    /** Log */
+    private static final Log LOG = LogFactory.getLog(RestTreeFolderController.class);
+    @Resource
+    private FoldersAdminService foldersAdminService;
 
-	@Resource
-	private RestFoldersAdminController restFoldersAdminController;
+    @Resource
+    private RestFoldersAdminController restFoldersAdminController;
 
-	// TODO: Those constants should be defined in a more concrete implementation
-	// of the tree service.
-	private static final String SHOW_UNASSIGNED_FOLDER_FILTER = "SHOW_UNASSIGNED_FOLDER";
-    
-	// Used to indicate that we shouldn't discriminate by folder type but retrieve all folders.
-	private static final Long ID_ANY_FOLDER_TYPE = -1L;
+    // TODO: Those constants should be defined in a more concrete implementation
+    // of the tree service.
+    private static final String SHOW_UNASSIGNED_FOLDER_FILTER = "SHOW_UNASSIGNED_FOLDER";
 
-	/**
-	 * Returns the node types
-	 * 
-	 * @param parentType
-	 *            The condition node type the returned nodes has to meet
-	 * 
-	 * @return JSON file with success
-	 */
-	@RequestMapping(value = "/persistenceGeo/tree/getNodeTypes/{parentType}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public @ResponseBody
-	List<FolderTypeDto> getNodeTypes(@PathVariable String parentType) {
+    // Used to indicate that we shouldn't discriminate by folder type but
+    // retrieve all folders.
+    private static final Long ID_ANY_FOLDER_TYPE = -1L;
 
-		Map<String, Object> result = new HashMap<String, Object>();
-		List<FolderTypeDto> iptFolderTypes = new LinkedList<FolderTypeDto>();
-		try {
-			Long parentId = null;
-			if (parentType != null && StringUtils.isNumeric(parentType)) {
-				parentId = Long.decode(parentType);
-			}
-			iptFolderTypes = foldersAdminService.getFolderTypes(parentId);
-		} catch (Exception e) {
-			LOG.error(e);
-			result.put(SUCCESS, false);
-		}
-		return iptFolderTypes;
-	}
+    /**
+     * Returns the node types
+     * 
+     * @param parentType
+     *            The condition node type the returned nodes has to meet
+     * 
+     * @return JSON file with success
+     */
+    @RequestMapping(value = "/persistenceGeo/tree/getNodeTypes/{parentType}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public @ResponseBody List<FolderTypeDto> getNodeTypes(@PathVariable String parentType) {
 
-	/**
-	 * Returns the children of a specific container node. The container type is
-	 * specified using the type parameter. The condition the returned nodes has
-	 * to meet is specified using the filter parameter.
-	 * 
-	 * @param node
-	 *            The node id
-	 * @param type
-	 *            The type of the node (zone, folderType(Long), folder)
-	 * @param filter
-	 *            The condition the returned nodes has to meet
-	 * 
-	 * @return JSON node children of selected node
-	 */
-	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/persistenceGeo/tree/treeService", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public @ResponseBody
-	List<Treeable> treeService(
-			@RequestParam(value = "node", required = false) String nodeId,
-			@RequestParam(value = "type", required = false) String type,
-			@RequestParam(value = "filter", required = false) String filter) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        List<FolderTypeDto> iptFolderTypes = new LinkedList<FolderTypeDto>();
+        try {
+            Long parentId = null;
+            if (parentType != null && StringUtils.isNumeric(parentType)) {
+                parentId = Long.decode(parentType);
+            }
+            iptFolderTypes = foldersAdminService.getFolderTypes(parentId);
+        } catch (Exception e) {
+            LOG.error(e);
+            result.put(SUCCESS, false);
+        }
+        return iptFolderTypes;
+    }
 
-		List<Treeable> nodes = new LinkedList<Treeable>();
+    /**
+     * Returns the children of a specific container node. The container type is
+     * specified using the type parameter. The condition the returned nodes has
+     * to meet is specified using the filter parameter.
+     * 
+     * @param node
+     *            The node id
+     * @param type
+     *            The type of the node (zone, folderType(Long), folder)
+     * @param filter
+     *            The condition the returned nodes has to meet
+     * 
+     * @return JSON node children of selected node
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/persistenceGeo/tree/treeService", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public @ResponseBody List<Treeable> treeService(@RequestParam(value = "node", required = false) String nodeId,
+            @RequestParam(value = "type", required = false) String type, @RequestParam(value = "filter", required = false) String filter) {
 
-		try {
+        List<Treeable> nodes = new LinkedList<Treeable>();
 
-			Long typeId = FoldersAdminService.DEFAULT_FOLDER_TYPE;
-			if (StringUtils.isNotBlank(type) && 
-				(StringUtils.isNumeric(type) || type.equals(ID_ANY_FOLDER_TYPE.toString()))) {
-				typeId = Long.decode(type);
-			}
+        try {
 
-			if (!StringUtils.isEmpty(nodeId)
-					&& (StringUtils.isNumeric(nodeId) || RestFoldersAdminController.UNASSIGNED_LAYERS_VIRTUAL_FOLDER_ID
-							.toString().equals(nodeId))) {
-				// The rest of types are consider like folders
-				nodes = (List<Treeable>) restFoldersAdminController
-						.loadFoldersById(nodeId, filter).get(ROOT);
-			} else {
-				// get root folder types
-				nodes.addAll(getFoldersByType(typeId, filter));
-			}
+            Long typeId = FoldersAdminService.DEFAULT_FOLDER_TYPE;
+            if (StringUtils.isNotBlank(type) && (StringUtils.isNumeric(type) || type.equals(ID_ANY_FOLDER_TYPE.toString()))) {
+                typeId = Long.decode(type);
+            }
 
-		} catch (Exception e) {
-			LOG.error(e);
-		}
+            if (!StringUtils.isEmpty(nodeId)
+                    && (StringUtils.isNumeric(nodeId) || RestFoldersAdminController.UNASSIGNED_LAYERS_VIRTUAL_FOLDER_ID.toString().equals(nodeId))) {
+                // The rest of types are consider like folders
+                nodes = (List<Treeable>) restFoldersAdminController.loadFoldersById(nodeId, filter).get(ROOT);
+            } else {
+                // get root folder types
+                nodes.addAll(getFoldersByType(typeId, filter));
+            }
 
-		return nodes;
-	}
+        } catch (Exception e) {
+            LOG.error(e);
+        }
 
-	/**
-	 * Returns the children of a specific container node. The container type is
-	 * specified using the type parameter. The condition the returned nodes has
-	 * to meet is specified using the filter parameter.
-	 * 
-	 * @param node
-	 *            The node id
-	 * @param type
-	 *            The type of the node (zone, folder)
-	 * @param filter
-	 *            The condition the returned nodes has to meet
-	 * 
-	 * @return JSON file with success
-	 */
-	@RequestMapping(value = "/persistenceGeo/tree/treeServiceMap", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public @ResponseBody
-	Map<String, Object> treeServiceMap(
-			@RequestParam(value = "node", required = false) String nodeId,
-			@RequestParam(value = "type", required = false) String type,
-			@RequestParam(value = "filter", required = false) String filter) {
+        return nodes;
+    }
 
-		Map<String, Object> result = new HashMap<String, Object>();
-		List<Treeable> nodes = new LinkedList<Treeable>();
+    /**
+     * Returns the children of a specific container node. The container type is
+     * specified using the type parameter. The condition the returned nodes has
+     * to meet is specified using the filter parameter.
+     * 
+     * @param node
+     *            The node id
+     * @param type
+     *            The type of the node (zone, folder)
+     * @param filter
+     *            The condition the returned nodes has to meet
+     * 
+     * @return JSON file with success
+     */
+    @RequestMapping(value = "/persistenceGeo/tree/treeServiceMap", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public @ResponseBody Map<String, Object> treeServiceMap(@RequestParam(value = "node", required = false) String nodeId,
+            @RequestParam(value = "type", required = false) String type, @RequestParam(value = "filter", required = false) String filter) {
 
-		try {
-			nodes = treeService(nodeId, type, filter);
-			result.put(SUCCESS, true);
-		} catch (Exception e) {
-			LOG.error(e);
-			result.put(SUCCESS, false);
-		}
+        Map<String, Object> result = new HashMap<String, Object>();
+        List<Treeable> nodes = new LinkedList<Treeable>();
 
-		result.put(RESULTS, nodes != null ? nodes.size() : 0);
-		result.put(ROOT, nodes != null ? nodes : ListUtils.EMPTY_LIST);
+        try {
+            nodes = treeService(nodeId, type, filter);
+            result.put(SUCCESS, true);
+        } catch (Exception e) {
+            LOG.error(e);
+            result.put(SUCCESS, false);
+        }
 
-		return result;
-	}
+        result.put(RESULTS, nodes != null ? nodes.size() : 0);
+        result.put(ROOT, nodes != null ? nodes : ListUtils.EMPTY_LIST);
 
-	/**
-	 * Obtain folders by zone
-	 * 
-	 * @param zoneId
-	 *            zone id
-	 * @param folderType
-	 *            to obtain
-	 * 
-	 * @return all folders of the zone
-	 */
-	protected List<TreeFolderDto> getFoldersByZone(Long zoneId, Long folderType) {
-		List<FolderDto> serviceFolders = foldersAdminService.getChannelFolders(
-				zoneId == null ? null : Boolean.FALSE, zoneId, Boolean.TRUE,
-				folderType);
-		List<TreeFolderDto> folders = getFolderDecoration(serviceFolders, true);
-		return folders;
-	}
+        return result;
+    }
 
-	/**
-	 * Obtain folders by type
-	 * 
-	 * @param typeId
-	 *            folder type
-	 * @param filter
-	 *            to decorate the result
-	 * 
-	 * @return all folders of the type
-	 */
-	protected List<TreeFolderDto> getFoldersByType(Long typeId, String filter) {
-		return getFoldersByType(
-				typeId,
-				filter,
-				filter != null
-						&& filter
-								.contains(RestFoldersAdminController.SHOW_FOLDER_LAYERS));
-	}
+    /**
+     * Obtain folders by zone
+     * 
+     * @param zoneId
+     *            zone id
+     * @param folderType
+     *            to obtain
+     * 
+     * @return all folders of the zone
+     */
+    protected List<TreeFolderDto> getFoldersByZone(Long zoneId, Long folderType) {
+        List<FolderDto> serviceFolders = foldersAdminService.getChannelFolders(zoneId == null ? null : Boolean.FALSE, zoneId, Boolean.TRUE, folderType);
+        List<TreeFolderDto> folders = getFolderDecoration(serviceFolders, true);
+        return folders;
+    }
 
-	/**
-	 * Obtain folders by type
-	 * 
-	 * @param typeId
-	 *            folder type id. If -1 is received, we don't discriminate by type and return all root folders.
-	 * @param filter
-	 *            to decorate the result
-	 * @param showLayers
-	 *            flag to show layers in tree
-	 * 
-	 * @return all folders of the type
-	 */
-	protected List<TreeFolderDto> getFoldersByType(Long typeId, String filter,
-			boolean showLayers) {
-	    
-		List<FolderDto> serviceFolders;
-		if(typeId ==null || typeId.equals(ID_ANY_FOLDER_TYPE)) {
-		    serviceFolders = foldersAdminService.rootFolders();
-		} else {
-		    serviceFolders = foldersAdminService.rootFoldersByType(typeId);
-		}	    
-		 
-		List<TreeFolderDto> folders = getFolderDecoration(serviceFolders,
-				showLayers);
+    /**
+     * Obtain folders by type
+     * 
+     * @param typeId
+     *            folder type
+     * @param filter
+     *            to decorate the result
+     * 
+     * @return all folders of the type
+     */
+    protected List<TreeFolderDto> getFoldersByType(Long typeId, String filter) {
+        return getFoldersByType(typeId, filter, filter != null && filter.contains(RestFoldersAdminController.SHOW_FOLDER_LAYERS));
+    }
 
-		if (filter != null && filter.contains(SHOW_UNASSIGNED_FOLDER_FILTER)) {
+    /**
+     * Obtain folders by type
+     * 
+     * @param typeId
+     *            folder type id. If -1 is received, we don't discriminate by type and return all root folders.
+     * @param filter
+     *            to decorate the result
+     * @param showLayers
+     *            flag to show layers in tree
+     * 
+     * @return all folders of the type
+     */
+    protected List<TreeFolderDto> getFoldersByType(Long typeId, String filter, boolean showLayers) {
 
-			FolderDto unassingedLayersFolder = new FolderDto();
-			unassingedLayersFolder
-					.setId(RestFoldersAdminController.UNASSIGNED_LAYERS_VIRTUAL_FOLDER_ID);
-			unassingedLayersFolder.setName("Otros");
+        List<FolderDto> serviceFolders;
+        if (typeId == null || typeId.equals(ID_ANY_FOLDER_TYPE)) {
+            serviceFolders = foldersAdminService.rootFolders();
+        } else {
+            serviceFolders = foldersAdminService.rootFoldersByType(typeId);
+        }
 
-			folders.add(new TreeFolderDto(unassingedLayersFolder));
-			
-		}
+        List<TreeFolderDto> folders = getFolderDecoration(serviceFolders, showLayers);
 
-                Collections.sort(folders);
-		return folders;
-	}
+        if (filter != null && filter.contains(SHOW_UNASSIGNED_FOLDER_FILTER)) {
 
-	/**
-	 * Obtain a folder list decorated with filter
-	 * 
-	 * @param serviceFolders
-	 *            folders to decorate
-	 * @param showLayers
-	 *            flag to show layers in tree
-	 * 
-	 * @return folders decorated
-	 */
-	protected List<TreeFolderDto> getFolderDecoration(
-			List<FolderDto> serviceFolders, boolean showLayers) {
-		List<TreeFolderDto> folders = new LinkedList<TreeFolderDto>();
-		for (FolderDto subRes : serviceFolders) {
-			TreeFolderDto folder = (TreeFolderDto) FoldersUtils
-					.getFolderDecorator()
-					.applyStyle(subRes, FolderStyle.NORMAL);
-			if (showLayers) {
-				folder.setLeaf(false);
-			} else {
-				folder.setLeaf(true);
-			}
-			folders.add(folder);
-		}
-		return folders;
-	}
+            FolderDto unassingedLayersFolder = new FolderDto();
+            unassingedLayersFolder.setId(RestFoldersAdminController.UNASSIGNED_LAYERS_VIRTUAL_FOLDER_ID);
+            unassingedLayersFolder.setName("Otros");
+
+            folders.add(new TreeFolderDto(unassingedLayersFolder));
+
+        }
+
+        Collections.sort(folders);
+        return folders;
+    }
+
+    /**
+     * Obtain a folder list decorated with filter
+     * 
+     * @param serviceFolders
+     *            folders to decorate
+     * @param showLayers
+     *            flag to show layers in tree
+     * 
+     * @return folders decorated
+     */
+    protected List<TreeFolderDto> getFolderDecoration(List<FolderDto> serviceFolders, boolean showLayers) {
+        List<TreeFolderDto> folders = new LinkedList<TreeFolderDto>();
+        for (FolderDto subRes : serviceFolders) {
+            TreeFolderDto folder = (TreeFolderDto) FoldersUtils.getFolderDecorator().applyStyle(subRes, FolderStyle.NORMAL);
+            if (showLayers) {
+                folder.setLeaf(false);
+            } else {
+                folder.setLeaf(true);
+            }
+            folders.add(folder);
+        }
+        return folders;
+    }
 }
