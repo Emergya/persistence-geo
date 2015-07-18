@@ -40,6 +40,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.FolderTypeEntityDao;
@@ -66,7 +67,9 @@ public class FolderTypeEntityDaoHibernateImpl extends
 	@Resource
 	private Instancer instancer;
 
+	@Override
 	@Autowired
+	@Qualifier("sessionFactoryMultiSIRDataSource")
 	public void init(SessionFactory sessionFactory) {
 		super.init(sessionFactory);
 		this.persistentClass = (Class<AbstractFolderTypeEntity>) instancer

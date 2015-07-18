@@ -33,6 +33,7 @@ import javax.annotation.Resource;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.RuleEntityDao;
@@ -54,7 +55,9 @@ public class RuleEntityDaoHibernateImpl extends
 	@Resource
 	private Instancer instancer;
 
+	@Override
 	@Autowired
+	@Qualifier("sessionFactoryMultiSIRDataSource")
 	public void init(SessionFactory sessionFactory) {
 		super.init(sessionFactory);
 		this.persistentClass = (Class<AbstractRuleEntity>) instancer

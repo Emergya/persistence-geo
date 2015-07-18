@@ -39,6 +39,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.ZoneEntityDao;
@@ -60,7 +61,9 @@ public class ZoneEntityDaoHibernateImpl extends
 	@Resource
 	private Instancer instancer;
 
+	@Override
 	@Autowired
+	@Qualifier("sessionFactoryMultiSIRDataSource")
 	public void init(SessionFactory sessionFactory) {
 		super.init(sessionFactory);
 		this.persistentClass = (Class<AbstractZoneEntity>) instancer
