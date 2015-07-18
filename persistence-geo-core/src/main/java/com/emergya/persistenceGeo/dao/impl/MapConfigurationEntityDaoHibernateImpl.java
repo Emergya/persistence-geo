@@ -33,6 +33,7 @@ import javax.annotation.Resource;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.emergya.persistenceGeo.dao.MapConfigurationEntityDao;
@@ -42,6 +43,7 @@ import com.emergya.persistenceGeo.metaModel.Instancer;
 /**
  * MapConfigurationEntityDaoHibernateImpl
  */
+@SuppressWarnings("unchecked")
 @Repository("mapConfigurationEntityDao")
 public class MapConfigurationEntityDaoHibernateImpl
 		extends
@@ -50,9 +52,10 @@ public class MapConfigurationEntityDaoHibernateImpl
 
 	@Resource
 	private Instancer instancer;
-
-	@SuppressWarnings("unchecked")
+	
+	@Override
 	@Autowired
+	@Qualifier("sessionFactoryMultiSIRDataSource")
 	public void init(SessionFactory sessionFactory) {
 		super.init(sessionFactory);
 		this.persistentClass = (Class<AbstractMapConfigurationEntity>) instancer
