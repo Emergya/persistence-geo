@@ -28,19 +28,53 @@
  */
 package com.emergya.persistenceGeo.utils;
 
+import java.io.InputStream;
+import java.util.Properties;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.emergya.persistenceGeo.bean.RegionBean;
+
 /**
  * @author <a href="mailto:jlrodriguez@emergya.com">jlrodriguez</a>
  * 
  */
 public class GeographicDatabaseConfiguration {
-	private String schema;
-	private String destSrid;
-	private String geomColumn;
+	
+	/** Log */
+	private static Log LOG = LogFactory
+			.getLog(GeographicDatabaseConfiguration.class);
+	
 	private String postgresHost;
 	private String postgresPort;
+	private String databaseName;
 	private String postgresUser;
 	private String postgresPassword;
-	private String databaseName;
+	private String geomColumn;
+	private String schema;
+	private String destSrid;	
+
+	public GeographicDatabaseConfiguration(){
+		super();
+	}
+	
+	public GeographicDatabaseConfiguration(String postgresHost,
+			String postgresPort, String databaseName, String postgresUser,
+			String postgresPassword, String geomColumn, String schema,
+			String destSrid, RegionBean region) {
+		super();
+		this.postgresHost = postgresHost;
+		this.postgresPort = postgresPort;
+		this.databaseName = databaseName;
+		this.postgresUser = postgresUser;
+		this.postgresPassword = postgresPassword;
+		this.geomColumn = geomColumn;
+		this.schema = schema;
+		this.destSrid = destSrid;
+		this.inicializaMultiConfiguracion(region,
+				getPropertiesGeoserverRest(databaseName));
+	}
 
 	/**
 	 * @return the schema
@@ -161,5 +195,27 @@ public class GeographicDatabaseConfiguration {
 	public void setDatabaseName(String databaseName) {
 		this.databaseName = databaseName;
 	}
+	
+	public Properties getPropertiesGeoserverRest(String dbName) {
+		Properties p = new Properties();
 
+		try {
+			InputStream inStream = GsRestApiConfigurationImpl.class
+					.getResourceAsStream("/shpDatabase.properties");
+			p.load(inStream);
+		} catch (Exception e) {
+			LOG.error("Error al obtener las propiedades del geoserver : " + e);
+			this.setDatabaseName(dbName);
+		}
+
+		return p;
+	}
+
+	public void inicializaMultiConfiguracion(RegionBean region, Properties p) {
+
+		if (p != null && region != null && region.getPrefix_wks() != null) {
+			this.setDatabaseName(String.valueOf(p.getProperty(("shp.database.name"
+					.concat(".").concat(region.getPrefix_wks().toLowerCase())))));			
+		}
+	}
 }

@@ -100,8 +100,8 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	private static final String SET_LAYER_STYLE_URL = "/rest/layers/%s:%s";
 	private static final String SET_LAYER_STYLE_PAYLOAD = "<layer><enabled>true</enabled><defaultStyle><name>%s</name></defaultStyle></layer>";
 
-	@Autowired
-	private GsRestApiConfiguration gsConfiguration;
+	@Autowired(required=false)
+	private GsRestApiConfiguration gsConfiguration = null;
 
 	/**
 	 * @return the gsConfiguration

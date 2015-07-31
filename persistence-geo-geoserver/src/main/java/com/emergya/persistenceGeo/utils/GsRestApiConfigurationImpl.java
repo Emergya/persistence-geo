@@ -28,13 +28,23 @@
  */
 package com.emergya.persistenceGeo.utils;
 
-import org.springframework.beans.factory.annotation.Value;
+import java.io.InputStream;
+import java.util.Properties;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.emergya.persistenceGeo.bean.RegionBean;
 
 /**
  * @author <a href="mailto:jlrodriguez@emergya.com">jlrodriguez</a>
  *
  */
 public class GsRestApiConfigurationImpl implements GsRestApiConfiguration {
+
+	/** Log */
+	private static Log LOG = LogFactory
+			.getLog(GsRestApiConfigurationImpl.class);
 
 	public String serverUrl;
 	public String adminUsername;
@@ -49,6 +59,29 @@ public class GsRestApiConfigurationImpl implements GsRestApiConfiguration {
 	public String jndiReferenceName;
 	public String datasourceType;
 
+	public GsRestApiConfigurationImpl() {
+		super();
+	}
+
+	public GsRestApiConfigurationImpl(String serverUrl, String adminUsername,
+			String adminPassword, String dbHost, int dbPort, String dbSchema,
+			String dbName, String dbUser, String dbPassword, String dbType,
+			String jndiReferenceName, String datasourceType, RegionBean region) {
+		super();
+		this.serverUrl = serverUrl;
+		this.adminUsername = adminUsername;
+		this.adminPassword = adminPassword;
+		this.dbHost = dbHost;
+		this.dbPort = dbPort;
+		this.dbSchema = dbSchema;
+		this.dbUser = dbUser;
+		this.dbPassword = dbPassword;
+		this.dbType = dbType;
+		this.datasourceType = datasourceType;
+		this.inicializaMultiConfiguracion(region,
+				getPropertiesGeoserverRest(dbName, jndiReferenceName));
+	}
+
 	/**
 	 * @return the datasourceType
 	 */
@@ -57,7 +90,8 @@ public class GsRestApiConfigurationImpl implements GsRestApiConfiguration {
 	}
 
 	/**
-	 * @param datasourceType the datasourceType to set
+	 * @param datasourceType
+	 *            the datasourceType to set
 	 */
 	public void setDatasourceType(String datasourceType) {
 		this.datasourceType = datasourceType;
@@ -119,7 +153,7 @@ public class GsRestApiConfigurationImpl implements GsRestApiConfiguration {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * com.emergya.persistenceGeo.metaModel.GsRestApiConfiguration#getServerUrl
 	 * ()
@@ -131,7 +165,7 @@ public class GsRestApiConfigurationImpl implements GsRestApiConfiguration {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * com.emergya.persistenceGeo.metaModel.GsRestApiConfiguration#getAdminUsername
 	 * ()
@@ -143,7 +177,7 @@ public class GsRestApiConfigurationImpl implements GsRestApiConfiguration {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * com.emergya.persistenceGeo.metaModel.GsRestApiConfiguration#getAdminPassword
 	 * ()
@@ -231,4 +265,31 @@ public class GsRestApiConfigurationImpl implements GsRestApiConfiguration {
 		this.dbPassword = dbPassword;
 	}
 
+	public Properties getPropertiesGeoserverRest(String dbName,
+			String jndiReferenceName) {
+		Properties p = new Properties();
+
+		try {
+			InputStream inStream = GsRestApiConfigurationImpl.class
+					.getResourceAsStream("/geoserver.properties");
+			p.load(inStream);
+		} catch (Exception e) {
+			LOG.error("Error al obtener las propiedades del geoserver : " + e);
+			this.setDbName(dbName);
+			this.setJndiReferenceName(jndiReferenceName);
+		}
+
+		return p;
+	}
+
+	public void inicializaMultiConfiguracion(RegionBean region, Properties p) {
+
+		if (p != null && region != null && region.getPrefix_wks() != null) {
+			this.setDbName(String.valueOf(p.getProperty(("geoserver.db.name"
+					.concat(".").concat(region.getPrefix_wks().toLowerCase())))));
+			this.setJndiReferenceName(String.valueOf(p
+					.getProperty(("geoserver.db.jndiReferenceName".concat(".")
+							.concat(region.getPrefix_wks().toLowerCase())))));
+		}
+	}
 }
