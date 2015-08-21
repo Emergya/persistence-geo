@@ -202,6 +202,7 @@ public class GeographicDatabaseConfiguration {
 		try {
 			InputStream inStream = GsRestApiConfigurationImpl.class
 					.getResourceAsStream("/shpDatabase.properties");
+			LOG.info("Stream property is null: " + inStream == null);
 			p.load(inStream);
 		} catch (Exception e) {
 			LOG.error("Error al obtener las propiedades del geoserver : " + e);
@@ -211,11 +212,10 @@ public class GeographicDatabaseConfiguration {
 		return p;
 	}
 
-	public void inicializaMultiConfiguracion(RegionBean region, Properties p) {
-
+	public void inicializaMultiConfiguracion(RegionBean region, Properties p) {		
+		
 		if (p != null && region != null && region.getPrefix_wks() != null) {
-			this.setDatabaseName(String.valueOf(p.getProperty(("shp.database.name"
-					.concat(".").concat(region.getPrefix_wks().toLowerCase())))));			
+			this.setDatabaseName(String.valueOf(p.getProperty(("shp.database.name".concat(".").concat(region.getPrefix_wks().toLowerCase())))));	
 		}
 	}
 }
