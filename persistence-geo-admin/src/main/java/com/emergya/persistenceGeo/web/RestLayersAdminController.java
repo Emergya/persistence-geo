@@ -47,6 +47,7 @@ import org.apache.commons.collections.ListUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -86,7 +87,7 @@ public class RestLayersAdminController extends RestPersistenceGeoController impl
     private LayerAdminService layerAdminService;
     @Resource
     private MapConfigurationAdminService mapConfigurationAdminService;
-    @Resource
+    @Autowired(required = false)
     private GeoserverService geoserverService;
 
     private Map<Long, File> loadedLayers = new ConcurrentHashMap<Long, File>();

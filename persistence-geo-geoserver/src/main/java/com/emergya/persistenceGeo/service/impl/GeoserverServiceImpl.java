@@ -28,7 +28,9 @@
  */
 package com.emergya.persistenceGeo.service.impl;
 
+import com.emergya.persistenceGeo.bean.RegionBean;
 import com.emergya.persistenceGeo.dao.DBManagementDao;
+
 import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList.RESTShortWorkspace;
@@ -59,12 +61,15 @@ import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
 import com.emergya.persistenceGeo.utils.GeometryType;
+
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
 import org.apache.commons.io.IOUtils;
 import org.hibernate.exception.SQLGrammarException;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,7 +82,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 
     private final static Log LOG = LogFactory
             .getLog(GeoserverServiceImpl.class);
-    private final static String DATASTORE_SUFFIX = "_datastore";
+    private String DATASTORE_SUFFIX = "_datastore";
 
     @Resource
     private GeoserverDao gsDao;
@@ -117,8 +122,17 @@ public class GeoserverServiceImpl implements GeoserverService {
 
     @Resource
     private String namespaceBaseUrl;
+    
+    public GeoserverServiceImpl() {
+		super();
+	}
+    
+    public GeoserverServiceImpl(RegionBean region) {
+		super();
+		DATASTORE_SUFFIX = "_".concat(region.getPrefix_wks().toLowerCase()).concat(DATASTORE_SUFFIX);
+    }
 
-    /*
+	/*
      * (non-Javadoc)
      * 
      * @see com.emergya.persistenceGeo.service.GeoserverService#
