@@ -52,6 +52,8 @@ import java.net.URI;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.httpclient.NameValuePair;
@@ -76,11 +78,6 @@ import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
 import com.emergya.persistenceGeo.utils.GsRestApiConfiguration;
-import com.sun.org.apache.xerces.internal.impl.xs.identity.Selector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Implementación de {@link GeoserverDao} utilizando las clases de
@@ -1027,6 +1024,4 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		throw new GeoserverException("Malformed Geoserver REST API URL", ex);
 	    }
 	}
-	
-	
 }
