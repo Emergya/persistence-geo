@@ -97,7 +97,10 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport
 	@Override
 	public long getTableSize(String table_name) {
 
-		String sql = String.format("SELECT %s('%s');", getSize, table_name);
+		SessionFactoryImplementor sfi = (SessionFactoryImplementor) getSessionFactory();
+		String schema = sfi.getSettings().getDefaultSchemaName();
+		
+		String sql = String.format("SELECT %s('%s.%s');", getSize, schema, table_name);
 
 		Long result;
 		try {
@@ -121,8 +124,11 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport
 	@Override
 	public String getTableSizeText(String table_name) {
 
-		String sql = String.format("SELECT %s(%s('%s'));", getSizeText,
-				getSize, table_name);
+		SessionFactoryImplementor sfi = (SessionFactoryImplementor) getSessionFactory();
+		String schema = sfi.getSettings().getDefaultSchemaName();
+		
+		String sql = String.format("SELECT %s(%s('%s.%s'));", getSizeText,
+				getSize, schema, table_name);
 
 		String result;
 		try {
