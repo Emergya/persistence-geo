@@ -37,6 +37,7 @@ import com.emergya.persistenceGeo.utils.BoundingBox;
 import com.emergya.persistenceGeo.utils.GsCoverageDetails;
 import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GeometryType;
+
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 
 /**
@@ -257,6 +258,14 @@ public interface GeoserverService {
 	 * @return layers' names
 	 */
 	public List<String> getLayersNames();
+	
+	/**
+	 * Retrieves all layers' names in geoserver by Region
+	 * @param prefixRegion 
+	 * 
+	 * @return layers' names
+	 */
+	public List<String> getLayersNamesByRegion(String prefixRegion);
 
 	/**
 	 * Obtain native name of a layerName 

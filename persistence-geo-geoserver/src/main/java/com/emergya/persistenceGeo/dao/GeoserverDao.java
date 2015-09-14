@@ -39,6 +39,7 @@ import com.emergya.persistenceGeo.utils.GsCoverageDetails;
 import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
+
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 
 /**
@@ -305,6 +306,13 @@ public interface GeoserverDao {
 	public List<String> getLayersNames();
 
 	/**
+	 * Retrieves all layers' name in geoserver by Region
+	 * 
+	 * @return
+	 */
+	public List<String> getLayersNamesByRegion(String region_suffix);
+	
+	/**
 	 * Obtain native name of a layerName 
 	 * 
 	 * @param layerName
@@ -338,4 +346,5 @@ public interface GeoserverDao {
 	public String getLayerWorkspace(String layerName);
 
     public RESTLayer getLayerInfo(String layerName);
+	
 }
