@@ -38,6 +38,7 @@ import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList.RESTShortWorkspa
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -94,8 +95,10 @@ public class GeoserverServiceImpl implements GeoserverService {
     private String GEOSERVER_BASE_PATH;
     @Resource
     private DBManagementDao dbManagementDao;
-
-    /**
+    
+    private RegionBean region;
+    
+	/**
      * @return the gsDao
      */
     public GeoserverDao getGsDao() {
@@ -132,6 +135,7 @@ public class GeoserverServiceImpl implements GeoserverService {
     
     public GeoserverServiceImpl(RegionBean region) {
 		super();
+		this.region = region;
 		DATASTORE_SUFFIX = "_".concat(region.getPrefix_wks().toLowerCase()).concat(DATASTORE_SUFFIX);
     }
 
@@ -496,7 +500,17 @@ public class GeoserverServiceImpl implements GeoserverService {
      */
     @Override
     public List<String> getLayersNames() {
-        return gsDao.getLayersNames();
+        return gsDao.getLayersNamesByRegion(region.getPrefix_wks());
+    }
+    
+    /**
+     * Retrieves all layers' name in geoserver
+     *
+     * @return
+     */
+    @Override
+    public List<String> getLayersNamesByRegion(String prefixRegion) {   
+        return gsDao.getLayersNamesByRegion("_".concat(prefixRegion.toLowerCase()).concat("_datastore"));
     }
 
     /**

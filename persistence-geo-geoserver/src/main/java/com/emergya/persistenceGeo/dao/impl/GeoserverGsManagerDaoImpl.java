@@ -36,6 +36,7 @@ import it.geosolutions.geoserver.rest.HTTPUtils;
 import it.geosolutions.geoserver.rest.decoder.RESTCoverageList;
 import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
+import it.geosolutions.geoserver.rest.decoder.RESTLayerList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.decoder.utils.NameLinkElem;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
@@ -50,6 +51,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -876,6 +878,32 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	public List<String> getLayersNames(){
 		try {
 			return getReader().getLayers().getNames();
+		} catch (MalformedURLException e) {
+			LOG.error("Malformed Geoserver REST API URL", e);
+			throw new GeoserverException("Malformed Geoserver REST API URL", e);
+		}
+	}
+	
+	/**
+	 * Retrieves all layers' name in geoserver by Region
+	 * 
+	 * @return
+	 */
+	@Override
+	public List<String> getLayersNamesByRegion(String region_suffix){
+		
+		List<String> layersNameByRegion = new ArrayList<String>();	
+		
+		try {			
+								
+			for(String layerName:this.getReader().getLayers().getNames()){
+				RESTDataStore ds = getDatastore(layerName);
+				if(ds.getName().endsWith(region_suffix)){
+					layersNameByRegion.add(layerName);
+				}
+			}	
+			
+			return layersNameByRegion;
 		} catch (MalformedURLException e) {
 			LOG.error("Malformed Geoserver REST API URL", e);
 			throw new GeoserverException("Malformed Geoserver REST API URL", e);
