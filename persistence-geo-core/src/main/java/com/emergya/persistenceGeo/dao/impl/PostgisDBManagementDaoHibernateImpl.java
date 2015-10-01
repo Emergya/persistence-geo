@@ -80,7 +80,7 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport
 	private static final String BBOX_SQL_GEOCOLUMN = "select cast(st_extent(\"{0}\") as varchar) from {1}.\"{2}\"";
 	private static final String SRID_SQL = "select srid from geometry_columns where f_table_name = :NAME";
 	private static final String CREATE_TABLE_SQL = "CREATE TABLE {0}.\"{1}\" ({2})";
-	private static final String ADD_GEOMETRY_COLUMN_SQL = "SELECT AddGeometryColumn('%s', '%s', 'geom', %d, '%s', %d)";
+	private static final String ADD_GEOMETRY_COLUMN_SQL = "SELECT AddGeometryColumn('%s', '%s', 'geom', %d, '%s', %d, %b)";
 
 	@Autowired
 	@Qualifier("sessionFactoryMultiSIRDataSource")
@@ -367,7 +367,7 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport
 
 		final String addGeometryColumnSql = String.format(
 				ADD_GEOMETRY_COLUMN_SQL, schema, tableName, srsCode,
-				geometryType, 2);
+				geometryType, 2, false);
 
 		try {
 

@@ -29,6 +29,9 @@
  */
 package com.emergya.persistenceGeo.service;
 
+import com.emergya.persistenceGeo.utils.BoundingBox;
+import com.emergya.persistenceGeo.utils.GeometryType;
+
 
 /**
  * Database access service
@@ -52,4 +55,27 @@ public interface DBManagementService {
 	 */
 	String getTableSizeText(String table_name);
 	
+	void changeTableColumnName(String tableName, String oldColumnName,
+			String newColumnName);
+	
+    GeometryType getTableGeometryType(String tableName);
+
+    BoundingBox getTableBoundingBox(String tableName);
+    
+    /**
+     * Create a new table with a geometry column of the given
+     * {@link GeometryType} and SRS code.
+     *
+     * @param tableName
+     * @param srsCode
+     * @param geometryType
+     * @return <code>true</code> if the table could be created,
+     * <code>false</code> if not.
+     */
+    boolean createLayerTable(String tableName, int srsCode,
+	    GeometryType geometryType);
+    
+    boolean tableExists(String ohiggins, String tableName);
+    
+    BoundingBox getTableBoundingBoxGeoColumn(String geoColumnName, String tableName);
 }

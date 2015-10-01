@@ -82,6 +82,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @Service
+@Transactional(value = "multiSIRDatabaseTransactionManager")
 public class GeoserverServiceImpl implements GeoserverService {
 
     private final static Log LOG = LogFactory
@@ -146,7 +147,6 @@ public class GeoserverServiceImpl implements GeoserverService {
      * createGsWorkspaceWithDatastore(java.lang.String)
      */
     @Override
-    @Transactional
     public boolean createGsWorkspaceWithDatastore(String workspaceName) {
         if (LOG.isInfoEnabled()) {
             LOG.info("Creating Geoserver workspace [workspaceName="
@@ -210,7 +210,6 @@ public class GeoserverServiceImpl implements GeoserverService {
      * (java.lang.String)
      */
     @Override
-    @Transactional
     public boolean deleteGsWorkspace(String workspaceName) {
         if (LOG.isInfoEnabled()) {
             LOG.info("Deleting Geoserver workspace [workspaceName="
@@ -226,7 +225,6 @@ public class GeoserverServiceImpl implements GeoserverService {
      * com.emergya.persistenceGeo.service.GeoserverService#publishGsDbLayer()
      */
     @Override
-    @Transactional
     public boolean publishGsDbLayer(String workspaceName, String tableName,
             String layerName, String title, BoundingBox nativeBoundingBox,
             GeometryType geomType) {
@@ -313,7 +311,6 @@ public class GeoserverServiceImpl implements GeoserverService {
      * @return true if can be unpublish and false otherwise
      */
     @Override
-    @Transactional
     public boolean unpublishLayer(String workspaceName, String datastoreName,
             String layerName) {
         if (LOG.isInfoEnabled()) {
@@ -332,7 +329,6 @@ public class GeoserverServiceImpl implements GeoserverService {
      * (boolean)
      */
     @Override
-    @Transactional
     public boolean unpublishGsDbLayer(String workspaceName, String layerName) {
         return unpublishLayer(workspaceName, workspaceName + DATASTORE_SUFFIX,
                 layerName);
@@ -358,21 +354,18 @@ public class GeoserverServiceImpl implements GeoserverService {
      * (java.lang.String, java.lang.String)
      */
     @Override
-    @Transactional
     public boolean createDatastoreJndi(String workspaceName,
             String datastoreName) {
         return gsDao.createDatastoreJndi(workspaceName, datastoreName);
     }
 
     @Override
-    @Transactional
     public boolean publishGeoTIFF(String workspace, String layerName,
             File geotiff, String crs) {
         return gsDao.publishGeoTIFF(workspace, layerName, geotiff, crs);
     }
 
     @Override
-    @Transactional
     public boolean publishImageMosaic(String workspaceName, String layerName,
             File imageFile, String crs) {
         return gsDao.publishImageMosaic(workspaceName, layerName, imageFile,
@@ -380,7 +373,6 @@ public class GeoserverServiceImpl implements GeoserverService {
     }
 
     @Override
-    @Transactional
     public boolean publishWorldImage(String workspaceName, String layerName,
             File imageFile, String crs) {
 
@@ -389,14 +381,12 @@ public class GeoserverServiceImpl implements GeoserverService {
     }
 
     @Override
-    @Transactional
     public GsCoverageStoreData getCoverageStoreData(String workspaceName,
             String coverageStoreName) {
         return gsDao.getCoverageStoreData(workspaceName, coverageStoreName);
     }
 
     @Override
-    @Transactional
     public boolean unpublishGsCoverageLayer(String workspaceName,
             String coverageLayer) {
 
@@ -419,7 +409,6 @@ public class GeoserverServiceImpl implements GeoserverService {
     }
 
     @Override
-    @Transactional
     public boolean copyLayerStyle(String sourceLayerName, String newStyleName) {
         String layerSDLContent = gsDao.getLayerStyle(sourceLayerName);
 
@@ -482,7 +471,6 @@ public class GeoserverServiceImpl implements GeoserverService {
     }
 
     @Override
-    @Transactional
     public void copyLayer(String workspaceName, String datastoreName,
             String layerName, String tableName, String title, BoundingBox bbox,
             GeometryType type, String targetWorkspaceName,
@@ -564,13 +552,12 @@ public class GeoserverServiceImpl implements GeoserverService {
      * @param layerName
      * @return
      */
-    @Override
+    @Override 
     public RESTLayer getLayerInfo(String layerName) {
         return gsDao.getLayerInfo(layerName);
     }
 
     @Override
-    @Transactional
     public DuplicationResult duplicateGeoServerLayer(
             String sourceWorkspace, String sourceLayerType,
             String sourceLayerName, String sourceLayerTable,
@@ -713,7 +700,6 @@ public class GeoserverServiceImpl implements GeoserverService {
      * @return
      */
     @Override
-    @Transactional
     public boolean deleteGeoServerLayer(String workspace, String layerName, String layerType, String tableName) {
 
         if (layerType.contains(WFS_LAYER_TYPE_NAME)
