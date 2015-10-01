@@ -80,6 +80,7 @@ import com.emergya.persistenceGeo.utils.GsCoverageStoreData;
 import com.emergya.persistenceGeo.utils.GsFeatureDescriptor;
 import com.emergya.persistenceGeo.utils.GsLayerDescriptor;
 import com.emergya.persistenceGeo.utils.GsRestApiConfiguration;
+import com.emergya.persistenceGeo.utils.GsRestApiConfigurationResume;
 
 /**
  * Implementación de {@link GeoserverDao} utilizando las clases de
@@ -93,14 +94,18 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	private static final Log LOG = LogFactory
 			.getLog(GeoserverGsManagerDaoImpl.class);
 
-	private static final Pattern LAYER_WORKSPACE_PATTERN = Pattern.compile("^.*/rest/workspaces/(.*)/.*stores/.*$");
+	private static final Pattern LAYER_WORKSPACE_PATTERN = Pattern
+			.compile("^.*/rest/workspaces/(.*)/.*stores/.*$");
 	private static final String GET_COVERAGE_DETAILS_URL = "/rest/workspaces/%s/coveragestores/%s/coverages/%s.xml";
 	private static final String GET_COVERAGE_STORE_DATA_URL = "/rest/workspaces/%s/coveragestores/%s.xml";
 	private static final String SET_LAYER_STYLE_URL = "/rest/layers/%s:%s";
 	private static final String SET_LAYER_STYLE_PAYLOAD = "<layer><enabled>true</enabled><defaultStyle><name>%s</name></defaultStyle></layer>";
 
-	@Autowired(required=false)
+	@Autowired(required = false)
 	private GsRestApiConfiguration gsConfiguration = null;
+
+	@Autowired
+	private GsRestApiConfigurationResume gsConfigurationResume = null;
 
 	/**
 	 * @return the gsConfiguration
@@ -125,10 +130,21 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Creating GeoServerRESTPublisher.");
 		}
-		GeoServerRESTManager manager = new GeoServerRESTManager(new URL(
-				gsConfiguration.getServerUrl()),
-				gsConfiguration.getAdminUsername(),
-				gsConfiguration.getAdminPassword());
+		GeoServerRESTManager manager = null;
+
+		try {
+
+			manager = new GeoServerRESTManager(new URL(
+					gsConfiguration.getServerUrl()),
+					gsConfiguration.getAdminUsername(),
+					gsConfiguration.getAdminPassword());
+		} catch (IllegalStateException isExc) {
+
+			manager = new GeoServerRESTManager(new URL(
+					gsConfigurationResume.getServerUrl()),
+					gsConfigurationResume.getAdminUsername(),
+					gsConfigurationResume.getAdminPassword());
+		}
 		GeoServerRESTPublisher publisher = manager.getPublisher();
 		return publisher;
 	}
@@ -137,10 +153,24 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Creating GeoServerRESTReader.");
 		}
-		GeoServerRESTManager manager = new GeoServerRESTManager(new URL(
-				gsConfiguration.getServerUrl()),
-				gsConfiguration.getAdminUsername(),
-				gsConfiguration.getAdminPassword());
+
+		GeoServerRESTManager manager = null;
+
+		try {
+
+			manager = new GeoServerRESTManager(new URL(
+					gsConfiguration.getServerUrl()),
+					gsConfiguration.getAdminUsername(),
+					gsConfiguration.getAdminPassword());
+
+		} catch (IllegalStateException isExc) {
+
+			manager = new GeoServerRESTManager(new URL(
+					gsConfigurationResume.getServerUrl()),
+					gsConfigurationResume.getAdminUsername(),
+					gsConfigurationResume.getAdminPassword());
+		}
+
 		GeoServerRESTReader reader = manager.getReader();
 		return reader;
 	}
@@ -150,10 +180,21 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Creating GeoServerRESTStoreManager.");
 		}
-		GeoServerRESTManager manager = new GeoServerRESTManager(new URL(
-				gsConfiguration.getServerUrl()),
-				gsConfiguration.getAdminUsername(),
-				gsConfiguration.getAdminPassword());
+		GeoServerRESTManager manager = null;
+
+		try {
+
+			manager = new GeoServerRESTManager(new URL(
+					gsConfiguration.getServerUrl()),
+					gsConfiguration.getAdminUsername(),
+					gsConfiguration.getAdminPassword());
+		} catch (IllegalStateException isExc) {
+
+			manager = new GeoServerRESTManager(new URL(
+					gsConfigurationResume.getServerUrl()),
+					gsConfigurationResume.getAdminUsername(),
+					gsConfigurationResume.getAdminPassword());
+		}
 		GeoServerRESTStoreManager dsManager = manager.getStoreManager();
 		return dsManager;
 	}
@@ -766,9 +807,9 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 		}
 
 		RESTLayer layer = reader.getLayer(layerName);
-                if(layer==null) {
-                    return null;
-                }
+		if (layer == null) {
+			return null;
+		}
 		return reader.getSLD(layer.getDefaultStyle());
 	}
 
@@ -869,13 +910,13 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 					+ layerName + "'", np);
 		}
 	}
-	
+
 	/**
 	 * Retrieves all layers' name in geoserver
 	 * 
 	 * @return
 	 */
-	public List<String> getLayersNames(){
+	public List<String> getLayersNames() {
 		try {
 			return getReader().getLayers().getNames();
 		} catch (MalformedURLException e) {
@@ -883,33 +924,32 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			throw new GeoserverException("Malformed Geoserver REST API URL", e);
 		}
 	}
-	
+
 	/**
 	 * Retrieves all layers' name in geoserver by Region
 	 * 
 	 * @return
 	 */
 	@Override
-	public List<String> getLayersNamesByRegion(String region_suffix){
-		
-		List<String> layersNameByRegion = new ArrayList<String>();	
-		
-		try {			
-								
-			for(String layerName:this.getReader().getLayers().getNames()){
+	public List<String> getLayersNamesByRegion(String region_suffix) {
+
+		List<String> layersNameByRegion = new ArrayList<String>();
+
+		try {
+
+			for (String layerName : this.getReader().getLayers().getNames()) {
 				RESTDataStore ds = getDatastore(layerName);
-				if(ds.getName().endsWith(region_suffix)){
+				if (ds.getName().endsWith(region_suffix)) {
 					layersNameByRegion.add(layerName);
 				}
-			}	
-			
+			}
+
 			return layersNameByRegion;
 		} catch (MalformedURLException e) {
 			LOG.error("Malformed Geoserver REST API URL", e);
 			throw new GeoserverException("Malformed Geoserver REST API URL", e);
 		}
 	}
-	
 
 	/**
 	 * Retrieves the geoserver url configured.
@@ -921,17 +961,18 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 	}
 
 	/**
-	 * Obtain native name of a layerName 
+	 * Obtain native name of a layerName
 	 * 
 	 * @param layerName
 	 * 
-	 * @return native name of the layer 
+	 * @return native name of the layer
 	 */
-	public String getNativeName(String layerName){
+	public String getNativeName(String layerName) {
 		GeoServerRESTReader reader;
 		try {
 			reader = getReader();
-			return reader.getFeatureType(reader.getLayer(layerName)).getNativeName();
+			return reader.getFeatureType(reader.getLayer(layerName))
+					.getNativeName();
 		} catch (MalformedURLException e) {
 			LOG.error("Malformed Geoserver REST API URL", e);
 			throw new GeoserverException("Malformed Geoserver REST API URL", e);
@@ -941,13 +982,13 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 					+ layerName + "'", np);
 		}
 	}
-	
+
 	/**
 	 * Retrieves all styles' names in geoserver
 	 * 
 	 * @return styles' names
 	 */
-	public List<String> getStyleNames(){
+	public List<String> getStyleNames() {
 		try {
 			return getReader().getStyles().getNames();
 		} catch (MalformedURLException e) {
@@ -955,40 +996,49 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			throw new GeoserverException("Malformed Geoserver REST API URL", e);
 		}
 	}
-	
-	private String [] DEAFAULT_STYLES = {"line", "polygon", "point"};
-	
+
+	private String[] DEAFAULT_STYLES = { "line", "polygon", "point" };
+
 	/**
 	 * Retrieves all styles' names in geoserver
 	 * 
 	 * @return styles' names removed
 	 */
-	public List<String> cleanUnusedStyles(){
+	public List<String> cleanUnusedStyles() {
 		return cleanUnusedStyles(getStyleNames());
 	}
-	
+
 	/**
-	 * Clean styles unused in style list 
+	 * Clean styles unused in style list
 	 * 
-	 * @param styleNames name of styles to be deleted
+	 * @param styleNames
+	 *            name of styles to be deleted
 	 * 
 	 * @return list of deleted styles
 	 */
-	public List<String> cleanUnusedStyles(List<String> styleNames){
+	public List<String> cleanUnusedStyles(List<String> styleNames) {
 		GeoServerRESTReader reader;
 		GeoServerRESTManager manager;
 		GeoServerRESTPublisher publisher;
 		List<String> removedStyles = new LinkedList<String>();
 		try {
+			
+			try{			
 			manager = new GeoServerRESTManager(new URL(
 					gsConfiguration.getServerUrl()),
 					gsConfiguration.getAdminUsername(),
 					gsConfiguration.getAdminPassword());
+			
+			} catch (IllegalStateException isExc) {
+				manager = new GeoServerRESTManager(new URL(
+						gsConfigurationResume.getServerUrl()),
+						gsConfigurationResume.getAdminUsername(),
+						gsConfigurationResume.getAdminPassword());
+			}
 			reader = manager.getReader();
 			publisher = manager.getPublisher();
-			for(String style: styleNames){
-				if(canRemove(style, reader)
-						&& removeStyle(style, publisher)){
+			for (String style : styleNames) {
+				if (canRemove(style, reader) && removeStyle(style, publisher)) {
 					removedStyles.add(style);
 				}
 			}
@@ -1005,15 +1055,15 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 
 	private boolean canRemove(String style, GeoServerRESTReader reader) {
 		// we can't remove default styles
-		for(String defaultStyle: DEAFAULT_STYLES){
-			if(defaultStyle.equals(style)){
+		for (String defaultStyle : DEAFAULT_STYLES) {
+			if (defaultStyle.equals(style)) {
 				return false;
 			}
 		}
 		// we can't remove used styles
-		for(String layerName: reader.getLayers().getNames()){
+		for (String layerName : reader.getLayers().getNames()) {
 			RESTLayer layer = reader.getLayer(layerName);
-			if(style.equals(layer.getDefaultStyle())){
+			if (style.equals(layer.getDefaultStyle())) {
 				return false;
 			}
 		}
@@ -1022,34 +1072,36 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 
 	@Override
 	public String getLayerWorkspace(String layerName) {
-	    String storeUrl;
-	    try {		
-		storeUrl= getReader().getResource(getReader().getLayer(layerName)).getStoreUrl();
-	    } catch (MalformedURLException ex) {
-		LOG.error("Malformed Geoserver REST API URL", ex);
-		throw new GeoserverException("Malformed Geoserver REST API URL", ex);
-	    }
-	  
-	   Matcher m = LAYER_WORKSPACE_PATTERN.matcher(storeUrl);
-	   if(!m.find()){
-	       return null;
-	   }
-	   String workspaceName =  m.group(1);
-	   return workspaceName;
+		String storeUrl;
+		try {
+			storeUrl = getReader().getResource(getReader().getLayer(layerName))
+					.getStoreUrl();
+		} catch (MalformedURLException ex) {
+			LOG.error("Malformed Geoserver REST API URL", ex);
+			throw new GeoserverException("Malformed Geoserver REST API URL", ex);
+		}
+
+		Matcher m = LAYER_WORKSPACE_PATTERN.matcher(storeUrl);
+		if (!m.find()) {
+			return null;
+		}
+		String workspaceName = m.group(1);
+		return workspaceName;
 	}
 
 	/**
 	 * Returns geoserver's info on a layer given its name.
+	 * 
 	 * @param layerName
-	 * @return 
+	 * @return
 	 */
 	@Override
 	public RESTLayer getLayerInfo(String layerName) {
-	    try {
-		return getReader().getLayer(layerName);
-	    } catch (MalformedURLException ex) {
-		LOG.error("Malformed Geoserver REST API URL", ex);
-		throw new GeoserverException("Malformed Geoserver REST API URL", ex);
-	    }
+		try {
+			return getReader().getLayer(layerName);
+		} catch (MalformedURLException ex) {
+			LOG.error("Malformed Geoserver REST API URL", ex);
+			throw new GeoserverException("Malformed Geoserver REST API URL", ex);
+		}
 	}
 }

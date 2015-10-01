@@ -36,12 +36,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.emergya.persistenceGeo.dao.DBManagementDao;
 import com.emergya.persistenceGeo.service.DBManagementService;
+import com.emergya.persistenceGeo.utils.BoundingBox;
+import com.emergya.persistenceGeo.utils.GeometryType;
 
 /**
  * Database access service
- * 
- * 
- * 
  */
 @Service
 @Transactional(value = "multiSIRDatabaseTransactionManager")
@@ -59,4 +58,49 @@ public class DBManagementServiceImpl implements DBManagementService {
 	public String getTableSizeText(String table_name) {
 		return dbManagementDao.getTableSizeText(table_name);
 	}
+	
+	@Override
+	public void changeTableColumnName(String tableName, String oldColumnName,
+			String newColumnName) {
+		dbManagementDao.changeTableColumnName(tableName, oldColumnName, newColumnName);
+	}
+	
+	/**
+	 * Gets a postgis table geometry type.
+	 * 
+	 * @param tableName
+	 * @return
+	 */
+	@Override
+	public GeometryType getTableGeometryType(String tableName) {
+		return dbManagementDao.getTableGeometryType(tableName);
+	}
+
+	/**
+	 * Gets a Postgis geometry table bounding box.
+	 *
+	 * @param tableName
+	 * @return
+	 */
+	@Override
+	public BoundingBox getTableBoundingBox(String tableName) {
+		return dbManagementDao.getTableBoundingBox(tableName);
+	}
+	
+	@Override
+	public boolean createLayerTable(String tableName, int srsCode,
+			GeometryType geometryType) {
+		return dbManagementDao.createLayerTable(tableName, srsCode, geometryType);
+	}
+
+	@Override
+	public boolean tableExists(String ohiggins, String tableName) {
+		return dbManagementDao.tableExists(ohiggins, tableName);
+	}
+
+	@Override
+	public BoundingBox getTableBoundingBoxGeoColumn(String geoColumnName,
+			String tableName) {
+		return dbManagementDao.getTableBoundingBoxGeoColumn(geoColumnName, tableName);
+	}	
 }

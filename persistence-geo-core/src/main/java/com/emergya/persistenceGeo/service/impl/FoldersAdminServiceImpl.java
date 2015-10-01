@@ -153,7 +153,6 @@ public class FoldersAdminServiceImpl extends
 	 * @param merge
 	 *            indicate if target user folders must be maintained
 	 */
-	@Transactional
 	@Override
 	public FolderDto copyUserContext(Long originUserId, Long targetUserId,
 			boolean merge) {

@@ -41,6 +41,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.emergya.persistenceGeo.exceptions.ShpImporterException;
 import com.emergya.persistenceGeo.utils.GeographicDatabaseConfiguration;
@@ -90,6 +91,7 @@ public class ShpImporterImpl implements IShpImporter {
 	 * (java.lang.String, java.lang.String)
 	 */
 	@Override
+	@Transactional(value = "multiSIRDatabaseTransactionManager")
 	public boolean checkIfAllFilesExist(String folder, String filename) {
 		return checkForExtensions(folder, filename, EXTENSIONS_TO_CHECK);
 	}
@@ -130,6 +132,7 @@ public class ShpImporterImpl implements IShpImporter {
 	 * .lang.String, java.lang.String, boolean)
 	 */
 	@Override
+	@Transactional(value = "multiSIRDatabaseTransactionManager")
 	public boolean importShpToDb(String pathToShp, String tableName,
 			boolean dropExistingTable) {
 		boolean result = true;
