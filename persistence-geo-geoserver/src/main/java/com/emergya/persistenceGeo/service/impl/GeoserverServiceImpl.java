@@ -75,6 +75,7 @@ import org.apache.commons.io.IOUtils;
 import org.hibernate.exception.SQLGrammarException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -558,6 +559,7 @@ public class GeoserverServiceImpl implements GeoserverService {
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public DuplicationResult duplicateGeoServerLayer(
             String sourceWorkspace, String sourceLayerType,
             String sourceLayerName, String sourceLayerTable,
@@ -700,6 +702,7 @@ public class GeoserverServiceImpl implements GeoserverService {
      * @return
      */
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public boolean deleteGeoServerLayer(String workspace, String layerName, String layerType, String tableName) {
 
         if (layerType.contains(WFS_LAYER_TYPE_NAME)

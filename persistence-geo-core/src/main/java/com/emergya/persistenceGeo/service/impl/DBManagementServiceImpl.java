@@ -32,6 +32,7 @@ package com.emergya.persistenceGeo.service.impl;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.emergya.persistenceGeo.dao.DBManagementDao;
@@ -60,6 +61,7 @@ public class DBManagementServiceImpl implements DBManagementService {
 	}
 	
 	@Override
+	@Transactional(propagation=Propagation.REQUIRED)
 	public void changeTableColumnName(String tableName, String oldColumnName,
 			String newColumnName) {
 		dbManagementDao.changeTableColumnName(tableName, oldColumnName, newColumnName);
@@ -88,6 +90,7 @@ public class DBManagementServiceImpl implements DBManagementService {
 	}
 	
 	@Override
+	@Transactional(propagation=Propagation.REQUIRED)
 	public boolean createLayerTable(String tableName, int srsCode,
 			GeometryType geometryType) {
 		return dbManagementDao.createLayerTable(tableName, srsCode, geometryType);

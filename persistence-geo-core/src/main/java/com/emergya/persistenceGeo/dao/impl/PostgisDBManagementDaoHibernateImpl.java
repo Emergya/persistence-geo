@@ -41,6 +41,7 @@ import java.util.List;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.LazyDynaBean;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.FlushMode;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.SessionFactoryImplementor;
@@ -51,6 +52,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.emergya.persistenceGeo.dao.DBManagementDao;
 import com.emergya.persistenceGeo.utils.BoundingBox;
@@ -149,12 +152,16 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport
 	 * (java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public void changeTableColumnName(String tableName, String oldColumnName,
 			String newColumnName) {
 		SessionFactoryImplementor sfi = (SessionFactoryImplementor) getSessionFactory();
 		String schema = sfi.getSettings().getDefaultSchemaName();
 		final String sql = MessageFormat.format(ALTER_TABLE_SQL, schema,
 				tableName, oldColumnName, newColumnName);
+		
+		getSession().beginTransaction();
+		
 		getSession().doWork(new Work() {
 
 			@Override
@@ -163,6 +170,9 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport
 				stmt.execute(sql);
 			}
 		});
+		
+		getSession().flush();		
+		getSession().getTransaction().commit();
 	}
 
 	/**
@@ -267,6 +277,7 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public void duplicateLayerTable(final String sourceTable,
 			final String destinationTable) {
 		SessionFactoryImplementor sfi = (SessionFactoryImplementor) getSessionFactory();
@@ -277,6 +288,8 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport
 		final String updateGeometryColumnSql = String.format(
 				UPDATE_GEOMETRY_COLUMN_SQL, destinationTable, sourceTable);
 
+		getSession().beginTransaction();
+		
 		getSession().doWork(new Work() {
 
 			@Override
@@ -298,10 +311,12 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport
 			}
 		});
 
-		getSession().flush();
+		getSession().flush();		
+		getSession().getTransaction().commit();
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public void deleteLayerTable(String tableName) {
 		SessionFactoryImplementor sfi = (SessionFactoryImplementor) getSessionFactory();
 		String schema = sfi.getSettings().getDefaultSchemaName();
@@ -311,6 +326,8 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport
 		final String deleteGeometryColumnSql = String.format(
 				REMOVE_GEOMETRY_COLUMN_SQL, tableName);
 
+		getSession().beginTransaction();
+		
 		getSession().doWork(new Work() {
 
 			@Override
@@ -320,6 +337,9 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport
 				stmt.execute(deleteGeometryColumnSql);
 			}
 		});
+		
+		getSession().flush();		
+		getSession().getTransaction().commit();
 	}
 
 	/**
@@ -367,8 +387,10 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport
 
 		final String addGeometryColumnSql = String.format(
 				ADD_GEOMETRY_COLUMN_SQL, schema, tableName, srsCode,
-				geometryType, 2, false);
+				geometryType, 2, Boolean.TRUE);
 
+		getSession().beginTransaction();
+		
 		try {
 
 			getSession().doWork(new Work() {
@@ -380,6 +402,9 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport
 					stmt.execute(addGeometryColumnSql);
 				}
 			});
+			
+			getSession().flush();		
+			getSession().getTransaction().commit();
 
 		} catch (Exception e) {
 			logger.error(String.format(
@@ -392,6 +417,7 @@ public class PostgisDBManagementDaoHibernateImpl extends HibernateDaoSupport
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public boolean createLayerTable(String tableName, int srsCode,
 			GeometryType geometryType) {
 		List<DynaBean> columns = new ArrayList<DynaBean>();

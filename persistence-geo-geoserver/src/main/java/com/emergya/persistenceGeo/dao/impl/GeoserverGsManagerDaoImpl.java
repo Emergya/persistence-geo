@@ -36,13 +36,14 @@ import it.geosolutions.geoserver.rest.HTTPUtils;
 import it.geosolutions.geoserver.rest.decoder.RESTCoverageList;
 import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
-import it.geosolutions.geoserver.rest.decoder.RESTLayerList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.decoder.utils.NameLinkElem;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
 import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
 import it.geosolutions.geoserver.rest.encoder.coverage.GSCoverageEncoder;
 import it.geosolutions.geoserver.rest.encoder.datastore.GSPostGISDatastoreEncoder;
+import it.geosolutions.geoserver.rest.encoder.feature.FeatureTypeAttribute;
+import it.geosolutions.geoserver.rest.encoder.feature.GSAttributeEncoder;
 import it.geosolutions.geoserver.rest.manager.GeoServerRESTStoreManager;
 
 import java.io.File;
@@ -52,8 +53,10 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -442,7 +445,6 @@ public class GeoserverGsManagerDaoImpl implements GeoserverDao {
 			gsPublisher = getPublisher();
 			GSFeatureTypeNativeNameEncoder fte = this
 					.tranformToGSFeatureTypeEncoder(featureDescriptor);
-
 			GSLayerEncoder layerEncoder = this
 					.tranformToGSLayerEncoder(layerDescriptor);
 
