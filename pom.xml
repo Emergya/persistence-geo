@@ -5,7 +5,7 @@
 
     <groupId>com.emergya</groupId>
     <artifactId>persistence-geo</artifactId>
-    <version>2.0-jpa1.0</version>
+    <version>2.2-jpa1.0</version>
     <packaging>pom</packaging>
 
     <!-- Project Information -->
@@ -86,7 +86,7 @@
 
     <properties>
         <jetty.version>6.1.26</jetty.version>
-        <hibernate.version>3.3.2.GA</hibernate.version>
+        <hibernate.version>3.5.1-Final</hibernate.version>
         <hsqldb.version>1.8.0.7</hsqldb.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
         <maven-compiler-plugin.version>2.3.1</maven-compiler-plugin.version>
