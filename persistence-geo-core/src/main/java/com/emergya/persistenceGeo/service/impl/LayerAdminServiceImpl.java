@@ -654,7 +654,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 		AbstractStyleEntity entity = null;
 		if(dto != null){
 			if(dto.getId() != null){
-				entity = styleDao.findById(dto.getId(), true);
+				entity = styleDao.findById(dto.getId(), false);
 			}else{
 				entity = instancer.createStyle();
 			}
