@@ -72,7 +72,7 @@ public abstract class GenericHibernateDAOImpl<T, ID extends Serializable> extend
 	public T findById(Long id, boolean lock) {
 		T entity;
         if (lock) {
-            entity = (T) getHibernateTemplate().get(persistentClass, id, LockMode.PESSIMISTIC_WRITE);
+            entity = (T) getHibernateTemplate().get(persistentClass, id, LockMode.WRITE);
         } else {
             entity = (T) getHibernateTemplate().get(persistentClass, id);
         }
