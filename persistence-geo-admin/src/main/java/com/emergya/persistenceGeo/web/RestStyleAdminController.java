@@ -98,7 +98,6 @@ public class RestStyleAdminController implements Serializable{
 			
 			ObjectMapper mapper = new ObjectMapper();
 			StyleMapDto styleMap = mapper.readValue(data, StyleMapDto.class);
-			//TODO: merge/update current styles with new styles, instead of creating new ones
 			layer.setStyles(getStyles(styleMap, idLayer));
 			
 			layer = (LayerDto) layerAdminService.update(layer);

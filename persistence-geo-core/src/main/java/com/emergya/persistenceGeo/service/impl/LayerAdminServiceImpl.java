@@ -290,8 +290,6 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			Date now = new Date();
 			if(layerDto.getId() != null && layerDto.getId() > 0){
 				entity = (AbstractLayerEntity) layerDao.findById(layerDto.getId(), false);
-				//Grupos
-//				authDao.clearUser(layerDto.getId());
 			}else{
 				entity = instancer.createLayer();
 				entity.setCreateDate(now);
@@ -301,7 +299,6 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 			entity.setProperties(this.mergeLayerProperties(entity,layerDto.getProperties()));
 			
 			// Add own parameters
-			//entity.setId(layerDto.getId());
 			entity.setName(layerDto.getName());
 			entity.setOrder(layerDto.getOrder());
 			entity.setServer_resource(layerDto.getServer_resource());
