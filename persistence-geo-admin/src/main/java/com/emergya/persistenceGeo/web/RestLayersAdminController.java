@@ -422,7 +422,7 @@ public class RestLayersAdminController extends RestPersistenceGeoController
 				layer.setProperties(properties);
 			}
 			
-			layer = (LayerDto) layerAdminService.update(layer);
+			layer = (LayerDto) layerAdminService.updateOrder(layer);
 			
 			//Must already loaded in RestLayerAdminController
 			if(layer.getId() != null && layer.getData() != null){

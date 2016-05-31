@@ -217,4 +217,13 @@ public interface LayerAdminService extends AbstractService {
 	 * @return layer modified
 	 */
 	public LayerDto updateLayerProperties(Long idLayer, String name, Map<String, String> mapProperties);
+
+	/**
+	 * Update layer order
+	 * 
+	 * @param layerDto
+	 * 
+	 * @return layer modified
+	 */
+	public LayerDto updateOrder(LayerDto layerDto);
 }
