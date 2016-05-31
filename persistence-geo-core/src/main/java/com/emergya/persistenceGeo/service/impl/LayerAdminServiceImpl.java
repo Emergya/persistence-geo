@@ -276,6 +276,75 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 		}
 		return this.entityToDto(layerDao.makePersistent(entity));
 	}
+	
+	/**
+	 * Update layer order
+	 * 
+	 * @param layerDto
+	 * 
+	 * @return layer modified
+	 */
+	public LayerDto updateOrder(LayerDto layerDto){
+		AbstractLayerEntity entity = null;
+		if(layerDto != null){
+			Date now = new Date();
+			if(layerDto.getId() != null && layerDto.getId() > 0){
+				entity = (AbstractLayerEntity) layerDao.findById(layerDto.getId(), false);
+				//Grupos
+//				authDao.clearUser(layerDto.getId());
+			}else{
+				entity = instancer.createLayer();
+				entity.setCreateDate(now);
+			}
+			
+			// Layer properties
+			entity.setProperties(this.mergeLayerProperties(entity,layerDto.getProperties()));
+			
+			// Add own parameters
+			//entity.setId(layerDto.getId());
+			entity.setName(layerDto.getName());
+			entity.setOrder(layerDto.getOrder());
+			entity.setServer_resource(layerDto.getServer_resource());
+			entity.setPublicized(layerDto.getPublicized());
+			entity.setEnabled(layerDto.getEnabled());
+			entity.setIsChannel(layerDto.getPertenece_a_canal());
+			entity.setUpdateDate(now);
+			
+			//Layer type
+			if(layerDto.getType() != null){
+				entity.setType(layerTypeDao.getLayerType(layerDto.getType()));
+			}
+			
+			//Layer data
+			if(layerDto.getData() != null){
+				try {
+					entity.setData(FileUtils.readFileToByteArray(layerDto.getData()));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			// Add relational parameters
+			// Add users
+			String usersDto = layerDto.getUser();
+			if(usersDto != null){
+				AbstractUserEntity user = userDao.getUser(usersDto);
+				if(user != null){
+					entity.setUser(user);
+				}
+			}
+			// Add authorities
+			Long authId = layerDto.getAuthId();
+			if(authId != null){
+				entity.setAuth(authDao.findById(authId, false));
+			}
+			// Add folder
+			if(layerDto.getFolderId() != null){
+				entity.setFolder(folderDao.findById(layerDto.getFolderId(), false));
+			}
+		}
+		return this.entityToDto(layerDao.makePersistent(entity));
+	}
 
 	protected LayerDto entityToDto(AbstractLayerEntity entity) {
 		LayerDto dto = null;
@@ -654,7 +723,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 		AbstractStyleEntity entity = null;
 		if(dto != null){
 			if(dto.getId() != null){
-				entity = styleDao.findById(dto.getId(), false);
+				entity = styleDao.findById(dto.getId(), true);
 			}else{
 				entity = instancer.createStyle();
 			}
@@ -712,7 +781,7 @@ public class LayerAdminServiceImpl extends AbstractServiceImpl<LayerDto, Abstrac
 		if(ruleDto != null){
 			Date now = new Date();
 			if(ruleDto.getRule_id() != null){
-				ruleDao.findById(ruleDto.getRule_id(), true);
+				entity = ruleDao.findById(ruleDto.getRule_id(), true);
 			}else{
 				entity = ruleDao.createRule();
 				entity.setCreateDate(now);
